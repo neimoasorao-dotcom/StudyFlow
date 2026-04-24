@@ -1765,7 +1765,12 @@ function saveTemplates(v)  { save(LS_KEYS.templates, v); }
 /* ============================================================
    日付ユーティリティ
 ============================================================ */
-function today() { return new Date().toISOString().slice(0, 10); }
+/* 日付を日本時間（JST = UTC+9）で返すヘルパー */
+function jstDateStr(date) {
+  const jst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+  return jst.toISOString().slice(0, 10);
+}
+function today() { return jstDateStr(new Date()); }
 
 function formatDate(d) {
   const dt = new Date(d + 'T00:00:00');
@@ -1777,7 +1782,7 @@ function pastDates(n) {
   return Array.from({ length: n }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (n - 1 - i));
-    return d.toISOString().slice(0, 10);
+    return jstDateStr(d);
   });
 }
 
@@ -1858,7 +1863,7 @@ function calcStreak() {
   for (let i = 0; i < 365; i++) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const dt = d.toISOString().slice(0, 10);
+    const dt = jstDateStr(d);
     const dayTasks = tasks.filter(t => t.date === dt);
     if (i > 0 && dayTasks.length === 0) break;
     if (dayTasks.some(t => t.completed)) streak++;
@@ -1908,7 +1913,7 @@ function carryOverTasks() {
   const tasks = getTasks();
   const incomplete = tasks.filter(t => t.date === today() && !t.completed);
   if (incomplete.length === 0) { showToast('繰り越すタスクがありません'); return; }
-  const tmr = (() => { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().slice(0,10); })();
+  const tmr = (() => { const d = new Date(); d.setDate(d.getDate()+1); return jstDateStr(d); })();
   incomplete.forEach(t => tasks.push({ ...t, id: genId(), date: tmr, actualTime: 0, completed: false }));
   saveTasks(tasks);
   showToast(`${incomplete.length}件を翌日に繰り越しました`);
