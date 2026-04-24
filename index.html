@@ -858,15 +858,16 @@ input, textarea, select { font-family: inherit; }
 
   /* ============================================================
      ホーム画面: 1画面固定レイアウト
-     高さ = 100dvh − 下部ナビ。flex縦積みでタスクリストが
-     残り領域をすべて占有し、内部のみスクロールする。
+     【重要】#page-home.active にスコープを絞ることで、
+     非アクティブ時の display:none（.page 基底ルール）を
+     flex が上書きしてしまうバグを防ぐ。
   ============================================================ */
-  #page-home {
+  #page-home.active {
     /* ページ共通のpadding-bottomを上書きし、高さを固定 */
     height: calc(100dvh - var(--nav-h));
     padding: 0;
     overflow: hidden;           /* ページ自体はスクロールしない  */
-    display: flex;
+    display: flex;              /* .page.active の display:block を上書き */
     flex-direction: column;
   }
 
@@ -925,6 +926,9 @@ input, textarea, select { font-family: inherit; }
   /* ---- ホーム: 勉強開始ボタン（コンパクト） ---- */
   #page-home .start-study-btn {
     flex-shrink: 0;
+    /* width:100% を auto に戻す。flex列の align-items:stretch が
+       代わりに幅を親に合わせるので、margin分だけ正しく内側に収まる */
+    width: auto;
     margin: 0 12px 7px;
     padding: 12px 16px;
     font-size: .88rem;
