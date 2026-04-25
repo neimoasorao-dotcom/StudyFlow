@@ -1918,15 +1918,24 @@ function getElapsedSeconds() {
   return base;
 }
 
-/* タブを離れるとき interval を止め、戻ったとき再起動する */
+/* タブを離れるとき interval を止め、戻ったとき再起動する。
+   また日付が変わっていた場合は現在ページを再描画して表示を更新する。 */
+let _lastKnownDate = today();
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
   } else {
+    /* タイマー再開 */
     const state = getTimerState();
     if (state && state.running && !timerInterval) {
       timerInterval = setInterval(updateTimerUI, 1000);
       updateTimerUI();
+    }
+    /* 日付が変わっていたらページを再描画して日付表示・タスク一覧を更新 */
+    const nowDate = today();
+    if (nowDate !== _lastKnownDate) {
+      _lastKnownDate = nowDate;
+      showPage(currentPage);
     }
   }
 });
@@ -1934,9 +1943,9 @@ document.addEventListener('visibilitychange', () => {
 /* Chart.js インスタンス保持 */
 const charts = {};
 
-/* カレンダー状態 */
-let calYear         = new Date().getFullYear();
-let calMonth        = new Date().getMonth(); // 0-11
+/* カレンダー状態 — JST基準で初期化 */
+let calYear         = parseInt(new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' }).slice(0, 4));
+let calMonth        = parseInt(new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' }).slice(5, 7)) - 1;
 let calSelectedDate = null;
 
 /* 棒グラフ期間（日数。0 = 全期間） */
@@ -1970,19 +1979,33 @@ function saveTemplates(v)  { save(LS_KEYS.templates, v); }
 /* ============================================================
    日付ユーティリティ
 ============================================================ */
-function today() { return new Date().toISOString().slice(0, 10); }
+/**
+ * 現在の日本時間(JST)の日付を YYYY-MM-DD で返す。
+ * sv-SE ロケールは YYYY-MM-DD 形式を保証する。
+ * toISOString() は常に UTC を返すため使用しない。
+ */
+function today() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+}
 
+/**
+ * YYYY-MM-DD 文字列を「2025年4月25日（金）」形式に変換。
+ * +09:00 を付与して JST として解釈させる。
+ * タイムゾーンなしの 'T00:00:00' はブラウザのローカル時刻に依存するため使用しない。
+ */
 function formatDate(d) {
-  const dt = new Date(d + 'T00:00:00');
+  const dt = new Date(d + 'T00:00:00+09:00');
   const wd = ['日','月','火','水','木','金','土'][dt.getDay()];
   return `${dt.getFullYear()}年${dt.getMonth()+1}月${dt.getDate()}日（${wd}）`;
 }
 
+/**
+ * 今日を含む直近 n 日分の日付配列を JST 基準で返す。
+ */
 function pastDates(n) {
   return Array.from({ length: n }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (n - 1 - i));
-    return d.toISOString().slice(0, 10);
+    const d = new Date(Date.now() - (n - 1 - i) * 86400000);
+    return d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
   });
 }
 
@@ -2023,7 +2046,7 @@ function renderHome() {
   // スマホ用タイトルバーの日付
   const spDate = document.getElementById('spHomeDate');
   if (spDate) {
-    const dt = new Date(today() + 'T00:00:00');
+    const dt = new Date(today() + 'T00:00:00+09:00');
     spDate.textContent = `${dt.getMonth()+1}/${dt.getDate()}`;
   }
 
@@ -2061,9 +2084,9 @@ function calcStreak() {
   const tasks = getTasks();
   let streak = 0;
   for (let i = 0; i < 365; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const dt = d.toISOString().slice(0, 10);
+    // JST基準で i 日前の日付を求める
+    const dt = new Date(Date.now() - i * 86400000)
+                 .toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
     const dayTasks = tasks.filter(t => t.date === dt);
     if (i > 0 && dayTasks.length === 0) break;
     if (dayTasks.some(t => t.completed)) streak++;
@@ -2113,7 +2136,8 @@ function carryOverTasks() {
   const tasks = getTasks();
   const incomplete = tasks.filter(t => t.date === today() && !t.completed);
   if (incomplete.length === 0) { showToast('繰り越すタスクがありません'); return; }
-  const tmr = (() => { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().slice(0,10); })();
+  const tmr = new Date(Date.now() + 86400000)
+                .toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
   incomplete.forEach(t => tasks.push({ ...t, id: genId(), date: tmr, actualTime: 0, completed: false }));
   saveTasks(tasks);
   showToast(`${incomplete.length}件を翌日に繰り越しました`);
@@ -2659,11 +2683,12 @@ function renderChartDaily() {
       dates = pastDates(7);
     } else {
       const minDate = sessions.reduce((m,s) => s.date < m ? s.date : m, sessions[0].date);
-      const start = new Date(minDate + 'T00:00:00');
-      const end   = new Date(today()  + 'T00:00:00');
+      /* +09:00 でJSTとして解釈し、日付ループはUTC日付文字列ではなくJSTで行う */
+      const startMs = new Date(minDate + 'T00:00:00+09:00').getTime();
+      const endMs   = new Date(today()  + 'T00:00:00+09:00').getTime();
       dates = [];
-      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-        dates.push(d.toISOString().slice(0, 10));
+      for (let ms = startMs; ms <= endMs; ms += 86400000) {
+        dates.push(new Date(ms).toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' }));
       }
     }
   } else {
@@ -2674,7 +2699,7 @@ function renderChartDaily() {
   const data   = dates.map(d =>
     Math.round(allSessions.filter(s=>s.date===d).reduce((sum,s)=>sum+s.seconds,0)/60));
   const labels = dates.map(d => {
-    const dt = new Date(d + 'T00:00:00');
+    const dt = new Date(d + 'T00:00:00+09:00');
     return `${dt.getMonth()+1}/${dt.getDate()}`;
   });
   charts.daily = new Chart(document.getElementById('chartDaily').getContext('2d'), {
@@ -2754,7 +2779,7 @@ function renderChartFocus() {
     const dr = reviews.filter(r=>r.date===d);
     return dr.length ? parseFloat((dr.reduce((s,r)=>s+r.focus,0)/dr.length).toFixed(1)) : null;
   });
-  const labels = dates.map(d => { const dt=new Date(d+'T00:00:00'); return `${dt.getMonth()+1}/${dt.getDate()}`; });
+  const labels = dates.map(d => { const dt=new Date(d+'T00:00:00+09:00'); return `${dt.getMonth()+1}/${dt.getDate()}`; });
   charts.focus = new Chart(document.getElementById('chartFocus').getContext('2d'), {
     type: 'line',
     data: { labels, datasets: [{
@@ -2872,7 +2897,7 @@ function openDayDetail(dateStr) {
   const avgFocus = reviews.length
     ? (reviews.reduce((s,r) => s + r.focus, 0) / reviews.length).toFixed(1) : '—';
 
-  const dt = new Date(dateStr + 'T00:00:00');
+  const dt = new Date(dateStr + 'T00:00:00+09:00');
   const wd = ['日','月','火','水','木','金','土'][dt.getDay()];
   document.getElementById('dayDetailDate').textContent =
     `${dt.getFullYear()}年${dt.getMonth()+1}月${dt.getDate()}日（${wd}）`;
@@ -2919,7 +2944,7 @@ function openDayDetail(dateStr) {
  */
 function exportData() {
   const payload = {
-    version:   1,
+    version:    1,
     exportedAt: new Date().toISOString(),
     data: {
       tasks:     getTasks(),
@@ -2934,8 +2959,12 @@ function exportData() {
   const a    = document.createElement('a');
   a.href     = url;
   a.download = `studyflow-backup-${today()}.json`;
+  /* DOM に追加してからクリック。Firefox は detached 要素のクリックを無視することがある。
+     revoke は非同期で遅らせ、ブラウザがダウンロードを開始し終わるまで URL を保持する。 */
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
   showToast('データをエクスポートしました');
 }
 
@@ -2959,23 +2988,47 @@ function importData(event) {
   reader.onload = e => {
     try {
       const parsed = JSON.parse(e.target.result);
-      /* 基本バリデーション */
-      if (!parsed.data || typeof parsed.data !== 'object') throw new Error('形式が不正です');
+
+      /* バージョンチェック */
+      if (typeof parsed.version !== 'number') throw new Error('バージョン情報がありません。StudyFlowのバックアップファイルか確認してください');
+      if (parsed.version > 1) throw new Error(`このファイルはより新しいバージョン(v${parsed.version})のバックアップです。アプリを最新版にしてください`);
+
+      /* 基本構造チェック */
+      if (!parsed.data || typeof parsed.data !== 'object') throw new Error('ファイルの形式が正しくありません');
+
       const { tasks = [], reviews = [], sessions = [], templates = [] } = parsed.data;
+
+      /* 各データが配列であることを確認 */
+      if (!Array.isArray(tasks))     throw new Error('tasks のデータ形式が不正です');
+      if (!Array.isArray(reviews))   throw new Error('reviews のデータ形式が不正です');
+      if (!Array.isArray(sessions))  throw new Error('sessions のデータ形式が不正です');
+      if (!Array.isArray(templates)) throw new Error('templates のデータ形式が不正です');
+
       /* 保存 */
       saveTasks(tasks);
       saveReviews(reviews);
       saveSessions(sessions);
       saveTemplates(templates);
+
+      /* インポート中にタイマーが動いていた場合は状態をクリア（矛盾防止） */
+      saveTimerState(null);
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      timerRunning = false;
+      currentTimerTaskId = null;
+
       status.textContent = `✓ インポート完了 — タスク${tasks.length}件 / 振り返り${reviews.length}件 / セッション${sessions.length}件 / テンプレート${templates.length}件`;
+      status.style.color = '';
       showToast('データをインポートしました');
-      /* 現在ページを再描画 */
       showPage(currentPage);
     } catch (err) {
-      status.textContent = `エラー: ${err.message || 'ファイルを読み込めませんでした'}`;
+      status.textContent = `⚠ エラー: ${err.message || 'ファイルを読み込めませんでした'}`;
+      status.style.color = '#c0392b';
     }
   };
-  reader.onerror = () => { status.textContent = 'ファイルの読み込みに失敗しました'; };
+  reader.onerror = () => {
+    status.textContent = '⚠ ファイルの読み込みに失敗しました';
+    status.style.color = '#c0392b';
+  };
   reader.readAsText(file, 'utf-8');
 }
 
