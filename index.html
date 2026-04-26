@@ -1418,6 +1418,184 @@ input, textarea, select { font-family: inherit; }
   .modal-overlay { align-items: center; }
   .modal-box { border-radius: var(--r); max-height: 80vh; overflow-y: auto; }
 }
+
+/* ============================================================
+   B-1: ポモドーロ追加CSS
+============================================================ */
+.timer-mode-sel {
+  width: 100%;
+  padding: 9px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: .82rem;
+  color: var(--text-1);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aeaeb2' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  margin-bottom: 10px;
+}
+.pomo-phase-label {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--text-2);
+  text-align: center;
+  margin-top: 8px;
+  letter-spacing: .1px;
+  min-height: 1.4em;
+}
+.pomo-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+  min-height: 18px;
+}
+.pomo-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  transition: background .3s;
+}
+.pomo-dot.filled { background: var(--text-1); }
+
+/* ============================================================
+   B-2: 目標時間 追加CSS
+============================================================ */
+.daily-goal-area { margin-top: 10px; }
+.daily-goal-row {
+  display: flex; align-items: center; gap: 6px;
+}
+.daily-goal-text {
+  flex: 1;
+  font-size: .76rem;
+  color: rgba(255,255,255,.75);
+  font-weight: 400;
+}
+.daily-goal-edit-btn {
+  font-size: .78rem;
+  color: rgba(255,255,255,.55);
+  background: none; border: none; cursor: pointer;
+  padding: 2px 5px; border-radius: 4px;
+  line-height: 1;
+  transition: color .15s;
+}
+.daily-goal-edit-btn:hover { color: rgba(255,255,255,.9); }
+.daily-goal-bar-wrap {
+  height: 4px;
+  background: rgba(255,255,255,.2);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.daily-goal-bar-fill {
+  height: 100%;
+  background: rgba(255,255,255,.85);
+  border-radius: 20px;
+  transition: width .4s ease;
+}
+.daily-goal-input-wrap { margin-top: 8px; display: flex; align-items: center; gap: 6px; }
+.daily-goal-input {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 6px;
+  color: #fff;
+  padding: 5px 9px;
+  font-size: .88rem; font-weight: 600;
+  width: 80px; outline: none;
+  font-family: inherit;
+}
+.daily-goal-input::placeholder { color: rgba(255,255,255,.4); }
+.daily-goal-input-label {
+  font-size: .76rem; color: rgba(255,255,255,.6);
+}
+
+/* スマホ: daily-goal-area */
+@media (max-width: 600px) {
+  .daily-goal-area { margin-top: 6px; }
+  .daily-goal-text { font-size: .7rem; }
+}
+
+/* ============================================================
+   B-4: 教科カスタマイズ 追加CSS
+============================================================ */
+.subj-cust-list { margin-bottom: 8px; }
+.subj-cust-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.subj-cust-row:last-child { border-bottom: none; }
+.subj-cust-emoji { font-size: 1.15rem; width: 28px; text-align: center; flex-shrink: 0; }
+.subj-cust-name { flex: 1; font-size: .88rem; color: var(--text-1); }
+.subj-cust-del {
+  font-size: .8rem; color: var(--text-3); cursor: pointer;
+  padding: 4px 8px; border-radius: var(--r-xs); border: none;
+  background: var(--surface-2);
+  transition: color .15s, background .15s;
+}
+.subj-cust-del:hover { color: #c0392b; background: #fdf0ee; }
+.subj-add-row { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.subj-add-emoji {
+  width: 50px; padding: 8px 4px; text-align: center; font-size: 1.1rem;
+  background: var(--surface-2); border: 1px solid transparent; border-radius: var(--r-xs);
+  outline: none; font-family: inherit; color: var(--text-1);
+}
+.subj-add-name {
+  flex: 1; min-width: 80px; padding: 8px 10px; font-size: .86rem;
+  background: var(--surface-2); border: 1px solid transparent; border-radius: var(--r-xs);
+  outline: none; font-family: inherit; color: var(--text-1);
+}
+.subj-add-emoji:focus, .subj-add-name:focus { border-color: var(--border); background: var(--surface); }
+
+/* ============================================================
+   B-5: オンボーディング 追加CSS
+============================================================ */
+.onboard-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.52);
+  z-index: 600;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.onboard-overlay.open { display: flex; }
+.onboard-box {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 28px 22px 32px;
+  width: 100%; max-width: 420px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  animation: slideUp .25s ease;
+}
+.onboard-step { display: none; }
+.onboard-step.active { display: block; }
+.onboard-title {
+  font-size: 1.2rem; font-weight: 700;
+  letter-spacing: -.4px; margin-bottom: 6px;
+}
+.onboard-sub {
+  font-size: .85rem; color: var(--text-2);
+  margin-bottom: 20px; line-height: 1.6;
+}
+.onboard-range-val {
+  font-size: 2rem; font-weight: 700;
+  text-align: center; color: var(--text-1);
+  margin: 12px 0 8px; letter-spacing: -1px;
+}
+.onboard-range {
+  width: 100%; margin-bottom: 6px; cursor: pointer;
+  accent-color: var(--text-1);
+}
+.onboard-range-hint {
+  display: flex; justify-content: space-between;
+  font-size: .72rem; color: var(--text-3); margin-bottom: 24px;
+}
 </style>
 </head>
 <body>
@@ -1478,6 +1656,22 @@ input, textarea, select { font-family: inherit; }
         <div class="date-label">Today</div>
         <div class="date-text" id="heroDate">---</div>
         <div class="streak-pill" id="streakBadge">🔥 0日連続</div>
+
+        <!-- B-2: 今日の目標時間と進捗 -->
+        <div class="daily-goal-area" id="dailyGoalArea">
+          <div class="daily-goal-row">
+            <span class="daily-goal-text" id="dailyGoalText">目標 120分 → 今日 0分（0%）</span>
+            <button class="daily-goal-edit-btn" onclick="openGoalEdit()" title="目標を編集">✎</button>
+          </div>
+          <div class="daily-goal-bar-wrap">
+            <div class="daily-goal-bar-fill" id="dailyGoalBar" style="width:0%"></div>
+          </div>
+          <div class="daily-goal-input-wrap" id="dailyGoalInputWrap" style="display:none;">
+            <input type="number" class="daily-goal-input" id="dailyGoalInput"
+              min="10" max="600" step="10" placeholder="120">
+            <span class="daily-goal-input-label">分</span>
+          </div>
+        </div>
       </div>
 
       <div class="stats-row">
@@ -1646,6 +1840,13 @@ input, textarea, select { font-family: inherit; }
       </div>
 
       <div class="timer-page">
+        <!-- B-1: モード切替セレクタ -->
+        <select class="timer-mode-sel" id="timerModeSelect" onchange="onTimerModeChange()">
+          <option value="free">フリー（カウントアップ）</option>
+          <option value="pomo25">ポモドーロ（25分＋5分）</option>
+          <option value="pomo45">集中モード（45分＋10分）</option>
+        </select>
+
         <select class="timer-select" id="timerTaskSelect" onchange="selectTimerTask()">
           <option value="">タスクを選択してください</option>
         </select>
@@ -1672,6 +1873,10 @@ input, textarea, select { font-family: inherit; }
         </div>
 
         <div class="timer-elapsed" id="timerElapsed">経過 0 分</div>
+
+        <!-- B-1: ポモドーロ フェーズ表示・ドット -->
+        <div class="pomo-phase-label" id="pomoPhaseLabel"></div>
+        <div class="pomo-dots" id="pomoDots"></div>
 
         <!-- 手動記録 -->
         <button class="manual-record-btn" id="manualRecordBtn" onclick="toggleManualPanel()">
@@ -1873,6 +2078,24 @@ input, textarea, select { font-family: inherit; }
         </div>
         <div class="import-status" id="importStatus"></div>
       </div>
+
+      <!-- B-4: 教科のカスタマイズ -->
+      <div class="data-section" id="subjectCustomizerSection" style="margin-top:16px;">
+        <div class="data-section-title">教科のカスタマイズ</div>
+        <div class="data-section-sub">
+          教科を自由に追加・削除できます。<br>
+          変更はすぐに全画面に反映されます。
+        </div>
+        <div class="subj-cust-list" id="subjectCustomizerList"></div>
+        <div class="subj-add-row">
+          <input type="text" class="subj-add-emoji" id="subjAddEmoji" maxlength="2" placeholder="📚">
+          <input type="text" class="subj-add-name"  id="subjAddName"  placeholder="例：情報">
+          <button class="btn btn-primary" onclick="addCustomSubject()"
+            style="padding:8px 14px; font-size:.84rem;">追加</button>
+        </div>
+        <button class="btn btn-secondary btn-full" onclick="resetSubjects()"
+          style="margin-top:10px; font-size:.82rem;">デフォルトに戻す</button>
+      </div>
     </div>
 
   </main>
@@ -1898,6 +2121,29 @@ input, textarea, select { font-family: inherit; }
       <span class="nav-icon">↗</span>分析
     </button>
   </nav>
+</div>
+
+<!-- B-5: オンボーディングモーダル -->
+<div class="onboard-overlay" id="onboardModal">
+  <div class="onboard-box">
+    <!-- Step 1: 教科選択 -->
+    <div class="onboard-step active" id="onboardStep1">
+      <div class="onboard-title">使う教科を選ぼう</div>
+      <div class="onboard-sub">勉強に使う教科を選んでください。後からでも変更できます。</div>
+      <div class="subject-grid" id="onboardSubjectGrid" style="margin-bottom:20px;"></div>
+      <button class="btn btn-primary btn-full btn-lg" onclick="onboardGoStep2()">次へ →</button>
+    </div>
+    <!-- Step 2: 目標時間 -->
+    <div class="onboard-step" id="onboardStep2">
+      <div class="onboard-title">1日の目標時間を決めよう</div>
+      <div class="onboard-sub">毎日どれくらい勉強しますか？後から変更できます。</div>
+      <div class="onboard-range-val" id="onboardRangeVal">120分</div>
+      <input type="range" class="onboard-range" id="onboardRange"
+        min="30" max="300" step="30" value="120" oninput="updateOnboardRange()">
+      <div class="onboard-range-hint"><span>30分</span><span>300分</span></div>
+      <button class="btn btn-primary btn-full btn-lg" onclick="onboardFinish()">はじめる ✓</button>
+    </div>
+  </div>
 </div>
 
 <!-- トースト -->
@@ -1938,6 +2184,55 @@ const SUBJECTS = [
 ];
 const SUBJECT_MAP = Object.fromEntries(SUBJECTS.map(s => [s.name, s]));
 
+/* B-4: 教科カスタマイズ */
+function getSubjects() {
+  try {
+    const raw = localStorage.getItem('sf_custom_subjects');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return SUBJECTS;
+}
+function saveSubjects(list) {
+  try { localStorage.setItem('sf_custom_subjects', JSON.stringify(list)); }
+  catch(e) { showToast('ストレージが満杯です'); }
+}
+/** 教科名から教科オブジェクトを動的に取得するヘルパー */
+function subjectByName(name) {
+  return getSubjects().find(s => s.name === name) || { emoji: '📝' };
+}
+
+/* B-2: 目標時間 */
+function getDailyGoal() {
+  return parseInt(localStorage.getItem('sf_daily_goal') || '120', 10);
+}
+function saveDailyGoal(min) {
+  localStorage.setItem('sf_daily_goal', String(min));
+}
+
+/* B-3: Web Audio API */
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
+}
+function playBeep() {
+  try {
+    const ctx = getAudioCtx();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.6);
+  } catch(e) { /* 音が出なくても処理は継続 */ }
+}
+/* autoplay 制限対策: ユーザー操作で AudioContext を resume */
+document.addEventListener('click',      () => { try { getAudioCtx().resume(); } catch(e){} }, { once: false });
+document.addEventListener('touchstart', () => { try { getAudioCtx().resume(); } catch(e){} }, { once: false, passive: true });
+
 /* ============================================================
    アプリ状態
 ============================================================ */
@@ -1960,6 +2255,16 @@ let tplPrio = 'mid';
 let timerInterval = null;
 let timerRunning  = false;
 /* ※ timerSeconds は廃止。経過秒は getElapsedSeconds() で随時計算する */
+
+/* B-1: ポモドーロ状態 */
+let pomoMode         = localStorage.getItem('sf_timer_mode') || 'free'; // 'free'|'pomo25'|'pomo45'
+let pomoPhase        = 'work';  // 'work' | 'break'
+let pomoSessionCount = 0;       // 完了した作業フェーズ数（最大4でリセット）
+let _pomoPhaseStartSec = 0;     // 現在フェーズ開始時の経過秒（フェーズ切替検出用）
+const POMO_SETTINGS = {
+  pomo25: { work: 25 * 60, brk: 5  * 60 },
+  pomo45: { work: 45 * 60, brk: 10 * 60 },
+};
 
 /* ============================================================
    タイマー永続化 — ページを閉じても計測が続く仕組み
@@ -2130,6 +2435,14 @@ function renderHome() {
   document.getElementById('progressText').textContent  = `${done.length} / ${tasks.length} タスク`;
   document.getElementById('progressBar').style.width   = rate + '%';
 
+  /* B-2: 目標時間進捗 */
+  const goalMin  = getDailyGoal();
+  const goalPct  = Math.min(Math.round(studyMin / goalMin * 100), 100);
+  const goalText = document.getElementById('dailyGoalText');
+  const goalBar  = document.getElementById('dailyGoalBar');
+  if (goalText) goalText.textContent = `目標 ${goalMin}分 → 今日 ${studyMin}分（${goalPct}%）`;
+  if (goalBar)  goalBar.style.width  = goalPct + '%';
+
   const listEl = document.getElementById('homeTaskList');
   if (tasks.length === 0) {
     listEl.innerHTML = `<div class="empty-state">
@@ -2169,7 +2482,7 @@ function calcStreak() {
 }
 
 function taskItemHTML(t) {
-  const subj     = SUBJECT_MAP[t.subject] || { emoji: '📝' };
+  const subj     = subjectByName(t.subject);
   const prioClass = { high: 'high-priority', mid: 'mid-priority', low: 'low-priority' }[t.priority] || '';
   const doneClass = t.completed ? 'done' : '';
   const actualMin = Math.round((t.actualTime || 0) / 60);
@@ -2218,6 +2531,36 @@ function carryOverTasks() {
   showToast(`${incomplete.length}件を翌日に繰り越しました`);
 }
 
+/* B-2: 目標時間インライン編集 */
+function openGoalEdit() {
+  const wrap  = document.getElementById('dailyGoalInputWrap');
+  const row   = document.getElementById('dailyGoalArea').querySelector('.daily-goal-row');
+  const input = document.getElementById('dailyGoalInput');
+  if (!wrap) return;
+  input.value = getDailyGoal();
+  wrap.style.display = 'flex';
+  row.style.display  = 'none';
+  input.focus();
+  input.select();
+}
+function closeGoalEdit() {
+  const wrap = document.getElementById('dailyGoalInputWrap');
+  const row  = document.getElementById('dailyGoalArea').querySelector('.daily-goal-row');
+  if (!wrap) return;
+  const val = parseInt(document.getElementById('dailyGoalInput').value, 10);
+  if (val >= 10 && val <= 600) saveDailyGoal(val);
+  wrap.style.display = 'none';
+  row.style.display  = '';
+  renderHome();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('dailyGoalInput');
+  if (inp) {
+    inp.addEventListener('blur', closeGoalEdit);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); closeGoalEdit(); } });
+  }
+});
+
 /* ============================================================
    ② スケジュール作成
 ============================================================ */
@@ -2227,7 +2570,7 @@ function renderSchedulePage() {
   updateTplPrioBtns();
   document.getElementById('tplTimeDisp').textContent = tplPlannedTime;
 
-  document.getElementById('subjectGrid').innerHTML = SUBJECTS.map(s => `
+  document.getElementById('subjectGrid').innerHTML = getSubjects().map(s => `
     <button class="subject-btn ${selectedSubj === s.name ? 'selected' : ''}"
       onclick="selectSubject('${s.name}')">
       <span class="subj-icon">${s.emoji}</span>${s.name}
@@ -2283,11 +2626,22 @@ function renderScheduleList() {
    ③ タイマー
 ============================================================ */
 function renderTimerPage() {
+  /* B-1: モードセレクタを復元 */
+  const modeSel = document.getElementById('timerModeSelect');
+  if (modeSel) {
+    pomoMode = localStorage.getItem('sf_timer_mode') || 'free';
+    modeSel.value = pomoMode;
+  }
+
   /* 保存済みのタイマー状態を復元 */
   const savedState = getTimerState();
   if (savedState) {
     currentTimerTaskId = savedState.taskId;
     timerRunning = savedState.running;
+    /* ポモドーロ状態も復元 */
+    if (savedState.pomoPhase)        pomoPhase        = savedState.pomoPhase;
+    if (savedState.pomoSessionCount !== undefined) pomoSessionCount = savedState.pomoSessionCount;
+    if (savedState.pomoPhaseStartSec !== undefined) _pomoPhaseStartSec = savedState.pomoPhaseStartSec;
     if (savedState.running && !timerInterval) {
       timerInterval = setInterval(updateTimerUI, 1000);
     }
@@ -2347,7 +2701,7 @@ function selectTimerTask() {
   }
   const task = getTasks().find(t => t.id === id);
   if (!task) return;
-  const subj = SUBJECT_MAP[task.subject] || { emoji: '📝' };
+  const subj = subjectByName(task.subject);
   document.getElementById('timerSubjectLabel').textContent = `${subj.emoji} ${task.subject}`;
   document.getElementById('timerTaskName').textContent     = task.task;
 }
@@ -2356,12 +2710,21 @@ function startTimer() {
   if (!currentTimerTaskId) { showToast('タスクを選んでください'); return; }
   const existing    = getTimerState();
   const accumulated = existing ? (existing.accumulatedSeconds || 0) : 0;
+  /* B-1: ポモドーロ用に pomoPhaseStartSec をリセット（新規開始時のみ） */
+  if (accumulated === 0) {
+    pomoPhase        = 'work';
+    pomoSessionCount = 0;
+    _pomoPhaseStartSec = 0;
+  }
   /* 開始時刻を localStorage に保存 → ページを閉じても時刻は残る */
   saveTimerState({
     taskId:             currentTimerTaskId,
     startedAt:          Date.now(),
     accumulatedSeconds: accumulated,
     running:            true,
+    pomoPhase:          pomoPhase,
+    pomoSessionCount:   pomoSessionCount,
+    pomoPhaseStartSec:  _pomoPhaseStartSec,
   });
   timerRunning = true;
   document.getElementById('btnStart').style.display = 'none';
@@ -2383,6 +2746,9 @@ function pauseTimer() {
     startedAt:          null,
     accumulatedSeconds: getElapsedSeconds(),
     running:            false,
+    pomoPhase:          pomoPhase,
+    pomoSessionCount:   pomoSessionCount,
+    pomoPhaseStartSec:  _pomoPhaseStartSec,
   });
   document.getElementById('timerStateLabel').textContent = '一時停止';
   document.getElementById('btnPause').style.display = 'none';
@@ -2397,6 +2763,11 @@ function endTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
   timerRunning  = false;
+
+  /* B-3: フリーモード終了音 */
+  if (pomoMode === 'free') playBeep();
+
+  /* B-1: ポモドーロ・集中モードの場合、経過秒をそのままセッション記録 */
   /* タイマー状態を localStorage から消去 */
   saveTimerState(null);
   /* セッション記録 */
@@ -2407,6 +2778,10 @@ function endTimer() {
   const tasks = getTasks();
   const task  = tasks.find(t => t.id === currentTimerTaskId);
   if (task) { task.actualTime = (task.actualTime || 0) + elapsed; saveTasks(tasks); }
+  /* ポモドーロ状態リセット */
+  pomoPhase        = 'work';
+  pomoSessionCount = 0;
+  _pomoPhaseStartSec = 0;
   /* UI リセット */
   document.getElementById('btnStart').style.display = '';
   document.getElementById('btnStart').textContent   = '▶ 開始';
@@ -2423,16 +2798,98 @@ function endTimer() {
 
 function updateTimerUI() {
   const elapsed = getElapsedSeconds();
-  const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
-  const ss = String(elapsed % 60).padStart(2, '0');
-  document.getElementById('timerDisplay').textContent = `${mm}:${ss}`;
-  document.getElementById('timerElapsed').textContent = `経過 ${Math.round(elapsed / 60)} 分`;
-  /* リング進捗 */
-  const task  = currentTimerTaskId ? getTasks().find(t => t.id === currentTimerTaskId) : null;
-  const total = task ? task.plannedTime * 60 : 1800;
-  const pct   = Math.min(elapsed / total, 1);
-  const circ  = 2 * Math.PI * 97;
-  document.getElementById('timerRing').style.strokeDashoffset = circ * (1 - pct);
+  const mode    = pomoMode;
+
+  if (mode === 'free') {
+    /* ---- フリーモード: カウントアップ ---- */
+    const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const ss = String(elapsed % 60).padStart(2, '0');
+    document.getElementById('timerDisplay').textContent = `${mm}:${ss}`;
+    document.getElementById('timerElapsed').textContent = `経過 ${Math.round(elapsed / 60)} 分`;
+
+    /* リング進捗（フリーモードは予定時間に対して増える） */
+    const task  = currentTimerTaskId ? getTasks().find(t => t.id === currentTimerTaskId) : null;
+    const total = task ? task.plannedTime * 60 : 1800;
+    const pct   = Math.min(elapsed / total, 1);
+    const circ  = 2 * Math.PI * 97;
+    document.getElementById('timerRing').style.strokeDashoffset = circ * (1 - pct);
+
+    /* ポモドーロ表示を隠す */
+    document.getElementById('pomoPhaseLabel').textContent = '';
+    document.getElementById('pomoDots').innerHTML = '';
+
+  } else {
+    /* ---- ポモドーロ / 集中モード: カウントダウン ---- */
+    const cfg      = POMO_SETTINGS[mode];
+    const phaseLen = pomoPhase === 'work' ? cfg.work : cfg.brk;
+    const phaseElapsed = elapsed - _pomoPhaseStartSec;
+    const remaining    = Math.max(phaseLen - phaseElapsed, 0);
+
+    const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
+    const ss = String(remaining % 60).padStart(2, '0');
+    document.getElementById('timerDisplay').textContent = `${mm}:${ss}`;
+    document.getElementById('timerElapsed').textContent = `経過 ${Math.round(elapsed / 60)} 分`;
+
+    /* リング: 残り時間で減るアニメーション */
+    const pct  = remaining / phaseLen;
+    const circ = 2 * Math.PI * 97;
+    document.getElementById('timerRing').style.strokeDashoffset = circ * (1 - pct);
+
+    /* フェーズラベル */
+    const phaseWorkMin = Math.floor(cfg.work / 60);
+    const phaseBrkMin  = Math.floor(cfg.brk  / 60);
+    const phaseWorkDisp = String(phaseWorkMin).padStart(2, '0') + ':00';
+    const phaseBrkDisp  = String(phaseBrkMin ).padStart(2, '0') + ':00';
+    document.getElementById('pomoPhaseLabel').textContent =
+      pomoPhase === 'work'
+        ? `🍅 作業中 ${phaseWorkDisp}`
+        : `☕ 休憩中 ${phaseBrkDisp}`;
+
+    /* ドット表示（最大4個） */
+    const dotsEl = document.getElementById('pomoDots');
+    dotsEl.innerHTML = '';
+    for (let i = 0; i < 4; i++) {
+      const d = document.createElement('span');
+      d.className = 'pomo-dot' + (i < pomoSessionCount ? ' filled' : '');
+      dotsEl.appendChild(d);
+    }
+
+    /* フェーズ切替判定（計測中かつ残り0秒のとき） */
+    if (timerRunning && remaining === 0) {
+      playBeep();
+      if (pomoPhase === 'work') {
+        /* 作業フェーズ完了 → セッションカウント増加、休憩フェーズへ */
+        pomoSessionCount = (pomoSessionCount + 1) >= 4 ? 0 : (pomoSessionCount + 1);
+        pomoPhase = 'break';
+      } else {
+        /* 休憩フェーズ完了 → 作業フェーズへ */
+        pomoPhase = 'work';
+      }
+      _pomoPhaseStartSec = elapsed;
+      /* 状態を保存 */
+      const st = getTimerState();
+      if (st) {
+        st.pomoPhase         = pomoPhase;
+        st.pomoSessionCount  = pomoSessionCount;
+        st.pomoPhaseStartSec = _pomoPhaseStartSec;
+        saveTimerState(st);
+      }
+    }
+  }
+}
+
+/* B-1: モード切替ハンドラ */
+function onTimerModeChange() {
+  const sel = document.getElementById('timerModeSelect');
+  pomoMode  = sel.value;
+  localStorage.setItem('sf_timer_mode', pomoMode);
+  /* タイマーが動いていなければ表示をリセット */
+  if (!timerRunning) {
+    pomoPhase          = 'work';
+    pomoSessionCount   = 0;
+    _pomoPhaseStartSec = 0;
+  }
+  updateTimerUI();
 }
 
 /* ============================================================
@@ -2446,7 +2903,7 @@ function renderTplList() {
     return;
   }
   el.innerHTML = templates.map(tpl => {
-    const subj = SUBJECT_MAP[tpl.subject] || { emoji: '📝' };
+    const subj = subjectByName(tpl.subject);
     const prioLabel = { high: '高', mid: '中', low: '低' }[tpl.priority] || '中';
     return `
     <div class="tpl-item">
@@ -2465,7 +2922,7 @@ function renderTplList() {
 }
 
 function renderTplSubjectGrid() {
-  document.getElementById('tplSubjectGrid').innerHTML = SUBJECTS.map(s => `
+  document.getElementById('tplSubjectGrid').innerHTML = getSubjects().map(s => `
     <button class="subject-btn ${tplSubj === s.name ? 'selected' : ''}"
       onclick="selectTplSubj('${s.name}')">
       <span class="subj-icon">${s.emoji}</span>${s.name}
@@ -2686,7 +3143,121 @@ function saveReview() {
 }
 
 /* ============================================================
-   ⑤ 分析
+   B-4: 教科カスタマイズ
+============================================================ */
+function renderSubjectCustomizer() {
+  const list = document.getElementById('subjectCustomizerList');
+  if (!list) return;
+  const subjects = getSubjects();
+  if (subjects.length === 0) {
+    list.innerHTML = '<div style="font-size:.82rem;color:var(--text-3);padding:8px 0;">教科がありません</div>';
+    return;
+  }
+  list.innerHTML = subjects.map((s, i) => `
+    <div class="subj-cust-row">
+      <span class="subj-cust-emoji">${escHtml(s.emoji)}</span>
+      <span class="subj-cust-name">${escHtml(s.name)}</span>
+      <button class="subj-cust-del" onclick="deleteCustomSubject(${i})">×</button>
+    </div>`).join('');
+}
+
+function addCustomSubject() {
+  const emoji = document.getElementById('subjAddEmoji').value.trim() || '📝';
+  const name  = document.getElementById('subjAddName').value.trim();
+  if (!name) { showToast('教科名を入力してください'); return; }
+  const list = getSubjects();
+  if (list.some(s => s.name === name)) { showToast('同じ名前の教科が既に存在します'); return; }
+  list.push({ name, emoji });
+  saveSubjects(list);
+  document.getElementById('subjAddEmoji').value = '';
+  document.getElementById('subjAddName').value  = '';
+  renderSubjectCustomizer();
+  showToast(`「${name}」を追加しました`);
+}
+
+function deleteCustomSubject(idx) {
+  const list = getSubjects();
+  const removed = list.splice(idx, 1);
+  saveSubjects(list);
+  renderSubjectCustomizer();
+  if (removed.length) showToast(`「${removed[0].name}」を削除しました`);
+}
+
+function resetSubjects() {
+  if (!confirm('デフォルトの教科リストに戻しますか？')) return;
+  localStorage.removeItem('sf_custom_subjects');
+  renderSubjectCustomizer();
+  showToast('デフォルトに戻しました');
+}
+
+/* ============================================================
+   B-5: オンボーディング
+============================================================ */
+/* オンボーディング内での選択状態 */
+let _onboardSelectedSubjects = [];
+
+function showOnboardingIfNeeded() {
+  if (localStorage.getItem('sf_onboarded') !== null) return;
+  /* デフォルト全選択 */
+  _onboardSelectedSubjects = getSubjects().map(s => s.name);
+  /* 教科グリッド描画 */
+  const grid = document.getElementById('onboardSubjectGrid');
+  if (grid) {
+    grid.innerHTML = getSubjects().map(s => `
+      <button class="subject-btn selected" data-subj="${escHtml(s.name)}"
+        onclick="toggleOnboardSubj('${escHtml(s.name)}', this)">
+        <span class="subj-icon">${s.emoji}</span>${escHtml(s.name)}
+      </button>`).join('');
+  }
+  /* ステップ1を表示 */
+  document.getElementById('onboardStep1').classList.add('active');
+  document.getElementById('onboardStep2').classList.remove('active');
+  document.getElementById('onboardModal').classList.add('open');
+}
+
+function toggleOnboardSubj(name, btn) {
+  const idx = _onboardSelectedSubjects.indexOf(name);
+  if (idx >= 0) {
+    _onboardSelectedSubjects.splice(idx, 1);
+    btn.classList.remove('selected');
+  } else {
+    _onboardSelectedSubjects.push(name);
+    btn.classList.add('selected');
+  }
+}
+
+function onboardGoStep2() {
+  if (_onboardSelectedSubjects.length === 0) {
+    showToast('少なくとも1つ教科を選んでください');
+    return;
+  }
+  document.getElementById('onboardStep1').classList.remove('active');
+  document.getElementById('onboardStep2').classList.add('active');
+  updateOnboardRange();
+}
+
+function updateOnboardRange() {
+  const val = document.getElementById('onboardRange').value;
+  document.getElementById('onboardRangeVal').textContent = `${val}分`;
+}
+
+function onboardFinish() {
+  /* ① 選択した教科を保存 */
+  const allSubjects = getSubjects();
+  const filtered    = allSubjects.filter(s => _onboardSelectedSubjects.includes(s.name));
+  saveSubjects(filtered);
+  /* ② 目標時間を保存 */
+  const goalMin = parseInt(document.getElementById('onboardRange').value, 10);
+  saveDailyGoal(goalMin);
+  /* ③ オンボーディング完了フラグ */
+  localStorage.setItem('sf_onboarded', 'true');
+  /* ④ モーダルを閉じて home へ */
+  document.getElementById('onboardModal').classList.remove('open');
+  showPage('home');
+}
+
+/* ============================================================
+   分析画面: renderAnalysis に教科カスタマイザー描画を追加
 ============================================================ */
 function renderAnalysis() {
   renderSummary();
@@ -2696,6 +3267,7 @@ function renderAnalysis() {
   renderChartPlanVsActual();
   renderChartFocus();
   renderChartReasons();
+  renderSubjectCustomizer(); /* B-4 */
 }
 
 function renderSummary() {
@@ -3260,9 +3832,17 @@ window.addEventListener('resize', applySpTimePrioLayout);
 /* ============================================================
    初期化
 ============================================================ */
-showPage('home');
 applySpTimePrioLayout();
 updateFabState();
+/* B-5: オンボーディング未完了なら先に表示、完了済みなら通常のホームへ */
+if (localStorage.getItem('sf_onboarded') === null) {
+  /* まず home ページをアクティブにしておき（後続処理のため）、
+     その上にオンボーディングモーダルを表示する */
+  showPage('home');
+  showOnboardingIfNeeded();
+} else {
+  showPage('home');
+}
 </script>
 </body>
 </html>
