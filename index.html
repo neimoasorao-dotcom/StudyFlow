@@ -10,15 +10,26 @@
    CSS変数 — モノクローム・Apple系パレット
 ============================================================ */
 :root {
-  /* カラー */
-  --bg:          #f5f5f7;   /* ページ背景 */
+  /* カラー（グレースケール） */
+  --bg:          #F4F5F6;   /* ページ背景 */
   --surface:     #ffffff;   /* カード・サイドバー */
-  --surface-2:   #f5f5f7;   /* 入力・セカンダリ背景 */
-  --surface-3:   #ebebed;   /* ホバー・区切り */
-  --border:      #d2d2d7;   /* 薄いボーダー */
-  --text-1:      #1d1d1f;   /* メインテキスト */
-  --text-2:      #6e6e73;   /* サブテキスト */
-  --text-3:      #aeaeb2;   /* プレースホルダー等 */
+  --surface-2:   #F4F5F6;   /* 入力・セカンダリ背景 */
+  --surface-3:   #E8EAEC;   /* ホバー・区切り */
+  --border:      #DCDFE2;   /* 薄いボーダー */
+  --text-1:      #1B1F22;   /* メインテキスト */
+  --text-2:      #6B7176;   /* サブテキスト */
+  --text-3:      #A6ACB1;   /* プレースホルダー等 */
+
+  /* プライマリ: 深みのあるブルーグリーン */
+  --primary:        #1F4E54;
+  --primary-hover:  #2A6066;
+  --primary-light:  #DCEAEA;
+  --primary-soft:   #4F8388;
+
+  /* アクセント: 暖色オレンジ/ゴールド */
+  --accent-orange:       #E2873D;
+  --accent-orange-light: #FBE8D4;
+  --accent-gold:         #EAB13B;
 
   /* タイポグラフィ */
   --font: -apple-system, BlinkMacSystemFont, 'Helvetica Neue',
@@ -42,9 +53,9 @@
   --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
 
   /* 優先度カラー */
-  --prio-high: #E24B4A;
-  --prio-mid:  #EF9F27;
-  --prio-low:  #378ADD;
+  --prio-high: #E0594B;
+  --prio-mid:  #EAA23C;
+  --prio-low:  #3D7FA6;
 }
 
 /* ============================================================
@@ -87,7 +98,7 @@ input, textarea, select { font-family: inherit; }
 }
 .sidebar-logo .logo-mark {
   width: 28px; height: 28px;
-  background: var(--text-1);
+  background: var(--primary);
   border-radius: 6px;
   display: flex; align-items: center; justify-content: center;
   font-size: 14px;
@@ -125,7 +136,7 @@ input, textarea, select { font-family: inherit; }
 }
 .sidebar-nav .nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
 .sidebar-nav .nav-item:hover  { background: var(--surface-2); color: var(--text-1); }
-.sidebar-nav .nav-item.active { background: var(--surface-3); color: var(--text-1); font-weight: 500; }
+.sidebar-nav .nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 500; }
 
 .sidebar-bottom {
   padding: 16px;
@@ -175,7 +186,7 @@ input, textarea, select { font-family: inherit; }
   border-radius: 0;
 }
 .bottom-nav .nav-btn .nav-icon { font-size: 1.25rem; }
-.bottom-nav .nav-btn.active  { color: var(--text-1); font-weight: 500; }
+.bottom-nav .nav-btn.active  { color: var(--primary); font-weight: 500; }
 
 /* ---- 中央FAB ---- */
 .bottom-nav .nav-fab-wrap {
@@ -190,7 +201,7 @@ input, textarea, select { font-family: inherit; }
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--text-1);
+  background: var(--primary);
   color: #fff;
   font-size: 1.4rem;
   display: flex;
@@ -214,7 +225,7 @@ input, textarea, select { font-family: inherit; }
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #E24B4A;
+  background: var(--prio-high);
   display: none;
   animation: fabDotPulse 1.4s ease-in-out infinite;
 }
@@ -224,6 +235,42 @@ input, textarea, select { font-family: inherit; }
   0%, 100% { opacity: 1; }
   50% { opacity: 0.25; }
 }
+
+/* ============================================================
+   B-6: SVGアイコンシステム
+============================================================ */
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* 教科アイコン（フラット・デュオトーン・タイル） */
+.sf-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 28%;
+  background: var(--ic-bg, var(--surface-3));
+  flex-shrink: 0;
+}
+.sf-icon svg {
+  width: 60%;
+  height: 60%;
+  fill: none;
+  stroke: currentColor;
+}
+.subj-icon .sf-icon { width: 1.3em; height: 1.3em; }
+.subj-cust-emoji .sf-icon { width: 1.3em; height: 1.3em; }
+
+/* ナビゲーションアイコン（サイドバー・下部ナビ・FAB共通） */
+.nav-ico {
+  display: inline-block;
+  width: 1.05em; height: 1.05em;
+  vertical-align: -2px;
+}
+.nav-ico svg { width: 100%; height: 100%; fill: none; stroke: currentColor; }
+.bottom-nav .nav-btn .nav-ico { width: 1.3rem; height: 1.3rem; vertical-align: -3px; margin-bottom: 1px; }
+.fab-btn .nav-ico { width: 1.5rem; height: 1.5rem; stroke-width: 0; }
+.fab-btn .nav-ico svg { stroke: none; fill: currentColor; }
 
 /* ============================================================
    共通パーツ
@@ -277,10 +324,10 @@ input, textarea, select { font-family: inherit; }
   letter-spacing: -.1px;
 }
 .btn-primary {
-  background: var(--text-1);
+  background: var(--primary);
   color: #fff;
 }
-.btn-primary:hover { opacity: .85; }
+.btn-primary:hover { background: var(--primary-hover); opacity: 1; }
 
 .btn-secondary {
   background: var(--surface-2);
@@ -334,7 +381,7 @@ input, textarea, select { font-family: inherit; }
 }
 .progress-bar-fill {
   height: 100%;
-  background: var(--text-1);
+  background: var(--primary);
   border-radius: 20px;
   transition: width .4s ease;
 }
@@ -346,7 +393,7 @@ input, textarea, select { font-family: inherit; }
   left: 50%;
   transform: translateX(-50%) translateY(20px);
   opacity: 0;
-  background: var(--text-1);
+  background: var(--primary);
   color: #fff;
   padding: 10px 22px;
   border-radius: 100px;
@@ -403,7 +450,7 @@ input, textarea, select { font-family: inherit; }
    ① ホーム画面
 ============================================================ */
 .home-hero {
-  background: var(--text-1);
+  background: var(--primary);
   border-radius: var(--r);
   padding: 26px 22px;
   margin-bottom: 14px;
@@ -471,7 +518,7 @@ input, textarea, select { font-family: inherit; }
   gap: 8px;
   width: 100%;
   padding: 18px;
-  background: var(--text-1);
+  background: var(--primary);
   color: #fff;
   border-radius: var(--r);
   font-size: 1rem;
@@ -482,7 +529,7 @@ input, textarea, select { font-family: inherit; }
   border: none;
   cursor: pointer;
 }
-.start-study-btn:hover { opacity: .85; }
+.start-study-btn:hover { background: var(--primary-hover); }
 
 /* タスクリスト */
 .task-section-label {
@@ -616,8 +663,8 @@ input, textarea, select { font-family: inherit; }
 .subject-btn .subj-icon { font-size: 1.15rem; }
 .subject-btn:hover   { background: var(--surface-2); color: var(--text-1); }
 .subject-btn.selected {
-  background: var(--text-1);
-  border-color: var(--text-1);
+  background: var(--primary);
+  border-color: var(--primary);
   color: #fff;
   font-weight: 500;
 }
@@ -660,9 +707,9 @@ input, textarea, select { font-family: inherit; }
   transition: background .15s, color .15s, border-color .15s;
 }
 .priority-btn:hover { background: var(--surface-2); color: var(--text-1); }
-.priority-btn.sel-low  { background: #E6F1FB; border-color: #378ADD; color: #185FA5; font-weight: 500; }
-.priority-btn.sel-mid  { background: #FAEEDA; border-color: #EF9F27; color: #854F0B; font-weight: 500; }
-.priority-btn.sel-high { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; font-weight: 500; }
+.priority-btn.sel-low  { background: #E6F1FB; border-color: var(--prio-low);  color: #225573; font-weight: 500; }
+.priority-btn.sel-mid  { background: #FAEEDA; border-color: var(--prio-mid);  color: #854F0B; font-weight: 500; }
+.priority-btn.sel-high { background: #FCEBEB; border-color: var(--prio-high); color: #A3372D; font-weight: 500; }
 
 /* ============================================================
    ③ タイマー画面
@@ -691,19 +738,30 @@ input, textarea, select { font-family: inherit; }
   box-shadow: var(--shadow);
   margin-bottom: 32px;
 }
+.timer-current-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: 13px 22px;
+  margin-bottom: 26px;
+  text-align: center;
+}
 .timer-task-label {
   font-size: .8rem;
   font-weight: 500;
   color: var(--text-2);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   letter-spacing: .1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 .timer-task-name {
   font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: -.3px;
   color: var(--text-1);
-  margin-bottom: 32px;
   text-align: center;
 }
 
@@ -717,7 +775,7 @@ input, textarea, select { font-family: inherit; }
 .timer-ring-bg   { fill: none; stroke: var(--surface-3); stroke-width: 8; }
 .timer-ring-fill {
   fill: none;
-  stroke: var(--text-1);
+  stroke: var(--primary);
   stroke-width: 8;
   stroke-linecap: round;
   transition: stroke-dashoffset .5s ease;
@@ -735,7 +793,7 @@ input, textarea, select { font-family: inherit; }
   font-weight: 700;
   letter-spacing: -2px;
   line-height: 1;
-  color: var(--text-1);
+  color: var(--primary);
 }
 .timer-state {
   font-size: .72rem;
@@ -763,12 +821,14 @@ input, textarea, select { font-family: inherit; }
   cursor: pointer;
   border: none;
 }
-.timer-btn-start { background: var(--text-1); color: #fff; flex: 2; }
-.timer-btn-start:hover { opacity: .85; }
+.timer-btn-start { background: var(--primary); color: #fff; flex: 2; }
+.timer-btn-start:hover { background: var(--primary-hover); }
 .timer-btn-pause { background: var(--surface-2); color: var(--text-1); }
 .timer-btn-pause:hover { background: var(--surface-3); }
 .timer-btn-end   { background: var(--surface-2); color: #c0392b; }
 .timer-btn-end:hover { background: #fdf0ee; }
+.timer-btn-break { background: var(--accent-orange-light); color: #95591C; }
+.timer-btn-break:hover { background: #F5DAB4; }
 
 .timer-elapsed {
   margin-top: 18px;
@@ -777,6 +837,54 @@ input, textarea, select { font-family: inherit; }
   text-align: center;
   font-weight: 400;
 }
+
+/* Phase3-B: 今日の目標 / 週次進捗 */
+.timer-goals-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 340px;
+  margin-top: 20px;
+}
+.timer-goal-card {
+  flex: 1;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  padding: 11px 13px;
+}
+.timer-goal-label { font-size: .68rem; color: var(--text-3); font-weight: 600; margin-bottom: 4px; }
+.timer-goal-frac   { font-size: .8rem; color: var(--text-1); font-weight: 600; }
+
+/* トグルスイッチ */
+.toggle-switch {
+  position: relative;
+  width: 42px; height: 24px;
+  border-radius: 100px;
+  background: var(--surface-3);
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .2s;
+  padding: 0;
+}
+.toggle-switch .toggle-knob {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  transition: transform .2s var(--ease-spring);
+}
+.toggle-switch.on { background: var(--primary); }
+.toggle-switch.on .toggle-knob { transform: translateX(18px); }
+
+/* 集中モード設定カード */
+.focus-mode-card { width: 100%; max-width: 340px; margin-top: 24px; padding: 16px 18px; text-align: left; }
+.focus-mode-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; }
+.focus-mode-label { font-size: .85rem; color: var(--text-1); font-weight: 500; }
+.focus-mode-hint { font-size: .68rem; color: var(--text-3); line-height: 1.5; margin-top: 6px; }
 
 /* ---- タスク未選択時のヒント表示 ---- */
 .timer-free-hint {
@@ -902,7 +1010,7 @@ input, textarea, select { font-family: inherit; }
 }
 .achieve-btn .ach-label { font-size: .75rem; color: var(--text-2); font-weight: 400; }
 .achieve-btn:hover { background: var(--surface-2); }
-.achieve-btn.sel { background: var(--text-1); border-color: var(--text-1); }
+.achieve-btn.sel { background: var(--primary); border-color: var(--primary); }
 .achieve-btn.sel .ach-label { color: rgba(255,255,255,.7); }
 
 /* 集中度スター */
@@ -914,7 +1022,7 @@ input, textarea, select { font-family: inherit; }
   transition: color .15s, transform .1s;
   line-height: 1;
 }
-.star-btn.lit   { color: var(--text-1); }
+.star-btn.lit   { color: var(--accent-gold); }
 .star-btn:hover { transform: scale(1.1); }
 
 /* 理由 */
@@ -935,16 +1043,98 @@ input, textarea, select { font-family: inherit; }
 .reason-label input { display: none; }
 .reason-label:hover { background: var(--surface-2); color: var(--text-1); }
 .reason-label.checked {
-  background: var(--text-1);
-  border-color: var(--text-1);
+  background: var(--primary);
+  border-color: var(--primary);
   color: #fff;
+}
+
+/* ============================================================
+   Phase3-C: 振り返りページ（期間ベース・インラインレビュー）
+============================================================ */
+.review-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .review-2col { grid-template-columns: 1fr; }
+}
+.review-period-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+
+/* インラインタスクレビュー行 */
+.review-row {
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  padding: 11px 13px;
+  margin-bottom: 8px;
+  transition: background .4s, box-shadow .4s;
+}
+.review-row-highlight { box-shadow: 0 0 0 2px var(--primary); background: var(--primary-light); }
+.review-row-top { display: flex; align-items: center; gap: 8px; }
+.review-row-check { width: 17px; height: 17px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+.review-row-icon { display: flex; flex-shrink: 0; }
+.review-row-name { font-size: .84rem; color: var(--text-1); font-weight: 500; flex: 1; min-width: 0; }
+.review-row-name-done { color: var(--text-3); text-decoration: line-through; }
+.review-row-controls { display: flex; gap: 6px; margin-top: 8px; }
+.review-diff-select {
+  flex-shrink: 0;
+  font-size: .76rem;
+  padding: 7px 8px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-1);
+  cursor: pointer;
+}
+.review-comment-input {
+  flex: 1;
+  min-width: 0;
+  font-size: .78rem;
+  padding: 7px 10px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-1);
+}
+.review-reason-grid { grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 8px; }
+.review-reason-grid .reason-label { padding: 6px 8px; font-size: .7rem; gap: 5px; }
+.review-focus-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.review-focus-row-label { font-size: .7rem; color: var(--text-3); flex-shrink: 0; }
+.focus-stars-sm { gap: 3px; }
+.focus-stars-sm .star-btn { font-size: 1rem; }
+
+/* 集中度と感情 */
+.review-focus-avg { font-size: .95rem; font-weight: 600; color: var(--text-1); margin-bottom: 14px; }
+.review-mood-block { margin-bottom: 4px; }
+.mood-btn-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.mood-btn {
+  flex: 1;
+  padding: 9px 6px;
+  font-size: .76rem;
+  font-weight: 500;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+  white-space: nowrap;
+}
+.mood-btn:hover { background: var(--surface-2); }
+.mood-btn.sel {
+  background: var(--accent-orange-light);
+  border-color: var(--accent-orange);
+  color: #95591C;
+  font-weight: 600;
 }
 
 /* ============================================================
    ⑤ 分析画面
 ============================================================ */
 .today-summary {
-  background: var(--text-1);
+  background: var(--primary);
   border-radius: var(--r);
   padding: 24px 22px;
   color: #fff;
@@ -980,6 +1170,33 @@ input, textarea, select { font-family: inherit; }
 .chart-card { background: var(--surface); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); margin-bottom: 14px; }
 .chart-title { font-size: .8rem; font-weight: 600; color: var(--text-2); margin-bottom: 16px; letter-spacing: .1px; }
 .chart-wrap  { position: relative; height: 190px; }
+.chart-wrap-sm { height: 140px; }
+
+/* 教科別グラフのHTMLカスタム凡例（%表示付き） */
+.chart-legend-html { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.chart-legend-item { display: flex; align-items: center; gap: 7px; font-size: .76rem; color: var(--text-2); }
+.chart-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.chart-legend-name { flex: 1; }
+.chart-legend-pct { font-weight: 600; color: var(--text-1); }
+
+/* Phase3-D: 週次目標達成率ゲージ（CSS conic-gradientのみ・追加ライブラリ不要） */
+.weekly-gauge-wrap { display: flex; flex-direction: column; align-items: center; padding: 4px 0 6px; }
+.weekly-gauge {
+  width: 132px; height: 132px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) calc(var(--gauge-pct, 0) * 1%), var(--surface-3) 0);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.weekly-gauge::before {
+  content: '';
+  position: absolute;
+  width: 104px; height: 104px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+.weekly-gauge-pct { position: relative; font-size: 1.5rem; font-weight: 700; color: var(--text-1); }
+.weekly-gauge-frac { margin-top: 12px; font-size: .76rem; color: var(--text-3); font-weight: 500; text-align: center; }
 
 /* エクスポート/インポートセクション */
 .data-section {
@@ -1293,6 +1510,70 @@ input, textarea, select { font-family: inherit; }
    テンプレートタスク
 ============================================================ */
 .tpl-section { margin-bottom: 14px; }
+
+/* ============================================================
+   Phase3-A: 予定作成ページ 2カラムレイアウト
+============================================================ */
+.sched-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: start;
+}
+.sched-col { padding: 16px 18px; }
+@media (max-width: 900px) {
+  .sched-grid-2col { grid-template-columns: 1fr; }
+}
+
+/* 週次目標カード */
+.weekly-goal-card {
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+.weekly-goal-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.weekly-goal-subj { font-size: .85rem; font-weight: 600; color: var(--text-1); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.weekly-goal-status { font-size: .72rem; font-weight: 500; color: var(--text-3); }
+.weekly-goal-frac { font-size: .72rem; color: var(--text-3); margin-top: 5px; text-align: right; }
+
+/* 今週のスケジュール: 曜日別アジェンダ */
+.agenda-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+.agenda-col {
+  background: var(--surface-2);
+  border-radius: var(--r-xs);
+  padding: 6px 3px 7px;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.agenda-col-today { background: var(--primary-light); }
+.agenda-col-head { text-align: center; }
+.agenda-dow { display: block; font-size: .64rem; color: var(--text-3); font-weight: 600; }
+.agenda-date { display: block; font-size: .78rem; font-weight: 700; color: var(--text-1); }
+.agenda-col-today .agenda-dow,
+.agenda-col-today .agenda-date { color: var(--primary); }
+.agenda-col-body { display: flex; flex-direction: column; gap: 3px; overflow-y: auto; max-height: 150px; }
+.agenda-chip {
+  display: flex; align-items: center; gap: 3px;
+  background: var(--surface); border-radius: 5px;
+  padding: 3px 4px; cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+}
+.agenda-chip .sf-icon { width: 1.05em; height: 1.05em; border-radius: 22%; }
+.agenda-chip-text { font-size: .6rem; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agenda-chip-done { opacity: .45; }
+.agenda-chip-done .agenda-chip-text { text-decoration: line-through; }
+.agenda-empty { font-size: .62rem; color: var(--text-3); text-align: center; padding-top: 10px; }
+@media (max-width: 700px) {
+  .agenda-grid { grid-template-columns: repeat(7, minmax(60px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
+}
 .tpl-section-header {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 8px;
@@ -1330,8 +1611,8 @@ input, textarea, select { font-family: inherit; }
 }
 .tpl-btn-add   { background: var(--surface-2); color: var(--text-1); }
 .tpl-btn-add:hover { background: var(--surface-3); }
-.tpl-btn-timer { background: var(--text-1); color: #fff; }
-.tpl-btn-timer:hover { opacity: .85; }
+.tpl-btn-timer { background: var(--primary); color: #fff; }
+.tpl-btn-timer:hover { background: var(--primary-hover); }
 .tpl-btn-del   { background: var(--surface-2); color: var(--text-3); font-size: .85rem; }
 .tpl-btn-del:hover { background: #fdf0ee; color: #c0392b; }
 
@@ -1458,20 +1739,20 @@ input, textarea, select { font-family: inherit; }
 }
 .cal-cell:hover { opacity: .7; transform: scale(1.12); }
 .cal-cell.empty { background: transparent; cursor: default; pointer-events: none; }
-.cal-cell.today { outline: 2px solid var(--text-1); outline-offset: 1px; }
+.cal-cell.today { outline: 2px solid var(--primary); outline-offset: 1px; }
 .cal-cell.selected { outline: 2px solid #6e6e73; outline-offset: 1px; }
 .cal-cell-num {
   font-size: .58rem; color: var(--text-3); font-weight: 400; line-height: 1;
   pointer-events: none;
 }
 .cal-cell[data-level="0"] .cal-cell-num { color: var(--text-3); }
-.cal-cell[data-level="1"] { background: #d2d2d7; }
+.cal-cell[data-level="1"] { background: #C7D9DA; }
 .cal-cell[data-level="1"] .cal-cell-num { color: var(--text-2); }
-.cal-cell[data-level="2"] { background: #8e8e96; }
+.cal-cell[data-level="2"] { background: #7FA7AA; }
 .cal-cell[data-level="2"] .cal-cell-num { color: #fff; }
-.cal-cell[data-level="3"] { background: #4a4a52; }
+.cal-cell[data-level="3"] { background: #3E6B70; }
 .cal-cell[data-level="3"] .cal-cell-num { color: #fff; }
-.cal-cell[data-level="4"] { background: #1d1d1f; }
+.cal-cell[data-level="4"] { background: var(--primary); }
 .cal-cell[data-level="4"] .cal-cell-num { color: rgba(255,255,255,.8); }
 .cal-legend {
   display: flex; align-items: center; gap: 5px;
@@ -1514,7 +1795,7 @@ input, textarea, select { font-family: inherit; }
   background: var(--surface-2); color: var(--text-2);
   border: none; cursor: pointer; transition: background .15s, color .15s;
 }
-.range-tab.active { background: var(--text-1); color: #fff; }
+.range-tab.active { background: var(--primary); color: #fff; }
 
 /* ============================================================
    PC レスポンシブ
@@ -1590,7 +1871,7 @@ input, textarea, select { font-family: inherit; }
   background: var(--surface-3);
   transition: background .3s;
 }
-.pomo-dot.filled { background: var(--text-1); }
+.pomo-dot.filled { background: var(--primary); }
 
 /* ============================================================
    B-2: 目標時間 追加CSS
@@ -1714,12 +1995,12 @@ input, textarea, select { font-family: inherit; }
 }
 .onboard-range-val {
   font-size: 2rem; font-weight: 700;
-  text-align: center; color: var(--text-1);
+  text-align: center; color: var(--primary);
   margin: 12px 0 8px; letter-spacing: -1px;
 }
 .onboard-range {
   width: 100%; margin-bottom: 6px; cursor: pointer;
-  accent-color: var(--text-1);
+  accent-color: var(--primary);
 }
 /* ============================================================
    改善追加CSS — マイクロインタラクション・新機能
@@ -1796,6 +2077,49 @@ input, textarea, select { font-family: inherit; }
 }
 .mini-week-title { font-size: .72rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .6px; }
 .mini-week-total { font-size: .8rem; font-weight: 600; color: var(--text-2); }
+
+/* ホーム: 分析への導線カード */
+.home-analysis-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 13px 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.home-analysis-link:hover { background: var(--surface-2); }
+.home-analysis-link-text { flex: 1; min-width: 0; }
+.home-analysis-link-title { font-size: .85rem; font-weight: 600; color: var(--text-1); }
+.home-analysis-link-sub   { font-size: .74rem; color: var(--text-3); margin-top: 1px; }
+.home-analysis-link-arrow { font-size: 1.3rem; color: var(--text-3); font-weight: 300; }
+
+/* ホーム: タスクのクイックアクセスグリッド化 */
+#homeTaskList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+#homeTaskList .empty-state, #homeTaskList .all-done-banner { grid-column: 1 / -1; }
+#homeTaskList .swipe-wrapper { margin-bottom: 0; }
+#homeTaskList .task-item {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 12px 11px;
+  min-height: 96px;
+}
+#homeTaskList .task-dot { width: 30px; height: 30px; }
+#homeTaskList .task-info { width: 100%; }
+#homeTaskList .task-name { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+#homeTaskList .task-time { position: absolute; top: 12px; right: 10px; }
+#homeTaskList .task-actions { width: 100%; justify-content: flex-end; margin-top: auto; }
+@media (max-width: 420px) {
+  #homeTaskList { grid-template-columns: repeat(2, 1fr); gap: 7px; }
+}
 .mini-week-wrap {
   display: flex;
   align-items: flex-end;
@@ -1820,14 +2144,14 @@ input, textarea, select { font-family: inherit; }
   cursor: default;
 }
 .mini-week-bar.has-data { background: #c4c4c8; }
-.mini-week-bar.today-bar { background: var(--text-1) !important; }
+.mini-week-bar.today-bar { background: var(--primary) !important; }
 .mini-week-dow {
   font-size: .6rem;
   color: var(--text-3);
   font-weight: 400;
   flex-shrink: 0;
 }
-.mini-week-dow.today-dow { color: var(--text-1); font-weight: 700; }
+.mini-week-dow.today-dow { color: var(--primary); font-weight: 700; }
 
 /* スマホ: mini-week-card */
 @media (max-width: 600px) {
@@ -1919,13 +2243,102 @@ input, textarea, select { font-family: inherit; }
 .task-action-btn:active { transform: scale(0.92); }
 
 /* ---- タイマーリングの色（ポモドーロ休憩時） ---- */
-.timer-ring-fill.break-mode { stroke: #8e8e96; }
+.timer-ring-fill.break-mode { stroke: var(--accent-orange); }
 
 /* ---- ホームヒーローの目標達成バー（100%時の色変化） ---- */
 .daily-goal-bar-fill.goal-met { background: rgba(255,255,255,1); }
 </style>
 </head>
 <body>
+
+<!-- B-6: SVGアイコンスプライト（教科アイコン・ナビアイコン） -->
+<svg class="icon-sprite" aria-hidden="true">
+  <defs>
+    <!-- 教科アイコン -->
+    <symbol id="ico-globe" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" stroke-width="1.6"/>
+      <ellipse cx="12" cy="12" rx="4" ry="9" stroke-width="1.6"/>
+      <line x1="3" y1="12" x2="21" y2="12" stroke-width="1.6"/>
+    </symbol>
+    <symbol id="ico-math" viewBox="0 0 24 24">
+      <circle cx="12" cy="5" r="2" fill="currentColor" stroke="none"/>
+      <circle cx="5" cy="17" r="2" fill="currentColor" stroke="none"/>
+      <circle cx="19" cy="17" r="2" fill="currentColor" stroke="none"/>
+      <line x1="12" y1="7" x2="6.2" y2="15.3" stroke-width="1.5"/>
+      <line x1="12" y1="7" x2="17.8" y2="15.3" stroke-width="1.5"/>
+      <line x1="6.8" y1="17" x2="17.2" y2="17" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="ico-book" viewBox="0 0 24 24">
+      <path d="M12 6.5c-1.6-1.2-3.8-1.8-6.5-1.8v12.6c2.7 0 4.9.6 6.5 1.8 1.6-1.2 3.8-1.8 6.5-1.8V4.7c-2.7 0-4.9.6-6.5 1.8z"
+        stroke-width="1.5" stroke-linejoin="round"/>
+      <line x1="12" y1="6.5" x2="12" y2="19.1" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="ico-scroll" viewBox="0 0 24 24">
+      <path d="M5 4.5h12a2.5 2.5 0 0 1 0 5H7a2.5 2.5 0 1 0 0 5h10"
+        stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ico-atom" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/>
+      <ellipse cx="12" cy="12" rx="9" ry="3.6" stroke-width="1.4"/>
+      <ellipse cx="12" cy="12" rx="9" ry="3.6" stroke-width="1.4" transform="rotate(60 12 12)"/>
+      <ellipse cx="12" cy="12" rx="9" ry="3.6" stroke-width="1.4" transform="rotate(120 12 12)"/>
+    </symbol>
+    <symbol id="ico-flask" viewBox="0 0 24 24">
+      <path d="M10 3h4M10 3v6.2L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.2V3"
+        stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="7.8" y1="14.5" x2="16.2" y2="14.5" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="ico-institution" viewBox="0 0 24 24">
+      <path d="M4 9.5l8-5 8 5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="4" y1="9.5" x2="20" y2="9.5" stroke-width="1.5"/>
+      <line x1="6.7" y1="9.5" x2="6.7" y2="18" stroke-width="1.5"/>
+      <line x1="11" y1="9.5" x2="11" y2="18" stroke-width="1.5"/>
+      <line x1="13.5" y1="9.5" x2="13.5" y2="18" stroke-width="1.5"/>
+      <line x1="17.3" y1="9.5" x2="17.3" y2="18" stroke-width="1.5"/>
+      <line x1="4" y1="19.3" x2="20" y2="19.3" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ico-notebook" viewBox="0 0 24 24">
+      <rect x="4.5" y="3.5" width="13" height="17" rx="1.6" stroke-width="1.5"/>
+      <line x1="8" y1="8" x2="14" y2="8" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="8" y1="11.5" x2="14" y2="11.5" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M18 14.5l2 2-5.2 5.2-2.3.3.3-2.3z" fill="currentColor" stroke="none"/>
+    </symbol>
+    <!-- ナビゲーションアイコン -->
+    <symbol id="ico-nav-home" viewBox="0 0 24 24">
+      <path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"
+        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ico-nav-schedule" viewBox="0 0 24 24">
+      <rect x="3.5" y="4.5" width="17" height="15" rx="2" stroke-width="1.7"/>
+      <line x1="7" y1="9"  x2="17" y2="9"  stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="7" y1="13" x2="17" y2="13" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="7" y1="17" x2="13" y2="17" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ico-nav-timer" viewBox="0 0 24 24">
+      <circle cx="12" cy="13" r="8" stroke-width="1.7"/>
+      <line x1="12" y1="13" x2="12" y2="8.5" stroke-width="1.7" stroke-linecap="round"/>
+      <line x1="12" y1="13" x2="15" y2="15"  stroke-width="1.7" stroke-linecap="round"/>
+      <line x1="9.5" y1="2.5" x2="14.5" y2="2.5" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ico-nav-review" viewBox="0 0 24 24">
+      <path d="M5 19.5l1-4.2L16.2 5l3.3 3.3L9.2 18.5l-4.2 1z"
+        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="14.3" y1="6.9" x2="17.6" y2="10.2" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="ico-nav-analysis" viewBox="0 0 24 24">
+      <path d="M4 16l5-5 4 3 7-8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M15 6h5v5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ico-play" viewBox="0 0 24 24">
+      <path d="M7 5.5v13l12-6.5z" fill="currentColor" stroke="none"/>
+    </symbol>
+    <symbol id="ico-flame" viewBox="0 0 24 24">
+      <path d="M12 2.5c1 3 4.5 4.6 4.5 9a6.5 6.5 0 1 1-13 0c0-2 1-3.4 2-4.5-.1 1.4.4 2.3 1.2 2.8C6.2 7 8 4.2 8 2.5c1 1.6 1.8 2 2 1 .4 1.5 1.2 2 2 4z"
+        fill="currentColor" stroke="none"/>
+    </symbol>
+  </defs>
+</svg>
+
 
 <div class="app-wrapper">
 
@@ -1939,19 +2352,19 @@ input, textarea, select { font-family: inherit; }
 
     <nav class="sidebar-nav">
       <div class="nav-item active" data-page="home">
-        <span class="nav-icon">⌂</span>ホーム
+        <span class="nav-icon nav-ico"><svg><use href="#ico-nav-home"></use></svg></span>ホーム
       </div>
       <div class="nav-item" data-page="schedule">
-        <span class="nav-icon">≡</span>予定作成
+        <span class="nav-icon nav-ico"><svg><use href="#ico-nav-schedule"></use></svg></span>予定作成
       </div>
       <div class="nav-item" data-page="timer">
-        <span class="nav-icon">◷</span>勉強中
+        <span class="nav-icon nav-ico"><svg><use href="#ico-nav-timer"></use></svg></span>勉強中
       </div>
       <div class="nav-item" data-page="review">
-        <span class="nav-icon">✎</span>振り返り
+        <span class="nav-icon nav-ico"><svg><use href="#ico-nav-review"></use></svg></span>振り返り
       </div>
       <div class="nav-item" data-page="analysis">
-        <span class="nav-icon">↗</span>分析
+        <span class="nav-icon nav-ico"><svg><use href="#ico-nav-analysis"></use></svg></span>分析
       </div>
     </nav>
 
@@ -2021,6 +2434,18 @@ input, textarea, select { font-family: inherit; }
         <div class="mini-week-wrap" id="miniWeekChart"></div>
       </div>
 
+      <!-- 分析ページへの導線（重複グラフは作らず1枚のリンクカードに集約） -->
+      <div class="home-analysis-link" onclick="showPage('analysis')">
+        <span class="home-analysis-link-ico sf-icon" style="--ic-bg:var(--primary-light);color:var(--primary)">
+          <svg viewBox="0 0 24 24"><use href="#ico-nav-analysis"></use></svg>
+        </span>
+        <div class="home-analysis-link-text">
+          <div class="home-analysis-link-title">分析を見る</div>
+          <div class="home-analysis-link-sub" id="homeAnalysisLinkSub">今週の学習時間を確認</div>
+        </div>
+        <span class="home-analysis-link-arrow">›</span>
+      </div>
+
       <div class="card" style="padding:16px 18px;">
         <div style="display:flex; justify-content:space-between; font-size:.75rem; color:var(--text-3); margin-bottom:9px;">
           <span>進捗</span>
@@ -2056,19 +2481,113 @@ input, textarea, select { font-family: inherit; }
     <!-- ② スケジュール作成 -->
     <div class="page" id="page-schedule">
       <div class="page-header">
-        <h1>予定を作る</h1>
-        <p class="subtitle">今日のタスクを登録します</p>
+        <h1>予定作成</h1>
+        <p class="subtitle">目標達成のための具体的な計画を立てましょう</p>
       </div>
 
       <!-- スマホ専用: 固定タイトルバー -->
       <div class="sp-topbar">
-        <span class="sp-topbar-title">予定を作る</span>
+        <span class="sp-topbar-title">予定作成</span>
         <button class="btn btn-primary sp-fixed-add-inline" onclick="addTask()"
           style="padding:7px 16px; font-size:.8rem; border-radius:6px;">追加</button>
       </div>
 
+      <div class="sched-grid-2col">
+        <!-- 週次目標 -->
+        <div class="card sched-col">
+          <div class="card-title">週次目標</div>
+          <div id="weeklyGoalsList"></div>
+          <button class="tpl-form-toggle" id="weeklyGoalFormToggle" onclick="toggleWeeklyGoalForm()" style="margin-top:8px;">
+            ＋ 週次目標を追加
+            <span class="tgl-icon">▼</span>
+          </button>
+          <div class="tpl-form-body" id="weeklyGoalFormBody" style="display:none;">
+            <div class="form-group" style="margin-bottom:10px;">
+              <label class="form-label">教科</label>
+              <div class="subject-grid" id="weeklyGoalSubjectGrid" style="grid-template-columns:repeat(3,1fr); gap:5px;"></div>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label class="form-label">週間目標時間</label>
+              <div class="time-selector" style="gap:8px;">
+                <button class="time-adj-btn" onclick="adjustWeeklyGoalHours(-1)" style="width:32px;height:32px;">−</button>
+                <div class="time-display-wrap">
+                  <div class="time-display" id="weeklyGoalHoursDisp" style="font-size:1.4rem;">5</div>
+                  <div class="time-unit">時間/週</div>
+                </div>
+                <button class="time-adj-btn" onclick="adjustWeeklyGoalHours(1)" style="width:32px;height:32px;">＋</button>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="saveWeeklyGoalForm()" style="font-size:.84rem; padding:10px;">
+              週次目標を保存
+            </button>
+          </div>
+        </div>
+
+        <!-- 今週のスケジュール -->
+        <div class="card sched-col">
+          <div class="card-title">今週のスケジュール</div>
+          <div id="weeklyAgendaWrap"></div>
+        </div>
+      </div>
+
+      <div class="sched-grid-2col">
+        <!-- 未完了のタスク -->
+        <div class="card sched-col">
+          <div class="card-title">未完了のタスク</div>
+          <div id="scheduleTaskList"></div>
+        </div>
+
+        <!-- 新しいタスクを追加 -->
+        <div class="card sched-col" style="padding-bottom:14px;">
+          <div class="card-title">新しいタスクを追加</div>
+          <div class="form-group">
+            <label class="form-label">タスク名</label>
+            <input type="text" class="form-input" id="taskContent" placeholder="例：英単語 Chapter 5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">教科</label>
+            <div class="subject-grid" id="subjectGrid"></div>
+          </div>
+          <div class="sp-time-prio-row">
+            <div class="form-group">
+              <label class="form-label">予定時間</label>
+              <div class="time-selector">
+                <button class="time-adj-btn" onclick="adjustTime(-5)">−</button>
+                <div class="time-display-wrap">
+                  <div class="time-display" id="plannedTimeDisp">30</div>
+                  <div class="time-unit">分</div>
+                </div>
+                <button class="time-adj-btn" onclick="adjustTime(5)">＋</button>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">優先度</label>
+              <div class="priority-grid">
+                <button class="priority-btn" data-prio="low"  onclick="selectPriority('low')">低</button>
+                <button class="priority-btn" data-prio="mid"  onclick="selectPriority('mid')">中</button>
+                <button class="priority-btn" data-prio="high" onclick="selectPriority('high')">高</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">期限</label>
+            <input type="date" class="form-input" id="taskDueDate">
+          </div>
+          <button class="btn btn-primary btn-full sp-hide-on-mobile" onclick="addTask()" style="margin-top:4px;">
+            タスクを追加
+          </button>
+        </div>
+      </div>
+
+      <!-- スマホ用固定「タスクを追加」ボタン -->
+      <div class="sp-fixed-add">
+        <button class="btn btn-primary btn-full" onclick="addTask()">
+          タスクを追加
+        </button>
+      </div>
+
       <!-- テンプレートから追加 -->
-      <div class="tpl-section">
+      <div class="tpl-section" style="margin-top:8px;">
         <div class="tpl-section-header">
           <div class="task-section-label" style="margin-bottom:0;">テンプレート</div>
         </div>
@@ -2118,58 +2637,6 @@ input, textarea, select { font-family: inherit; }
           </div>
         </div>
       </div>
-
-      <div class="card" style="padding:14px 16px 4px;">
-        <div class="card-title">手動入力でタスクを作成</div>
-
-        <!-- 教科グリッド: 常時表示 -->
-        <div class="card-title" style="margin-bottom:8px;">教科</div>
-        <div class="subject-grid" id="subjectGrid" style="margin-bottom:10px;"></div>
-
-        <!-- 内容 + 時間 + 優先度 -->
-        <div class="form-group" style="margin-top:14px;">
-          <label class="form-label">学習内容</label>
-          <input type="text" class="form-input" id="taskContent" placeholder="例：英単語 Chapter 5">
-        </div>
-        <div class="sp-time-prio-row">
-          <div class="form-group">
-            <label class="form-label">予定時間</label>
-            <div class="time-selector">
-              <button class="time-adj-btn" onclick="adjustTime(-5)">−</button>
-              <div class="time-display-wrap">
-                <div class="time-display" id="plannedTimeDisp">30</div>
-                <div class="time-unit">分</div>
-              </div>
-              <button class="time-adj-btn" onclick="adjustTime(5)">＋</button>
-            </div>
-          </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">優先度</label>
-            <div class="priority-grid">
-              <button class="priority-btn" data-prio="low"  onclick="selectPriority('low')">低</button>
-              <button class="priority-btn" data-prio="mid"  onclick="selectPriority('mid')">中</button>
-              <button class="priority-btn" data-prio="high" onclick="selectPriority('high')">高</button>
-            </div>
-          </div>
-        </div>
-        <div style="padding-bottom:14px;">
-          <button class="btn btn-primary btn-full sp-hide-on-mobile" onclick="addTask()" style="margin-top:4px;">
-            タスクを追加
-          </button>
-        </div>
-      </div>
-
-      <!-- スマホ用固定「タスクを追加」ボタン -->
-      <div class="sp-fixed-add">
-        <button class="btn btn-primary btn-full" onclick="addTask()">
-          タスクを追加
-        </button>
-      </div>
-
-      <div class="schedule-list-wrap" style="margin-top:28px;">
-        <div class="task-section-label" style="margin-bottom:8px;">本日のタスク</div>
-        <div id="scheduleTaskList"></div>
-      </div>
     </div>
 
     <!-- ③ タイマー -->
@@ -2194,8 +2661,10 @@ input, textarea, select { font-family: inherit; }
           タスクを選ばずに開始できます。終了後に記録できます。
         </div>
 
-        <div class="timer-task-label" id="timerSubjectLabel"></div>
-        <div class="timer-task-name" id="timerTaskName">フリー学習</div>
+        <div class="timer-current-card" id="timerCurrentCard">
+          <div class="timer-task-label" id="timerSubjectLabel"></div>
+          <div class="timer-task-name" id="timerTaskName">フリー学習</div>
+        </div>
 
         <div class="timer-ring-wrap">
           <svg class="timer-ring-svg" width="220" height="220" viewBox="0 0 220 220">
@@ -2214,12 +2683,33 @@ input, textarea, select { font-family: inherit; }
           <button class="timer-btn timer-btn-start" id="btnStart" onclick="startTimer()">▶ 開始</button>
           <button class="timer-btn timer-btn-end"   id="btnEnd"   onclick="endTimer()"  style="display:none;">終了</button>
         </div>
+        <div class="timer-controls" id="btnBreakWrap" style="display:none; margin-top:8px;">
+          <button class="timer-btn timer-btn-break" id="btnBreak" onclick="startBreak()">☕ 休憩</button>
+        </div>
 
         <div class="timer-elapsed" id="timerElapsed">経過 0 分</div>
 
         <!-- B-1: ポモドーロ フェーズ表示・ドット -->
         <div class="pomo-phase-label" id="pomoPhaseLabel"></div>
         <div class="pomo-dots" id="pomoDots"></div>
+
+        <!-- Phase3-B: 今日の目標 / 週次進捗 -->
+        <div class="timer-goals-row" id="timerGoalsRow">
+          <div class="timer-goal-card">
+            <div class="timer-goal-label">今日の目標</div>
+            <div class="timer-goal-frac" id="timerDailyGoalText">0 / 0 min</div>
+            <div class="progress-bar-wrap" style="margin-top:6px;">
+              <div class="progress-bar-fill" id="timerDailyGoalBar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="timer-goal-card" id="timerWeeklyGoalCard" style="display:none;">
+            <div class="timer-goal-label" id="timerWeeklyGoalSubjLabel">週次進捗</div>
+            <div class="timer-goal-frac" id="timerWeeklyGoalText">0 / 0 時間</div>
+            <div class="progress-bar-wrap" style="margin-top:6px;">
+              <div class="progress-bar-fill" id="timerWeeklyGoalBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
 
         <!-- 手動記録 -->
         <button class="manual-record-btn" id="manualRecordBtn" onclick="toggleManualPanel()">
@@ -2239,6 +2729,24 @@ input, textarea, select { font-family: inherit; }
             </button>
           </div>
         </div>
+
+        <!-- Phase3-B: 集中モード設定 -->
+        <div class="card focus-mode-card">
+          <div class="card-title">集中モード設定</div>
+          <div class="focus-mode-row">
+            <span class="focus-mode-label">通知オフ</span>
+            <button class="toggle-switch" id="notifyMuteToggle" onclick="toggleNotifyMute()" aria-pressed="false">
+              <span class="toggle-knob"></span>
+            </button>
+          </div>
+          <div class="focus-mode-row">
+            <span class="focus-mode-label">集中サウンド</span>
+            <button class="toggle-switch" id="focusSoundToggle" onclick="toggleFocusSound()" aria-pressed="false">
+              <span class="toggle-knob"></span>
+            </button>
+          </div>
+          <div class="focus-mode-hint">集中サウンドはブラウザの自動再生制限により、初回はこのトグルのクリックで開始されます。</div>
+        </div>
       </div>
     </div>
 
@@ -2246,69 +2754,80 @@ input, textarea, select { font-family: inherit; }
     <div class="page" id="page-review">
       <div class="page-header">
         <h1>振り返り</h1>
-        <p class="subtitle">学習を記録します</p>
+        <p class="subtitle">学習を評価して、次につなげましょう</p>
+      </div>
+
+      <!-- 全体の振り返り -->
+      <div class="card">
+        <div class="card-title">全体の振り返り</div>
+        <div class="review-period-row">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">振り返りの期間</label>
+            <select class="form-input" id="reviewPeriodSelect" onchange="onReviewPeriodChange()" style="width:auto; min-width:108px;">
+              <option value="day">今日</option>
+              <option value="week">今週</option>
+              <option value="month">今月</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">全体的な自己評価</label>
+            <div class="focus-stars" id="reflectionStars">
+              <span class="star-btn" data-v="1" onclick="setReflectionRating(1)">★</span>
+              <span class="star-btn" data-v="2" onclick="setReflectionRating(2)">★</span>
+              <span class="star-btn" data-v="3" onclick="setReflectionRating(3)">★</span>
+              <span class="star-btn" data-v="4" onclick="setReflectionRating(4)">★</span>
+              <span class="star-btn" data-v="5" onclick="setReflectionRating(5)">★</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:14px; margin-bottom:0;">
+          <label class="form-label">全体的なメモ</label>
+          <textarea class="form-input" id="reflectionMemo" rows="2" placeholder="この期間の振り返りメモ…"
+            onblur="saveReflectionField('memo', this.value)"></textarea>
+        </div>
+      </div>
+
+      <div class="review-2col">
+        <!-- 達成タスクのレビュー -->
+        <div class="card">
+          <div class="card-title">達成タスクのレビュー</div>
+          <div id="reviewTaskListInline"></div>
+        </div>
+
+        <!-- 集中度と感情 -->
+        <div class="card">
+          <div class="card-title">集中度と感情</div>
+          <div class="review-focus-avg" id="reviewFocusAvg">平均集中度: —</div>
+          <div class="review-mood-block">
+            <span class="form-label" style="display:block; margin-bottom:6px;">気分</span>
+            <div class="mood-btn-row" id="moodBtnRow">
+              <button class="mood-btn" data-mood="fulfilled" onclick="setReflectionMood('fulfilled')">😊 充実感</button>
+              <button class="mood-btn" data-mood="anxious"   onclick="setReflectionMood('anxious')">😣 焦り</button>
+              <button class="mood-btn" data-mood="neutral"   onclick="setReflectionMood('neutral')">😐 普通</button>
+            </div>
+          </div>
+          <div class="form-label" style="margin-top:14px; margin-bottom:6px;">集中度推移（直近7日間）</div>
+          <div class="mini-week-wrap" id="reviewFocusChartWrap"></div>
+        </div>
+      </div>
+
+      <div class="review-2col">
+        <div class="card">
+          <div class="card-title">学んだことのまとめ</div>
+          <textarea class="form-input" id="reflectionLearned" rows="3" placeholder="今期間で学んだこと…"
+            onblur="saveReflectionField('learned', this.value)"></textarea>
+        </div>
+        <div class="card">
+          <div class="card-title">課題と対策</div>
+          <textarea class="form-input" id="reflectionChallenges" rows="3" placeholder="課題と次への対策…"
+            onblur="saveReflectionField('challenges', this.value)"></textarea>
+        </div>
       </div>
 
       <div class="card">
-        <div class="card-title">タスク</div>
-        <select class="form-input" id="reviewTaskSelect" onchange="loadReviewTask()">
-          <option value="">振り返るタスクを選択</option>
-        </select>
-      </div>
-
-      <div id="reviewFormArea" style="display:none;">
-        <div class="card">
-          <div class="card-title">達成度</div>
-          <div class="achieve-grid">
-            <button class="achieve-btn" id="achieveOk"  onclick="selectAchieve('ok')">
-              ⭕<div class="ach-label">できた</div>
-            </button>
-            <button class="achieve-btn" id="achieveMeh" onclick="selectAchieve('meh')">
-              △<div class="ach-label">一部できた</div>
-            </button>
-            <button class="achieve-btn" id="achieveNg"  onclick="selectAchieve('ng')">
-              ✕<div class="ach-label">できなかった</div>
-            </button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title" style="text-align:center;">集中度</div>
-          <div class="focus-stars" id="focusStars">
-            <span class="star-btn" data-v="1" onclick="setFocus(1)">★</span>
-            <span class="star-btn" data-v="2" onclick="setFocus(2)">★</span>
-            <span class="star-btn" data-v="3" onclick="setFocus(3)">★</span>
-            <span class="star-btn" data-v="4" onclick="setFocus(4)">★</span>
-            <span class="star-btn" data-v="5" onclick="setFocus(5)">★</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">できなかった理由（複数可）</div>
-          <div class="reason-grid">
-            <label class="reason-label" id="reason-time">
-              <input type="checkbox" value="時間不足">⏰ 時間不足
-            </label>
-            <label class="reason-label" id="reason-focus">
-              <input type="checkbox" value="集中できなかった">😵 集中できず
-            </label>
-            <label class="reason-label" id="reason-hard">
-              <input type="checkbox" value="難しかった">🧠 難しかった
-            </label>
-            <label class="reason-label" id="reason-other">
-              <input type="checkbox" value="その他">❓ その他
-            </label>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">メモ（任意）</div>
-          <textarea class="form-input" id="reviewMemo" rows="3" placeholder="気づいたことや次回へのメモ…"></textarea>
-        </div>
-
-        <button class="btn btn-primary btn-full btn-lg" onclick="saveReview()">
-          振り返りを保存
-        </button>
+        <div class="card-title">次の目標</div>
+        <textarea class="form-input" id="reflectionNextGoal" rows="2" placeholder="次に取り組みたいこと…"
+          onblur="saveReflectionField('nextGoal', this.value)"></textarea>
       </div>
     </div>
 
@@ -2361,10 +2880,10 @@ input, textarea, select { font-family: inherit; }
         <div class="cal-legend">
           <span class="cal-legend-label">少</span>
           <div class="cal-legend-cell" style="background:var(--surface-3)"></div>
-          <div class="cal-legend-cell" style="background:#d2d2d7"></div>
-          <div class="cal-legend-cell" style="background:#8e8e96"></div>
-          <div class="cal-legend-cell" style="background:#4a4a52"></div>
-          <div class="cal-legend-cell" style="background:#1d1d1f"></div>
+          <div class="cal-legend-cell" style="background:#C7D9DA"></div>
+          <div class="cal-legend-cell" style="background:#7FA7AA"></div>
+          <div class="cal-legend-cell" style="background:#3E6B70"></div>
+          <div class="cal-legend-cell" style="background:var(--primary)"></div>
           <span class="cal-legend-label">多</span>
         </div>
         <div class="day-detail-panel" id="dayDetailPanel">
@@ -2387,7 +2906,17 @@ input, textarea, select { font-family: inherit; }
         </div>
         <div class="chart-card">
           <div class="chart-title">教科別割合（今日）</div>
-          <div class="chart-wrap"><canvas id="chartSubject"></canvas></div>
+          <div class="chart-wrap chart-wrap-sm"><canvas id="chartSubject"></canvas></div>
+          <div class="chart-legend-html" id="chartSubjectLegend"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">目標達成率（週次）</div>
+          <div class="weekly-gauge-wrap">
+            <div class="weekly-gauge" id="weeklyGoalGauge" style="--gauge-pct:0;">
+              <div class="weekly-gauge-pct" id="weeklyGoalGaugePct">0%</div>
+            </div>
+            <div class="weekly-gauge-frac" id="weeklyGoalGaugeFrac">直近7日 0/7日 達成</div>
+          </div>
         </div>
         <div class="chart-card">
           <div class="chart-title">予定 vs 実績（今日）</div>
@@ -2446,22 +2975,22 @@ input, textarea, select { font-family: inherit; }
   <!-- ========== スマホ 下部ナビ ========== -->
   <nav class="bottom-nav">
     <button class="nav-btn active" data-page="home" onclick="showPage('home')">
-      <span class="nav-icon">⌂</span>ホーム
+      <span class="nav-icon nav-ico"><svg><use href="#ico-nav-home"></use></svg></span>ホーム
     </button>
     <button class="nav-btn" data-page="schedule" onclick="showPage('schedule')">
-      <span class="nav-icon">≡</span>予定
+      <span class="nav-icon nav-ico"><svg><use href="#ico-nav-schedule"></use></svg></span>予定
     </button>
     <div class="nav-fab-wrap">
       <button class="fab-btn" id="fabBtn" onclick="showPage('timer')" title="勉強する">
-        ▶
+        <span class="nav-ico"><svg><use href="#ico-play"></use></svg></span>
         <span class="fab-dot"></span>
       </button>
     </div>
     <button class="nav-btn" data-page="review" onclick="showPage('review')">
-      <span class="nav-icon">✎</span>振り返り
+      <span class="nav-icon nav-ico"><svg><use href="#ico-nav-review"></use></svg></span>振り返り
     </button>
     <button class="nav-btn" data-page="analysis" onclick="showPage('analysis')">
-      <span class="nav-icon">↗</span>分析
+      <span class="nav-icon nav-ico"><svg><use href="#ico-nav-analysis"></use></svg></span>分析
     </button>
   </nav>
 </div>
@@ -2603,15 +3132,15 @@ input, textarea, select { font-family: inherit; }
    教科定義（モノクロ対応: 色は使わずアイコンのみ）
 ============================================================ */
 const SUBJECTS = [
-  { name: '英語',   emoji: '🌍' },
-  { name: '数学Ⅱ', emoji: '📐' },
-  { name: '数学B',  emoji: '📊' },
-  { name: '国語',   emoji: '📖' },
-  { name: '古典',   emoji: '📜' },
-  { name: '物理',   emoji: '⚡' },
-  { name: '化学',   emoji: '🔬' },
-  { name: '政経',   emoji: '🏛️' },
-  { name: 'その他', emoji: '📝' },
+  { name: '英語',   emoji: '🌍', icon: 'globe' },
+  { name: '数学Ⅱ', emoji: '📐', icon: 'math' },
+  { name: '数学B',  emoji: '📊', icon: 'math' },
+  { name: '国語',   emoji: '📖', icon: 'book' },
+  { name: '古典',   emoji: '📜', icon: 'scroll' },
+  { name: '物理',   emoji: '⚡', icon: 'atom' },
+  { name: '化学',   emoji: '🔬', icon: 'flask' },
+  { name: '政経',   emoji: '🏛️', icon: 'institution' },
+  { name: 'その他', emoji: '📝', icon: 'notebook' },
 ];
 const SUBJECT_MAP = Object.fromEntries(SUBJECTS.map(s => [s.name, s]));
 
@@ -2632,6 +3161,40 @@ function subjectByName(name) {
   return getSubjects().find(s => s.name === name) || { emoji: '📝' };
 }
 
+/* ============================================================
+   B-6: 教科SVGアイコン（フラット・デュオトーン）
+   icon キーを持つ教科は専用SVGスプライトを使用し、
+   持たない教科（カスタム教科）は emoji にフォールバックする。
+============================================================ */
+const ICON_COLOR = {
+  globe:       '#2D6F74',
+  math:        '#2E4F73',
+  book:        '#B5703F',
+  scroll:      '#B5703F',
+  atom:        '#4A7FA0',
+  flask:       '#DD8A3E',
+  institution: '#6B5870',
+  notebook:    '#8E9196',
+};
+const ICON_TINT = {
+  globe:       '#DCEAEA',
+  math:        '#DDE3EC',
+  book:        '#F1E3D6',
+  scroll:      '#F1E3D6',
+  atom:        '#DEE9F0',
+  flask:       '#FBE8D4',
+  institution: '#E8E1E9',
+  notebook:    '#EBECED',
+};
+/** 教科アイコンのHTMLを返す（icon指定があればSVG、なければemoji） */
+function subjectIconHTML(subj) {
+  if (subj && subj.icon && ICON_COLOR[subj.icon]) {
+    return `<span class="sf-icon" style="--ic-bg:${ICON_TINT[subj.icon]};color:${ICON_COLOR[subj.icon]}">`
+         + `<svg viewBox="0 0 24 24"><use href="#ico-${subj.icon}"></use></svg></span>`;
+  }
+  return escHtml(subj && subj.emoji ? subj.emoji : '📝');
+}
+
 /* B-2: 目標時間 */
 function getDailyGoal() {
   return parseInt(localStorage.getItem('sf_daily_goal') || '120', 10);
@@ -2647,6 +3210,7 @@ function getAudioCtx() {
   return _audioCtx;
 }
 function playBeep() {
+  if (getNotifyMuted()) return;
   try {
     const ctx = getAudioCtx();
     const osc  = ctx.createOscillator();
@@ -2663,6 +3227,70 @@ function playBeep() {
 /* autoplay 制限対策: ユーザー操作で AudioContext を resume */
 document.addEventListener('click',      () => { try { getAudioCtx().resume(); } catch(e){} }, { once: false });
 document.addEventListener('touchstart', () => { try { getAudioCtx().resume(); } catch(e){} }, { once: false, passive: true });
+
+/* ============================================================
+   Phase3-B: 集中サウンド（Web Audio APIで都度生成。音源ファイルは保持しない）
+   ブラウザの自動再生制限のため、ページ読込時の自動再生はせず、
+   トグルのクリック操作（ユーザー操作）を起点に必ず開始する。
+   実際の再生状態(_focusSoundActive)はランタイム変数のみで管理し、
+   ページ再読込ではリセットされる（＝再生中状態を偽って表示しない）。
+============================================================ */
+let _focusSoundActive = false;
+let _noiseSource = null;
+let _noiseGain   = null;
+
+function startFocusNoise() {
+  try {
+    const ctx = getAudioCtx();
+    const bufferSize = 2 * ctx.sampleRate;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      last = (last + 0.02 * white) / 1.02; /* 簡易ローパスでホワイト→ソフトなアンビエント音に */
+      data[i] = last * 3.2;
+    }
+    _noiseSource = ctx.createBufferSource();
+    _noiseSource.buffer = buffer;
+    _noiseSource.loop = true;
+    _noiseGain = ctx.createGain();
+    _noiseGain.gain.value = 0.1;
+    _noiseSource.connect(_noiseGain);
+    _noiseGain.connect(ctx.destination);
+    _noiseSource.start(0);
+  } catch (e) { /* 再生できなくてもアプリ動作は継続 */ }
+}
+function stopFocusNoise() {
+  try { if (_noiseSource) { _noiseSource.stop(); _noiseSource.disconnect(); } } catch (e) {}
+  _noiseSource = null;
+  try { if (_noiseGain) _noiseGain.disconnect(); } catch (e) {}
+  _noiseGain = null;
+}
+function toggleFocusSound() {
+  _focusSoundActive = !_focusSoundActive;
+  saveFocusSoundEnabled(_focusSoundActive);
+  const btn = document.getElementById('focusSoundToggle');
+  if (btn) { btn.classList.toggle('on', _focusSoundActive); btn.setAttribute('aria-pressed', String(_focusSoundActive)); }
+  if (_focusSoundActive) {
+    try { getAudioCtx().resume(); } catch (e) {}
+    startFocusNoise();
+  } else {
+    stopFocusNoise();
+  }
+}
+
+/* ============================================================
+   Phase3-B: 通知ミュート（アプリ内のビープ音のみを対象とする内部フラグ。
+   ブラウザのNotification APIはfile://環境では機能しないため使用しない）
+============================================================ */
+function toggleNotifyMute() {
+  const muted = !getNotifyMuted();
+  saveNotifyMuted(muted);
+  const btn = document.getElementById('notifyMuteToggle');
+  if (btn) { btn.classList.toggle('on', muted); btn.setAttribute('aria-pressed', String(muted)); }
+  showToast(muted ? '通知音をミュートにしました' : '通知音を有効にしました');
+}
 
 /* ============================================================
    アプリ状態
@@ -2764,10 +3392,14 @@ let dailyRange = 7;
    LocalStorage ユーティリティ
 ============================================================ */
 const LS_KEYS = {
-  tasks:     'sf_tasks',
-  reviews:   'sf_reviews',
-  sessions:  'sf_sessions',
-  templates: 'sf_templates',
+  tasks:             'sf_tasks',
+  reviews:           'sf_reviews',
+  sessions:          'sf_sessions',
+  templates:         'sf_templates',
+  weeklyGoals:       'sf_weekly_goals',
+  periodReflections: 'sf_period_reflections',
+  focusSound:        'sf_focus_sound_enabled',
+  notifyMuted:       'sf_notify_muted',
 };
 
 function load(key, def = []) {
@@ -2790,6 +3422,106 @@ function getSessions()   { return load(LS_KEYS.sessions); }
 function saveSessions(v) { save(LS_KEYS.sessions, v); }
 function getTemplates()    { return load(LS_KEYS.templates); }
 function saveTemplates(v)  { save(LS_KEYS.templates, v); }
+
+/* ============================================================
+   Phase3-A: 週次目標（常設ターゲット方式）
+   特定の週に固定せず、教科ごとの目標時間を常設し、
+   「現在の週」の実績を毎週自動集計する。
+============================================================ */
+function getWeeklyGoals()   { return load(LS_KEYS.weeklyGoals); }
+function saveWeeklyGoals(v) { save(LS_KEYS.weeklyGoals, v); }
+
+/** 教科の週次目標時間を追加・更新する（同じ教科は上書き） */
+function upsertWeeklyGoal(subject, targetHours) {
+  const list = getWeeklyGoals();
+  const g = list.find(x => x.subject === subject);
+  if (g) { g.targetHours = targetHours; }
+  else   { list.push({ id: genId(), subject, targetHours }); }
+  saveWeeklyGoals(list);
+}
+function deleteWeeklyGoal(id) {
+  saveWeeklyGoals(getWeeklyGoals().filter(g => g.id !== id));
+}
+
+/* ============================================================
+   Phase3-B: 週ユーティリティ（月曜始まり）
+============================================================ */
+/** 指定日(YYYY-MM-DD)が属する週の月曜日の日付文字列を返す */
+function mondayOf(dateStr) {
+  const dt = new Date(dateStr + 'T00:00:00+09:00');
+  const dow = dt.getDay(); // 0=日 ... 6=土
+  const diff = (dow === 0) ? -6 : (1 - dow);
+  dt.setDate(dt.getDate() + diff);
+  return dt.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+}
+/** 月曜始まりの週7日分の日付配列（月→日）を返す */
+function weekDates(mondayStr) {
+  const dt = new Date(mondayStr + 'T00:00:00+09:00');
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(dt);
+    d.setDate(d.getDate() + i);
+    return d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+  });
+}
+/** 今日が属する週の月曜日付 */
+function currentMonday() { return mondayOf(today()); }
+
+/** 指定教科の「今週」の実績時間（時間, 小数1桁）を返す。タスクのactualTime(秒)を集計。 */
+function calcWeeklyActual(subject, mondayStr = currentMonday()) {
+  const dates = weekDates(mondayStr);
+  const seconds = getTasks()
+    .filter(t => t.subject === subject && dates.includes(t.date))
+    .reduce((sum, t) => sum + (Number(t.actualTime) || 0), 0);
+  return Math.round((seconds / 3600) * 10) / 10;
+}
+
+/** 直近n日のうち、その日の目標分数を達成した日数（分析ページの目標達成率ゲージ用） */
+function calcGoalStreakDays(n = 7) {
+  const goal = getDailyGoal();
+  const sessions = getSessions();
+  return pastDates(n).filter(d => {
+    const sec = sessions.filter(s => s.date === d).reduce((sum, s) => sum + (s.seconds || 0), 0);
+    return (sec / 60) >= goal;
+  }).length;
+}
+
+/* ============================================================
+   Phase3-C: 期間振り返り（sf_period_reflections）
+   タスク単位の sf_reviews とは別に、期間（日/週/月）全体の
+   自己評価・気分・自由記述だけを保持する。
+============================================================ */
+function getPeriodReflections()   { return load(LS_KEYS.periodReflections); }
+function savePeriodReflections(v) { save(LS_KEYS.periodReflections, v); }
+
+/** 期間タイプ('day'|'week'|'month')と日付から、その期間のキーを返す */
+function periodKeyFor(type, dateStr = today()) {
+  if (type === 'week')  return mondayOf(dateStr);
+  if (type === 'month') return dateStr.slice(0, 7);
+  return dateStr;
+}
+function findPeriodReflection(type, key) {
+  return getPeriodReflections().find(r => r.periodType === type && r.periodKey === key);
+}
+/** 期間振り返りを部分更新（存在しなければ新規作成）して保存する */
+function upsertPeriodReflection(type, key, patch) {
+  const list = getPeriodReflections();
+  let r = list.find(x => x.periodType === type && x.periodKey === key);
+  if (!r) {
+    r = { id: genId(), periodType: type, periodKey: key, rating: 0, mood: '', memo: '', learned: '', challenges: '', nextGoal: '' };
+    list.push(r);
+  }
+  Object.assign(r, patch, { updatedAt: new Date().toISOString() });
+  savePeriodReflections(list);
+  return r;
+}
+
+/* ============================================================
+   Phase3-D: 集中サウンド / 通知ミュート（状態の保存のみ）
+============================================================ */
+function getFocusSoundEnabled()      { return load(LS_KEYS.focusSound, false); }
+function saveFocusSoundEnabled(v)    { save(LS_KEYS.focusSound, v); }
+function getNotifyMuted()            { return load(LS_KEYS.notifyMuted, false); }
+function saveNotifyMuted(v)          { save(LS_KEYS.notifyMuted, v); }
 
 /* ============================================================
    日付ユーティリティ
@@ -2976,7 +3708,7 @@ function taskItemHTML(t) {
       <div class="swipe-bg swipe-bg-done">完了</div>
       <div class="swipe-bg swipe-bg-delete">削除</div>
       <div class="task-item ${prioClass} ${doneClass}">
-        <div class="task-dot">${subj.emoji}</div>
+        <div class="task-dot">${subjectIconHTML(subj)}</div>
         <div class="task-info">
           <div class="task-name">${escHtml(t.task)}</div>
           <div class="task-meta">${escHtml(t.subject)} · ${meta}</div>
@@ -3089,11 +3821,17 @@ function renderSchedulePage() {
   document.getElementById('subjectGrid').innerHTML = getSubjects().map(s => `
     <button class="subject-btn ${formState.subj === s.name ? 'selected' : ''}"
       onclick="selectSubject('${s.name}')">
-      <span class="subj-icon">${s.emoji}</span>${s.name}
+      <span class="subj-icon">${subjectIconHTML(s)}</span>${s.name}
     </button>`).join('');
   document.getElementById('plannedTimeDisp').textContent = formState.time;
   updatePriorityBtns();
   renderScheduleList();
+
+  /* Phase3-A: 週次目標 / 今週のスケジュール */
+  const dueDateInput = document.getElementById('taskDueDate');
+  if (dueDateInput && !dueDateInput.value) dueDateInput.value = today();
+  renderWeeklyGoalsList();
+  renderWeeklyAgenda();
 }
 
 function selectSubject(name) { formState.subj = name; renderSchedulePage(); }
@@ -3112,9 +3850,11 @@ function addTask() {
   const content = document.getElementById('taskContent').value.trim();
   if (!formState.subj) { showToast('教科を選んでください'); return; }
   if (!content)        { showToast('内容を入力してください'); return; }
+  const dueDateInput = document.getElementById('taskDueDate');
+  const dueDate = (dueDateInput && dueDateInput.value) ? dueDateInput.value : today();
   const tasks = getTasks();
   tasks.push({
-    id: genId(), date: today(), subject: formState.subj, task: content,
+    id: genId(), date: dueDate, subject: formState.subj, task: content,
     plannedTime: formState.time, actualTime: 0, focus: 0, completed: false,
     achievement: '', failureReason: [], memo: '', priority: formState.prio,
   });
@@ -3123,6 +3863,7 @@ function addTask() {
   formState.subj = '';
   formState.time = 30;
   formState.prio = 'mid';
+  if (dueDateInput) dueDateInput.value = today();
   showToast('タスクを追加しました');
   renderSchedulePage();
 }
@@ -3136,6 +3877,119 @@ function renderScheduleList() {
   el.querySelectorAll('.swipe-wrapper').forEach(wrapper => {
     addSwipeGesture(wrapper, wrapper.dataset.taskId);
   });
+}
+
+/* ============================================================
+   Phase3-A: 週次目標（常設ターゲット） UI
+============================================================ */
+const weeklyGoalFormState = { subj: '', hours: 5 };
+
+function renderWeeklyGoalsList() {
+  const list = document.getElementById('weeklyGoalsList');
+  if (!list) return;
+  const goals = getWeeklyGoals();
+  if (goals.length === 0) {
+    list.innerHTML = `<div class="empty-state" style="padding:18px 0;">
+      <p>週次目標がまだありません。<br>教科ごとに週間の学習時間目標を設定しましょう。</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = goals.map(g => {
+    const subj   = subjectByName(g.subject);
+    const actual = calcWeeklyActual(g.subject);
+    const pct    = Math.min(Math.round(actual / g.targetHours * 100), 100);
+    const met    = actual >= g.targetHours;
+    return `<div class="weekly-goal-card">
+      <div class="weekly-goal-top">
+        <span class="weekly-goal-subj">${subjectIconHTML(subj)} ${escHtml(g.subject)}: ${g.targetHours}時間
+          <span class="weekly-goal-status">${met ? '（達成）' : '（未達）'}</span>
+        </span>
+        <button class="task-action-btn" onclick="deleteWeeklyGoal('${g.id}')" title="削除" style="font-size:.8rem;color:var(--text-3);">×</button>
+      </div>
+      <div class="progress-bar-wrap" style="margin-top:7px;">
+        <div class="progress-bar-fill" style="width:${pct}%;"></div>
+      </div>
+      <div class="weekly-goal-frac">${actual}/${g.targetHours} 時間</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleWeeklyGoalForm() {
+  const body   = document.getElementById('weeklyGoalFormBody');
+  const toggle = document.getElementById('weeklyGoalFormToggle');
+  if (!body) return;
+  const willOpen = body.style.display === 'none';
+  body.style.display = willOpen ? 'block' : 'none';
+  const icon = toggle.querySelector('.tgl-icon');
+  if (icon) icon.textContent = willOpen ? '▲' : '▼';
+  if (willOpen) renderWeeklyGoalSubjectGrid();
+}
+
+function renderWeeklyGoalSubjectGrid() {
+  const grid = document.getElementById('weeklyGoalSubjectGrid');
+  if (!grid) return;
+  grid.innerHTML = getSubjects().map(s => `
+    <button class="subject-btn ${weeklyGoalFormState.subj === s.name ? 'selected' : ''}"
+      onclick="selectWeeklyGoalSubject('${s.name}')">
+      <span class="subj-icon">${subjectIconHTML(s)}</span>${s.name}
+    </button>`).join('');
+  document.getElementById('weeklyGoalHoursDisp').textContent = weeklyGoalFormState.hours;
+}
+
+function selectWeeklyGoalSubject(name) { weeklyGoalFormState.subj = name; renderWeeklyGoalSubjectGrid(); }
+
+function adjustWeeklyGoalHours(d) {
+  weeklyGoalFormState.hours = Math.max(1, Math.min(40, weeklyGoalFormState.hours + d));
+  document.getElementById('weeklyGoalHoursDisp').textContent = weeklyGoalFormState.hours;
+}
+
+function saveWeeklyGoalForm() {
+  if (!weeklyGoalFormState.subj) { showToast('教科を選んでください'); return; }
+  upsertWeeklyGoal(weeklyGoalFormState.subj, weeklyGoalFormState.hours);
+  showToast('週次目標を保存しました');
+  weeklyGoalFormState.subj  = '';
+  weeklyGoalFormState.hours = 5;
+  const body   = document.getElementById('weeklyGoalFormBody');
+  const toggle = document.getElementById('weeklyGoalFormToggle');
+  if (body) body.style.display = 'none';
+  const icon = toggle && toggle.querySelector('.tgl-icon');
+  if (icon) icon.textContent = '▼';
+  renderWeeklyGoalsList();
+}
+
+/* ============================================================
+   Phase3-A: 今週のスケジュール（曜日別アジェンダ・月曜始まり）
+============================================================ */
+function renderWeeklyAgenda() {
+  const wrap = document.getElementById('weeklyAgendaWrap');
+  if (!wrap) return;
+  const monday    = currentMonday();
+  const dates     = weekDates(monday);
+  const dowLabels = ['月','火','水','木','金','土','日'];
+  const tasks     = getTasks();
+  const todayStr  = today();
+
+  wrap.innerHTML = `<div class="agenda-grid">` + dates.map((d, i) => {
+    const dayTasks = tasks.filter(t => t.date === d);
+    const dt       = new Date(d + 'T00:00:00+09:00');
+    const isToday  = d === todayStr;
+    const body = dayTasks.length
+      ? dayTasks.map(t => {
+          const subj = subjectByName(t.subject);
+          return `<div class="agenda-chip${t.completed ? ' agenda-chip-done' : ''}"
+              onclick="showPage('schedule')" title="${escHtml(t.subject)}: ${escHtml(t.task)}">
+            ${subjectIconHTML(subj)}<span class="agenda-chip-text">${escHtml(t.task)}</span>
+          </div>`;
+        }).join('')
+      : `<div class="agenda-empty">—</div>`;
+    return `<div class="agenda-col${isToday ? ' agenda-col-today' : ''}">
+      <div class="agenda-col-head">
+        <span class="agenda-dow">${dowLabels[i]}</span>
+        <span class="agenda-date">${dt.getDate()}</span>
+      </div>
+      <div class="agenda-col-body">${body}</div>
+    </div>`;
+  }).join('') + `</div>`;
 }
 
 /* ============================================================
@@ -3203,8 +4057,24 @@ function renderTimerPage() {
     document.getElementById('btnEnd').style.display   = '';
     document.getElementById('timerStateLabel').textContent = '一時停止';
   }
+  const breakWrap = document.getElementById('btnBreakWrap');
+  if (breakWrap) breakWrap.style.display = (pomoMode !== 'free' && timerRunning) ? 'flex' : 'none';
+
+  /* Phase3-B: 集中モード設定トグルの表示を復元（通知ミュートは永続、集中サウンドはランタイムのみ） */
+  const notifyBtn = document.getElementById('notifyMuteToggle');
+  if (notifyBtn) {
+    const muted = getNotifyMuted();
+    notifyBtn.classList.toggle('on', muted);
+    notifyBtn.setAttribute('aria-pressed', String(muted));
+  }
+  const soundBtn = document.getElementById('focusSoundToggle');
+  if (soundBtn) {
+    soundBtn.classList.toggle('on', _focusSoundActive);
+    soundBtn.setAttribute('aria-pressed', String(_focusSoundActive));
+  }
 
   updateTimerUI();
+  updateTimerGoalBars();
   updateFabState();
 }
 
@@ -3219,6 +4089,7 @@ function selectTimerTask() {
     document.getElementById('timerSubjectLabel').textContent = '';
     document.getElementById('timerTaskName').textContent    = 'フリー学習';
     if (hint) hint.style.display = '';
+    updateTimerGoalBars();
     return;
   }
 
@@ -3227,8 +4098,54 @@ function selectTimerTask() {
   const task = getTasks().find(t => t.id === id);
   if (!task) return;
   const subj = subjectByName(task.subject);
-  document.getElementById('timerSubjectLabel').textContent = `${subj.emoji} ${task.subject}`;
+  document.getElementById('timerSubjectLabel').innerHTML = `${subjectIconHTML(subj)} <span>${escHtml(task.subject)}</span>`;
   document.getElementById('timerTaskName').textContent     = task.task;
+  updateTimerGoalBars();
+}
+
+/* ============================================================
+   Phase3-B: 今日の目標 / 週次進捗バー（タイマー画面）
+============================================================ */
+function updateTimerGoalBars() {
+  const goalMin  = getDailyGoal();
+  const studyMin = calcTodayStudyMin();
+  const pct      = Math.min(Math.round(studyMin / goalMin * 100), 100);
+  const dailyText = document.getElementById('timerDailyGoalText');
+  const dailyBar  = document.getElementById('timerDailyGoalBar');
+  if (dailyText) dailyText.textContent = `${studyMin} / ${goalMin} 分`;
+  if (dailyBar)  dailyBar.style.width  = pct + '%';
+
+  const weeklyCard = document.getElementById('timerWeeklyGoalCard');
+  if (!weeklyCard) return;
+  const task = currentTimerTaskId ? getTasks().find(t => t.id === currentTimerTaskId) : null;
+  const goal = task ? getWeeklyGoals().find(g => g.subject === task.subject) : null;
+  if (goal) {
+    weeklyCard.style.display = 'block';
+    const actual = calcWeeklyActual(goal.subject);
+    const wpct   = Math.min(Math.round(actual / goal.targetHours * 100), 100);
+    document.getElementById('timerWeeklyGoalSubjLabel').textContent = `週次進捗（${goal.subject}）`;
+    document.getElementById('timerWeeklyGoalText').textContent      = `${actual} / ${goal.targetHours} 時間`;
+    document.getElementById('timerWeeklyGoalBar').style.width       = wpct + '%';
+  } else {
+    weeklyCard.style.display = 'none';
+  }
+}
+
+/* Phase3-B: 休憩ボタン（ポモドーロ/集中モード時に作業フェーズから手動で休憩へ切替） */
+function startBreak() {
+  if (pomoMode === 'free') { showToast('フリーモードでは休憩フェーズはありません'); return; }
+  if (!timerRunning)       { showToast('タイマーを開始してから休憩してください'); return; }
+  if (pomoPhase === 'break') { showToast('すでに休憩中です'); return; }
+  pomoPhase = 'break';
+  _pomoPhaseStartSec = getElapsedSeconds();
+  const st = getTimerState();
+  if (st) {
+    st.pomoPhase         = pomoPhase;
+    st.pomoPhaseStartSec = _pomoPhaseStartSec;
+    saveTimerState(st);
+  }
+  updateTimerUI();
+  showToast('休憩を開始しました');
 }
 
 function startTimer() {
@@ -3256,6 +4173,8 @@ function startTimer() {
   document.getElementById('btnPause').style.display = '';
   document.getElementById('btnEnd').style.display   = '';
   document.getElementById('timerStateLabel').textContent = '勉強中';
+  const breakWrap = document.getElementById('btnBreakWrap');
+  if (breakWrap) breakWrap.style.display = (pomoMode !== 'free') ? 'flex' : 'none';
   timerInterval = setInterval(updateTimerUI, 1000);
   updateFabState();
 }
@@ -3279,6 +4198,8 @@ function pauseTimer() {
   document.getElementById('btnPause').style.display = 'none';
   document.getElementById('btnStart').style.display = '';
   document.getElementById('btnStart').textContent   = '▶ 再開';
+  const breakWrap = document.getElementById('btnBreakWrap');
+  if (breakWrap) breakWrap.style.display = 'none';
   updateFabState();
 }
 
@@ -3306,6 +4227,8 @@ function endTimer() {
   document.getElementById('btnPause').style.display = 'none';
   document.getElementById('btnEnd').style.display   = 'none';
   document.getElementById('timerStateLabel').textContent = '待機中';
+  const breakWrap = document.getElementById('btnBreakWrap');
+  if (breakWrap) breakWrap.style.display = 'none';
   updateTimerUI();
   updateFabState();
 
@@ -3351,7 +4274,7 @@ function openPostTimerModal(elapsed) {
       <button class="subject-btn"
         data-ptsubj="${escHtml(s.name)}"
         onclick="selectPostTimerSubj('${escHtml(s.name)}', this)">
-        <span class="subj-icon">${s.emoji}</span>${escHtml(s.name)}
+        <span class="subj-icon">${subjectIconHTML(s)}</span>${escHtml(s.name)}
       </button>`).join('');
   }
 
@@ -3452,6 +4375,9 @@ function updateTimerUI() {
   const mode    = pomoMode;
   const ring    = document.getElementById('timerRing');
 
+  const breakWrap = document.getElementById('btnBreakWrap');
+  if (breakWrap) breakWrap.style.display = (mode !== 'free' && timerRunning) ? 'flex' : 'none';
+
   if (mode === 'free') {
     /* ---- フリーモード: カウントアップ ---- */
     const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
@@ -3535,6 +4461,8 @@ function updateTimerUI() {
       }
     }
   }
+
+  updateTimerGoalBars();
 }
 
 /* B-1: モード切替ハンドラ */
@@ -3566,7 +4494,7 @@ function renderTplList() {
     const prioLabel = { high: '高', mid: '中', low: '低' }[tpl.priority] || '中';
     return `
     <div class="tpl-item">
-      <div class="tpl-item-dot">${subj.emoji}</div>
+      <div class="tpl-item-dot">${subjectIconHTML(subj)}</div>
       <div class="tpl-item-info">
         <div class="tpl-item-name">${escHtml(tpl.task)}</div>
         <div class="tpl-item-meta">${escHtml(tpl.subject)} · ${tpl.plannedTime}分 · 優先度${prioLabel}</div>
@@ -3584,7 +4512,7 @@ function renderTplSubjectGrid() {
   document.getElementById('tplSubjectGrid').innerHTML = getSubjects().map(s => `
     <button class="subject-btn ${tplState.subj === s.name ? 'selected' : ''}"
       onclick="selectTplSubj('${s.name}')">
-      <span class="subj-icon">${s.emoji}</span>${s.name}
+      <span class="subj-icon">${subjectIconHTML(s)}</span>${s.name}
     </button>`).join('');
 }
 
@@ -3714,91 +4642,225 @@ function saveManualRecord() {
 /* ============================================================
    ④ 振り返り
 ============================================================ */
+/* ============================================================
+   Phase3-C: 振り返りページ（期間ベース・インラインレビュー）
+   タスク単位の sf_reviews（achievement/focus/failureReason/memo）は
+   スキーマを変えずインライン編集に対応させ、
+   期間全体の自己評価・気分・自由記述だけを sf_period_reflections に保存する。
+============================================================ */
+let reviewPeriodType    = 'day';   // 'day' | 'week' | 'month'
+let reflectionRatingVal = 0;
+
 function renderReviewPage() {
-  const tasks = todayTasks();
-  const sel   = document.getElementById('reviewTaskSelect');
-  sel.innerHTML = '<option value="">振り返るタスクを選択</option>';
-  tasks.forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t.id;
-    opt.textContent = `${t.subject} · ${t.task}`;
-    if (t.id === reviewTaskId) opt.selected = true;
-    sel.appendChild(opt);
-  });
-  if (reviewTaskId) loadReviewTask();
-  else hideReviewForm();
-}
+  const sel = document.getElementById('reviewPeriodSelect');
+  if (sel) sel.value = reviewPeriodType;
+  loadReflectionForm();
+  renderReviewTaskListInline();
+  renderReviewFocusSummary();
 
-function loadReviewTask() {
-  reviewTaskId = document.getElementById('reviewTaskSelect').value || null;
-  if (!reviewTaskId) { hideReviewForm(); return; }
-  const existing = getReviews().find(r => r.taskId === reviewTaskId && r.date === today());
-  achieveVal = existing?.achievement || '';
-  focusVal   = existing?.focus       || 0;
-  /* 達成度リセット */
-  ['Ok','Meh','Ng'].forEach(x => document.getElementById('achieve'+x).className = 'achieve-btn');
-  if (achieveVal) applyAchieve(achieveVal);
-  updateStars();
-  /* 理由チェック */
-  const reasons = existing?.failureReason || [];
-  document.querySelectorAll('.reason-label').forEach(label => {
-    const cb = label.querySelector('input');
-    cb.checked = reasons.includes(cb.value);
-    label.classList.toggle('checked', cb.checked);
-  });
-  document.getElementById('reviewMemo').value = existing?.memo || '';
-  showReviewForm();
-}
-
-function showReviewForm() { document.getElementById('reviewFormArea').style.display = ''; }
-function hideReviewForm() { document.getElementById('reviewFormArea').style.display = 'none'; }
-
-function selectAchieve(val) {
-  achieveVal = val;
-  ['Ok','Meh','Ng'].forEach(x => document.getElementById('achieve'+x).className = 'achieve-btn');
-  applyAchieve(val);
-}
-function applyAchieve(val) {
-  const map = { ok: 'achieveOk', meh: 'achieveMeh', ng: 'achieveNg' };
-  if (map[val]) document.getElementById(map[val]).classList.add('sel');
-}
-function setFocus(v) { focusVal = v; updateStars(); }
-function updateStars() {
-  document.querySelectorAll('.star-btn').forEach(s =>
-    s.classList.toggle('lit', parseInt(s.dataset.v) <= focusVal));
-}
-document.querySelectorAll('.reason-label').forEach(label => {
-  label.addEventListener('click', () => {
-    const cb = label.querySelector('input');
-    cb.checked = !cb.checked;
-    label.classList.toggle('checked', cb.checked);
-  });
-});
-
-function saveReview() {
-  if (!reviewTaskId)   { showToast('タスクを選んでください'); return; }
-  if (!achieveVal)     { showToast('達成度を選んでください'); return; }
-  if (focusVal === 0)  { showToast('集中度を選んでください'); return; }
-  const reasons = [...document.querySelectorAll('.reason-label input')]
-    .filter(cb => cb.checked).map(cb => cb.value);
-  const reviews = getReviews().filter(r => !(r.taskId === reviewTaskId && r.date === today()));
-  reviews.push({
-    taskId: reviewTaskId, date: today(),
-    achievement: achieveVal, focus: focusVal,
-    failureReason: reasons, memo: document.getElementById('reviewMemo').value,
-  });
-  saveReviews(reviews);
-  /* タスク更新 */
-  const tasks = getTasks();
-  const task  = tasks.find(t => t.id === reviewTaskId);
-  if (task) {
-    task.focus = focusVal; task.achievement = achieveVal; task.failureReason = reasons;
-    if (achieveVal === 'ok') task.completed = true;
-    saveTasks(tasks);
+  /* タイマー終了直後などにreviewTaskIdが指定されていれば、その行をハイライト */
+  if (reviewTaskId) {
+    const row = document.querySelector(`.review-row[data-task-id="${reviewTaskId}"]`);
+    if (row) {
+      row.classList.add('review-row-highlight');
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => row.classList.remove('review-row-highlight'), 2000);
+    }
+    reviewTaskId = null;
   }
-  showToast('振り返りを保存しました');
-  reviewTaskId = null;
+}
+
+function onReviewPeriodChange() {
+  reviewPeriodType = document.getElementById('reviewPeriodSelect').value;
   renderReviewPage();
+}
+
+/** 指定の期間タイプに含まれるタスクの配列を返す */
+function tasksInPeriod(type, key = periodKeyFor(type)) {
+  const tasks = getTasks();
+  if (type === 'week')  { const dates = weekDates(key); return tasks.filter(t => dates.includes(t.date)); }
+  if (type === 'month') return tasks.filter(t => t.date && t.date.slice(0, 7) === key);
+  return tasks.filter(t => t.date === key); // 'day'
+}
+
+/** タスクIDに紐づく既存のsf_reviewsレコードを取得（taskId基準。1タスク=1レビュー想定） */
+function findTaskReview(taskId) { return getReviews().find(r => r.taskId === taskId); }
+
+/** タスクの振り返り内容を部分更新（既存スキーマ: achievement/focus/failureReason/memo） */
+function upsertTaskReview(taskId, patch) {
+  const reviews = getReviews();
+  let r = reviews.find(x => x.taskId === taskId);
+  if (!r) {
+    r = { taskId, date: today(), achievement: '', focus: 0, failureReason: [], memo: '' };
+    reviews.push(r);
+  }
+  Object.assign(r, patch);
+  saveReviews(reviews);
+  return r;
+}
+
+function reviewTaskRowHTML(t) {
+  const subj    = subjectByName(t.subject);
+  const review  = findTaskReview(t.id) || {};
+  const diffVal = review.achievement || '';
+  const reasons = review.failureReason || [];
+  const reasonDefs = [
+    { v: '時間不足', icon: '⏰' },
+    { v: '集中できなかった', icon: '😵' },
+    { v: '難しかった', icon: '🧠' },
+    { v: 'その他', icon: '❓' },
+  ];
+  return `<div class="review-row" data-task-id="${t.id}">
+    <div class="review-row-top">
+      <input type="checkbox" class="review-row-check" ${t.completed ? 'checked' : ''}
+        onchange="toggleTaskDoneInline('${t.id}')">
+      <span class="review-row-icon">${subjectIconHTML(subj)}</span>
+      <span class="review-row-name${t.completed ? ' review-row-name-done' : ''}">${escHtml(t.subject)}: ${escHtml(t.task)}</span>
+    </div>
+    <div class="review-row-controls">
+      <select class="review-diff-select" onchange="setTaskAchievementInline('${t.id}', this.value)">
+        <option value=""    ${diffVal === ''    ? 'selected' : ''}>評価を選択</option>
+        <option value="ok"  ${diffVal === 'ok'  ? 'selected' : ''}>簡単だった</option>
+        <option value="meh" ${diffVal === 'meh' ? 'selected' : ''}>普通だった</option>
+        <option value="ng"  ${diffVal === 'ng'  ? 'selected' : ''}>難しかった</option>
+      </select>
+      <input type="text" class="review-comment-input" placeholder="コメント"
+        value="${escHtml(review.memo || '')}" onblur="setTaskMemoInline('${t.id}', this.value)">
+    </div>
+    ${diffVal === 'ng' ? `<div class="reason-grid review-reason-grid">
+      ${reasonDefs.map(r => `<label class="reason-label${reasons.includes(r.v) ? ' checked' : ''}"
+          onclick="toggleTaskReasonInline(event,'${t.id}','${r.v}')">
+          <input type="checkbox" value="${r.v}" ${reasons.includes(r.v) ? 'checked' : ''} style="pointer-events:none;">${r.icon} ${r.v}
+        </label>`).join('')}
+    </div>` : ''}
+    <div class="review-focus-row">
+      <span class="review-focus-row-label">集中度</span>
+      <div class="focus-stars focus-stars-sm">
+        ${[1,2,3,4,5].map(v => `<span class="star-btn${(review.focus || 0) >= v ? ' lit' : ''}"
+          onclick="setTaskFocusInline('${t.id}',${v})">★</span>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderReviewTaskListInline() {
+  const wrap = document.getElementById('reviewTaskListInline');
+  if (!wrap) return;
+  const tasks = tasksInPeriod(reviewPeriodType);
+  wrap.innerHTML = tasks.length === 0
+    ? `<div class="empty-state" style="padding:18px 0;"><p>この期間のタスクがありません。</p></div>`
+    : tasks.map(t => reviewTaskRowHTML(t)).join('');
+}
+
+function toggleTaskDoneInline(taskId) {
+  const tasks = getTasks();
+  const task  = tasks.find(t => t.id === taskId);
+  if (!task) return;
+  task.completed = !task.completed;
+  saveTasks(tasks);
+  renderReviewTaskListInline();
+  showToast(task.completed ? '✓ タスクを完了しました' : '未完了に戻しました');
+}
+
+function setTaskAchievementInline(taskId, val) {
+  upsertTaskReview(taskId, { achievement: val });
+  renderReviewTaskListInline();
+}
+
+function setTaskMemoInline(taskId, val) {
+  upsertTaskReview(taskId, { memo: val });
+}
+
+function setTaskFocusInline(taskId, v) {
+  upsertTaskReview(taskId, { focus: v });
+  renderReviewTaskListInline();
+  renderReviewFocusSummary();
+}
+
+function toggleTaskReasonInline(evt, taskId, reasonVal) {
+  evt.preventDefault();
+  const r = findTaskReview(taskId) || {};
+  const reasons = new Set(r.failureReason || []);
+  if (reasons.has(reasonVal)) reasons.delete(reasonVal); else reasons.add(reasonVal);
+  upsertTaskReview(taskId, { failureReason: [...reasons] });
+  renderReviewTaskListInline();
+}
+
+/** 集中度の平均（読み取り専用の集計表示）とミニグラフ */
+function renderReviewFocusSummary() {
+  const tasks  = tasksInPeriod(reviewPeriodType);
+  const reviews = getReviews();
+  const focusVals = tasks
+    .map(t => { const r = reviews.find(x => x.taskId === t.id); return r ? r.focus : 0; })
+    .filter(v => v > 0);
+  const avgEl = document.getElementById('reviewFocusAvg');
+  if (avgEl) {
+    avgEl.textContent = focusVals.length
+      ? `平均集中度: ${(focusVals.reduce((a, b) => a + b, 0) / focusVals.length).toFixed(1)} / 5`
+      : '平均集中度: —';
+  }
+  renderReviewFocusSparkline();
+}
+
+function renderReviewFocusSparkline() {
+  const wrap = document.getElementById('reviewFocusChartWrap');
+  if (!wrap) return;
+  const dates   = pastDates(7);
+  const tasks   = getTasks();
+  const reviews = getReviews();
+  const DOW_LABELS = ['日','月','火','水','木','金','土'];
+  const todayStr = today();
+  const vals = dates.map(d => {
+    const dayTaskIds = tasks.filter(t => t.date === d).map(t => t.id);
+    const fs = reviews.filter(r => dayTaskIds.includes(r.taskId) && r.focus > 0).map(r => r.focus);
+    return fs.length ? fs.reduce((a, b) => a + b, 0) / fs.length : 0;
+  });
+  wrap.innerHTML = dates.map((d, i) => {
+    const dt  = new Date(d + 'T00:00:00+09:00');
+    const dow = DOW_LABELS[dt.getDay()];
+    const v   = vals[i];
+    const pct = Math.max(v / 5 * 100, v > 0 ? 8 : 3);
+    const isToday = d === todayStr;
+    return `<div class="mini-week-col">
+      <div class="mini-week-bar${v > 0 ? ' has-data' : ''}${isToday ? ' today-bar' : ''}" style="height:${pct}%;" title="${v.toFixed(1)}"></div>
+      <div class="mini-week-dow${isToday ? ' today-dow' : ''}">${dow}</div>
+    </div>`;
+  }).join('');
+}
+
+/** 期間振り返り（全体評価・気分・自由記述）のフォーム読込/保存 */
+function loadReflectionForm() {
+  const key = periodKeyFor(reviewPeriodType);
+  const r = findPeriodReflection(reviewPeriodType, key) || {};
+  reflectionRatingVal = r.rating || 0;
+  updateReflectionStars();
+  document.getElementById('reflectionMemo').value       = r.memo       || '';
+  document.getElementById('reflectionLearned').value    = r.learned    || '';
+  document.getElementById('reflectionChallenges').value = r.challenges || '';
+  document.getElementById('reflectionNextGoal').value   = r.nextGoal   || '';
+  updateMoodButtons(r.mood || '');
+}
+function setReflectionRating(v) {
+  reflectionRatingVal = v;
+  updateReflectionStars();
+  upsertPeriodReflection(reviewPeriodType, periodKeyFor(reviewPeriodType), { rating: v });
+}
+function updateReflectionStars() {
+  document.querySelectorAll('#reflectionStars .star-btn').forEach(s =>
+    s.classList.toggle('lit', parseInt(s.dataset.v) <= reflectionRatingVal));
+}
+function setReflectionMood(mood) {
+  const key     = periodKeyFor(reviewPeriodType);
+  const current = findPeriodReflection(reviewPeriodType, key);
+  const newMood = (current && current.mood === mood) ? '' : mood; /* 再クリックで解除 */
+  upsertPeriodReflection(reviewPeriodType, key, { mood: newMood });
+  updateMoodButtons(newMood);
+}
+function updateMoodButtons(mood) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.toggle('sel', b.dataset.mood === mood));
+}
+function saveReflectionField(field, value) {
+  upsertPeriodReflection(reviewPeriodType, periodKeyFor(reviewPeriodType), { [field]: value });
 }
 
 /* ============================================================
@@ -3814,7 +4876,7 @@ function renderSubjectCustomizer() {
   }
   list.innerHTML = subjects.map((s, i) => `
     <div class="subj-cust-row">
-      <span class="subj-cust-emoji">${escHtml(s.emoji)}</span>
+      <span class="subj-cust-emoji">${subjectIconHTML(s)}</span>
       <span class="subj-cust-name">${escHtml(s.name)}</span>
       <button class="subj-cust-del" onclick="deleteCustomSubject(${i})">×</button>
     </div>`).join('');
@@ -3865,7 +4927,7 @@ function showOnboardingIfNeeded() {
     grid.innerHTML = getSubjects().map(s => `
       <button class="subject-btn selected" data-subj="${escHtml(s.name)}"
         onclick="toggleOnboardSubj('${escHtml(s.name)}', this)">
-        <span class="subj-icon">${s.emoji}</span>${escHtml(s.name)}
+        <span class="subj-icon">${subjectIconHTML(s)}</span>${escHtml(s.name)}
       </button>`).join('');
   }
   /* ステップ1を表示 */
@@ -3923,10 +4985,31 @@ function renderAnalysis() {
   renderCalendar();      /* ★ カレンダーヒートマップ */
   renderChartDaily();
   renderChartSubject();
+  renderWeeklyGoalGauge(); /* Phase3-D */
   renderChartPlanVsActual();
   renderChartFocus();
   renderChartReasons();
   renderSubjectCustomizer(); /* B-4 */
+}
+
+/* Phase3-D: 週次目標達成率ゲージ（CSS conic-gradientのみで描画） */
+function renderWeeklyGoalGauge() {
+  const goals = getWeeklyGoals();
+  const totalTarget = goals.reduce((s, g) => s + g.targetHours, 0);
+  const totalActual = goals.reduce((s, g) => s + calcWeeklyActual(g.subject), 0);
+  const pct    = totalTarget > 0 ? Math.min(Math.round(totalActual / totalTarget * 100), 100) : 0;
+  const streak = calcGoalStreakDays(7);
+
+  const gaugeEl = document.getElementById('weeklyGoalGauge');
+  const pctEl   = document.getElementById('weeklyGoalGaugePct');
+  const fracEl  = document.getElementById('weeklyGoalGaugeFrac');
+  if (gaugeEl) gaugeEl.style.setProperty('--gauge-pct', pct);
+  if (pctEl)   pctEl.textContent = `${pct}%`;
+  if (fracEl) {
+    fracEl.textContent = goals.length > 0
+      ? `週次目標の進捗 ${pct}%　/　直近7日 ${streak}/7日 達成`
+      : `直近7日 ${streak}/7日 達成（週次目標は未設定）`;
+  }
 }
 
 function renderSummary() {
@@ -3963,8 +5046,49 @@ function renderSummary() {
 }
 
 /* グラフ共通 */
-const GRAY_PALETTE = ['#1d1d1f','#6e6e73','#aeaeb2','#d2d2d7','#e8e8ed'];
+const GRAY_PALETTE = ['#1F4E54','#E2873D','#4F8388','#EAB13B','#8E9196'];
 function destroyChart(key) { if (charts[key]) { charts[key].destroy(); charts[key] = null; } }
+
+/* Phase3-D: 値ラベル描画（追加ライブラリ不使用・Chart.jsコアのインラインplugin機能のみで実装） */
+const lineValueLabelPlugin = {
+  id: 'lineValueLabel',
+  afterDatasetsDraw(chart) {
+    const { ctx } = chart;
+    chart.data.datasets.forEach((ds, dsIndex) => {
+      const meta = chart.getDatasetMeta(dsIndex);
+      meta.data.forEach((point, i) => {
+        const val = ds.data[i];
+        if (val === null || val === undefined) return;
+        ctx.save();
+        ctx.fillStyle = '#1F4E54';
+        ctx.font = '600 11px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(val, point.x, point.y - 10);
+        ctx.restore();
+      });
+    });
+  },
+};
+const barValueLabelPlugin = {
+  id: 'barValueLabel',
+  afterDatasetsDraw(chart) {
+    const { ctx } = chart;
+    chart.data.datasets.forEach((ds, dsIndex) => {
+      const meta = chart.getDatasetMeta(dsIndex);
+      meta.data.forEach((bar, i) => {
+        const val = ds.data[i];
+        if (val === null || val === undefined || val === 0) return;
+        ctx.save();
+        ctx.fillStyle = '#4a4a52';
+        ctx.font = '600 11px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(val, bar.x + 6, bar.y);
+        ctx.restore();
+      });
+    });
+  },
+};
 function baseOpts(extraScales = {}) {
   return {
     responsive: true,
@@ -4021,7 +5145,7 @@ function renderChartDaily() {
     type: 'bar',
     data: { labels, datasets: [{
       data,
-      backgroundColor: data.map((_,i) => dates[i] === todayStr ? '#1d1d1f' : '#e8e8ed'),
+      backgroundColor: data.map((_,i) => dates[i] === todayStr ? '#1F4E54' : '#e8e8ed'),
       borderRadius: 4,
     }]},
     options: { ...baseOpts(), scales: {
@@ -4046,19 +5170,35 @@ function renderChartSubject() {
   });
   const labels = Object.keys(subjectSec);
   const data   = labels.map(k => Math.round(subjectSec[k]/60));
+  const colors = GRAY_PALETTE.slice(0, labels.length);
   charts.subject = new Chart(document.getElementById('chartSubject').getContext('2d'), {
     type: 'doughnut',
     data: { labels, datasets: [{
       data,
-      backgroundColor: GRAY_PALETTE.slice(0, labels.length),
+      backgroundColor: colors,
       borderWidth: 3, borderColor: '#fff',
     }]},
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: true, position:'right',
-        labels: { color:'#6e6e73', font:{size:11}, boxWidth:12 } } },
+      plugins: { legend: { display: false } },
     },
   });
+
+  /* Phase3-D: HTMLカスタム凡例（%表示） */
+  const legendEl = document.getElementById('chartSubjectLegend');
+  if (legendEl) {
+    const total = data.reduce((a, v) => a + v, 0);
+    legendEl.innerHTML = labels.length === 0
+      ? `<div style="font-size:.76rem;color:var(--text-3);">今日のデータがありません</div>`
+      : labels.map((label, i) => {
+          const pct = total > 0 ? Math.round(data[i] / total * 100) : 0;
+          return `<div class="chart-legend-item">
+            <span class="chart-legend-dot" style="background:${colors[i]}"></span>
+            <span class="chart-legend-name">${escHtml(label)}</span>
+            <span class="chart-legend-pct">${pct}%</span>
+          </div>`;
+        }).join('');
+  }
 }
 
 /* 3. 予定 vs 実績 */
@@ -4072,7 +5212,7 @@ function renderChartPlanVsActual() {
     type: 'bar',
     data: { labels, datasets: [
       { label:'予定', data:planned, backgroundColor:'#e8e8ed', borderRadius:5 },
-      { label:'実績', data:actual,  backgroundColor:'#1d1d1f', borderRadius:5 },
+      { label:'実績', data:actual,  backgroundColor:'#1F4E54', borderRadius:5 },
     ]},
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -4099,10 +5239,11 @@ function renderChartFocus() {
   charts.focus = new Chart(document.getElementById('chartFocus').getContext('2d'), {
     type: 'line',
     data: { labels, datasets: [{
-      data, borderColor:'#1d1d1f', backgroundColor:'rgba(29,29,31,.06)',
-      borderWidth:2, tension:0.35, pointBackgroundColor:'#1d1d1f', pointRadius:4,
+      data, borderColor:'#1F4E54', backgroundColor:'rgba(31,78,84,.08)',
+      borderWidth:2, tension:0.35, pointBackgroundColor:'#1F4E54', pointRadius:4,
       spanGaps:true, fill:true,
     }]},
+    plugins: [lineValueLabelPlugin],
     options: { ...baseOpts(), scales: {
       x: { grid:{display:false}, ticks:{color:'#aeaeb2',font:{size:11}} },
       y: { min:0, max:5, ticks:{stepSize:1,color:'#aeaeb2',font:{size:11}}, grid:{color:'#f0f0f2'} },
@@ -4123,6 +5264,7 @@ function renderChartReasons() {
       datasets: [{ data:sorted.map(e=>e[1]),
         backgroundColor: GRAY_PALETTE.slice(0, sorted.length), borderRadius:5 }],
     },
+    plugins: [barValueLabelPlugin],
     options: {
       responsive: true, maintainAspectRatio: false,
       indexAxis: 'y',
@@ -4278,6 +5420,13 @@ function renderMiniWeekChart() {
   const weekTotal = mins.reduce((a, v) => a + v, 0);
   if (totalEl) totalEl.textContent = weekTotal > 0 ? `${weekTotal}分` : '—';
 
+  const linkSub = document.getElementById('homeAnalysisLinkSub');
+  if (linkSub) {
+    linkSub.textContent = weekTotal > 0
+      ? `今週の学習時間: ${(Math.round(weekTotal / 6) / 10)}時間`
+      : '今週の学習時間を確認';
+  }
+
   const maxMin = Math.max(...mins, 1);
 
   wrap.innerHTML = dates.map((d, i) => {
@@ -4311,7 +5460,7 @@ function openQuickAddModal() {
     grid.innerHTML = getSubjects().map(s => `
       <button class="subject-btn" data-qsubj="${escHtml(s.name)}"
         onclick="selectQuickSubj('${escHtml(s.name)}', this)">
-        <span class="subj-icon">${s.emoji}</span>${escHtml(s.name)}
+        <span class="subj-icon">${subjectIconHTML(s)}</span>${escHtml(s.name)}
       </button>`).join('');
   }
 
@@ -4397,13 +5546,15 @@ document.getElementById('quickAddModal').addEventListener('click', e => {
  */
 function exportData() {
   const payload = {
-    version:    1,
+    version:    2,
     exportedAt: new Date().toISOString(),
     data: {
-      tasks:     getTasks(),
-      reviews:   getReviews(),
-      sessions:  getSessions(),
-      templates: getTemplates(),
+      tasks:             getTasks(),
+      reviews:           getReviews(),
+      sessions:          getSessions(),
+      templates:         getTemplates(),
+      weeklyGoals:       getWeeklyGoals(),
+      periodReflections: getPeriodReflections(),
     },
   };
   const json = JSON.stringify(payload, null, 2);
@@ -4442,26 +5593,33 @@ function importData(event) {
     try {
       const parsed = JSON.parse(e.target.result);
 
-      /* バージョンチェック */
+      /* バージョンチェック（v1: 旧バックアップ, v2: 週次目標/期間振り返り追加） */
       if (typeof parsed.version !== 'number') throw new Error('バージョン情報がありません。StudyFlowのバックアップファイルか確認してください');
-      if (parsed.version > 1) throw new Error(`このファイルはより新しいバージョン(v${parsed.version})のバックアップです。アプリを最新版にしてください`);
+      if (parsed.version > 2) throw new Error(`このファイルはより新しいバージョン(v${parsed.version})のバックアップです。アプリを最新版にしてください`);
 
       /* 基本構造チェック */
       if (!parsed.data || typeof parsed.data !== 'object') throw new Error('ファイルの形式が正しくありません');
 
-      const { tasks = [], reviews = [], sessions = [], templates = [] } = parsed.data;
+      const {
+        tasks = [], reviews = [], sessions = [], templates = [],
+        weeklyGoals = [], periodReflections = [],   /* v1ファイルには無いため空配列にフォールバック */
+      } = parsed.data;
 
       /* 各データが配列であることを確認 */
-      if (!Array.isArray(tasks))     throw new Error('tasks のデータ形式が不正です');
-      if (!Array.isArray(reviews))   throw new Error('reviews のデータ形式が不正です');
-      if (!Array.isArray(sessions))  throw new Error('sessions のデータ形式が不正です');
-      if (!Array.isArray(templates)) throw new Error('templates のデータ形式が不正です');
+      if (!Array.isArray(tasks))             throw new Error('tasks のデータ形式が不正です');
+      if (!Array.isArray(reviews))           throw new Error('reviews のデータ形式が不正です');
+      if (!Array.isArray(sessions))          throw new Error('sessions のデータ形式が不正です');
+      if (!Array.isArray(templates))         throw new Error('templates のデータ形式が不正です');
+      if (!Array.isArray(weeklyGoals))       throw new Error('weeklyGoals のデータ形式が不正です');
+      if (!Array.isArray(periodReflections)) throw new Error('periodReflections のデータ形式が不正です');
 
       /* 保存 */
       saveTasks(tasks);
       saveReviews(reviews);
       saveSessions(sessions);
       saveTemplates(templates);
+      saveWeeklyGoals(weeklyGoals);
+      savePeriodReflections(periodReflections);
 
       /* インポート中にタイマーが動いていた場合は状態をクリア（矛盾防止） */
       saveTimerState(null);
