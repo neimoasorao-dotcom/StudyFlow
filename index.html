@@ -1521,9 +1521,17 @@ input, textarea, select { font-family: inherit; }
   margin-bottom: 16px;
   align-items: start;
 }
-.sched-col { padding: 16px 18px; }
+/* バグ修正: グリッドアイテムはデフォルトでmin-width:autoのため、
+   中の要素(7列の曜日アジェンダ等)が持つ最小コンテンツ幅に応じて
+   カード自体が広がってしまう。min-width:0で明示的に縮小を許可する。 */
+.sched-grid-2col > .card,
+.review-2col > .card,
+.charts-grid > .chart-card { min-width: 0; }
 @media (max-width: 900px) {
   .sched-grid-2col { grid-template-columns: 1fr; }
+}
+@media (min-width: 768px) {
+  .sched-col { padding: 16px 18px; }
 }
 
 /* 週次目標カード */
@@ -1543,12 +1551,14 @@ input, textarea, select { font-family: inherit; }
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
+  min-width: 0;
 }
 .agenda-col {
   background: var(--surface-2);
   border-radius: var(--r-xs);
   padding: 6px 3px 7px;
   min-height: 110px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1566,13 +1576,16 @@ input, textarea, select { font-family: inherit; }
   padding: 3px 4px; cursor: pointer;
   box-shadow: 0 1px 2px rgba(0,0,0,.06);
 }
-.agenda-chip .sf-icon { width: 1.05em; height: 1.05em; border-radius: 22%; }
+.agenda-chip .sf-icon { width: 1.05em; height: 1.05em; border-radius: 22%; flex-shrink: 0; }
 .agenda-chip-text { font-size: .6rem; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .agenda-chip-done { opacity: .45; }
 .agenda-chip-done .agenda-chip-text { text-decoration: line-through; }
 .agenda-empty { font-size: .62rem; color: var(--text-3); text-align: center; padding-top: 10px; }
 @media (max-width: 700px) {
-  .agenda-grid { grid-template-columns: repeat(7, minmax(60px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
+  /* スマホ幅では列の最小幅を縮小し、横スクロールに依存せず収まるようにする */
+  .agenda-grid { grid-template-columns: repeat(7, minmax(36px, 1fr)); gap: 3px; overflow-x: auto; padding-bottom: 4px; }
+  .agenda-col { padding: 5px 2px 6px; }
+  .agenda-chip-text { font-size: .55rem; }
 }
 .tpl-section-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -1818,7 +1831,8 @@ input, textarea, select { font-family: inherit; }
   }
   .page {
     padding: 44px 48px;
-    max-width: 760px;
+    max-width: 1180px;
+    margin: 0 auto;
   }
   .stats-row { grid-template-columns: repeat(4, 1fr); }
   .subject-grid { grid-template-columns: repeat(6, 1fr); }
