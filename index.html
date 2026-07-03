@@ -3445,7 +3445,7 @@ function saveTemplates(v)  { save(LS_KEYS.templates, v); }
 function getWeeklyGoals()   { return load(LS_KEYS.weeklyGoals); }
 function saveWeeklyGoals(v) { save(LS_KEYS.weeklyGoals, v); }
 
-/** 教科の週次目標時間を追加・更新する（同じ教科は上書き） */
+/** 教科の週次目標時間を追加・更新する（同じ教科は上書き。subject=''は全体目標） */
 function upsertWeeklyGoal(subject, targetHours) {
   const list = getWeeklyGoals();
   const g = list.find(x => x.subject === subject);
@@ -3455,6 +3455,9 @@ function upsertWeeklyGoal(subject, targetHours) {
 }
 function deleteWeeklyGoal(id) {
   saveWeeklyGoals(getWeeklyGoals().filter(g => g.id !== id));
+  /* バグ修正: 削除後にUIを更新する（元の実装は保存のみで再描画がなかった） */
+  renderWeeklyGoalsList();
+  renderWeeklyAgenda(); /* アジェンダ内の目標バッジも更新 */
 }
 
 /* ============================================================
@@ -3480,11 +3483,12 @@ function weekDates(mondayStr) {
 /** 今日が属する週の月曜日付 */
 function currentMonday() { return mondayOf(today()); }
 
-/** 指定教科の「今週」の実績時間（時間, 小数1桁）を返す。タスクのactualTime(秒)を集計。 */
+/** 指定教科の「今週」の実績時間（時間, 小数1桁）を返す。
+ *  subject が '' または null の場合は全教科の合計を返す（全体目標用）。 */
 function calcWeeklyActual(subject, mondayStr = currentMonday()) {
   const dates = weekDates(mondayStr);
   const seconds = getTasks()
-    .filter(t => t.subject === subject && dates.includes(t.date))
+    .filter(t => (!subject || t.subject === subject) && dates.includes(t.date))
     .reduce((sum, t) => sum + (Number(t.actualTime) || 0), 0);
   return Math.round((seconds / 3600) * 10) / 10;
 }
@@ -3896,7 +3900,7 @@ function renderScheduleList() {
 /* ============================================================
    Phase3-A: 週次目標（常設ターゲット） UI
 ============================================================ */
-const weeklyGoalFormState = { subj: '', hours: 5 };
+const weeklyGoalFormState = { subj: '', hours: 5, subjSet: false };
 
 function renderWeeklyGoalsList() {
   const list = document.getElementById('weeklyGoalsList');
@@ -3904,21 +3908,26 @@ function renderWeeklyGoalsList() {
   const goals = getWeeklyGoals();
   if (goals.length === 0) {
     list.innerHTML = `<div class="empty-state" style="padding:18px 0;">
-      <p>週次目標がまだありません。<br>教科ごとに週間の学習時間目標を設定しましょう。</p>
+      <p>週次目標がまだありません。<br>教科ごと、または全体の週間学習時間目標を設定しましょう。</p>
     </div>`;
     return;
   }
   list.innerHTML = goals.map(g => {
-    const subj   = subjectByName(g.subject);
-    const actual = calcWeeklyActual(g.subject);
+    /* subject=''は全体目標 */
+    const isAll  = !g.subject;
+    const subj   = isAll ? null : subjectByName(g.subject);
+    const actual = calcWeeklyActual(g.subject); /* ''の場合は全教科合計 */
     const pct    = Math.min(Math.round(actual / g.targetHours * 100), 100);
     const met    = actual >= g.targetHours;
+    const label  = isAll
+      ? `<span style="display:inline-flex;align-items:center;gap:5px;">📅 全体: ${g.targetHours}時間</span>`
+      : `${subjectIconHTML(subj)} ${escHtml(g.subject)}: ${g.targetHours}時間`;
     return `<div class="weekly-goal-card">
       <div class="weekly-goal-top">
-        <span class="weekly-goal-subj">${subjectIconHTML(subj)} ${escHtml(g.subject)}: ${g.targetHours}時間
+        <span class="weekly-goal-subj">${label}
           <span class="weekly-goal-status">${met ? '（達成）' : '（未達）'}</span>
         </span>
-        <button class="task-action-btn" onclick="deleteWeeklyGoal('${g.id}')" title="削除" style="font-size:.8rem;color:var(--text-3);">×</button>
+        <button class="task-action-btn" onclick="deleteWeeklyGoal('${g.id}')" title="削除" style="font-size:.9rem;color:var(--text-3);line-height:1;">×</button>
       </div>
       <div class="progress-bar-wrap" style="margin-top:7px;">
         <div class="progress-bar-fill" style="width:${pct}%;"></div>
@@ -3942,15 +3951,26 @@ function toggleWeeklyGoalForm() {
 function renderWeeklyGoalSubjectGrid() {
   const grid = document.getElementById('weeklyGoalSubjectGrid');
   if (!grid) return;
-  grid.innerHTML = getSubjects().map(s => `
+  /* 「全体」ボタン（subject=''）を先頭に追加 */
+  const allBtn = `<button class="subject-btn${weeklyGoalFormState.subj === '' && weeklyGoalFormState.subjSet ? ' selected' : ''}"
+    onclick="selectWeeklyGoalSubject('')"
+    style="grid-column:1/-1;background:${weeklyGoalFormState.subj===''&&weeklyGoalFormState.subjSet?'var(--primary)':'var(--surface-2)'};
+           color:${weeklyGoalFormState.subj===''&&weeklyGoalFormState.subjSet?'#fff':'var(--text-2)'};">
+    📅 全体（教科を指定しない）
+  </button>`;
+  grid.innerHTML = allBtn + getSubjects().map(s => `
     <button class="subject-btn ${weeklyGoalFormState.subj === s.name ? 'selected' : ''}"
-      onclick="selectWeeklyGoalSubject('${s.name}')">
-      <span class="subj-icon">${subjectIconHTML(s)}</span>${s.name}
+      onclick="selectWeeklyGoalSubject('${escHtml(s.name)}')">
+      <span class="subj-icon">${subjectIconHTML(s)}</span>${escHtml(s.name)}
     </button>`).join('');
   document.getElementById('weeklyGoalHoursDisp').textContent = weeklyGoalFormState.hours;
 }
 
-function selectWeeklyGoalSubject(name) { weeklyGoalFormState.subj = name; renderWeeklyGoalSubjectGrid(); }
+function selectWeeklyGoalSubject(name) {
+  weeklyGoalFormState.subj    = name;
+  weeklyGoalFormState.subjSet = true; /* 明示的に選択されたことを記録 */
+  renderWeeklyGoalSubjectGrid();
+}
 
 function adjustWeeklyGoalHours(d) {
   weeklyGoalFormState.hours = Math.max(1, Math.min(40, weeklyGoalFormState.hours + d));
@@ -3958,11 +3978,15 @@ function adjustWeeklyGoalHours(d) {
 }
 
 function saveWeeklyGoalForm() {
-  if (!weeklyGoalFormState.subj) { showToast('教科を選んでください'); return; }
+  /* 教科選択は任意。「全体」選択（subjSet=true, subj=''）も有効 */
+  if (!weeklyGoalFormState.subjSet) { showToast('教科または「全体」を選んでください'); return; }
   upsertWeeklyGoal(weeklyGoalFormState.subj, weeklyGoalFormState.hours);
-  showToast('週次目標を保存しました');
-  weeklyGoalFormState.subj  = '';
-  weeklyGoalFormState.hours = 5;
+  showToast(weeklyGoalFormState.subj
+    ? `${weeklyGoalFormState.subj} の週次目標を保存しました`
+    : '全体の週次目標を保存しました');
+  weeklyGoalFormState.subj    = '';
+  weeklyGoalFormState.hours   = 5;
+  weeklyGoalFormState.subjSet = false;
   const body   = document.getElementById('weeklyGoalFormBody');
   const toggle = document.getElementById('weeklyGoalFormToggle');
   if (body) body.style.display = 'none';
@@ -4121,25 +4145,52 @@ function selectTimerTask() {
    Phase3-B: 今日の目標 / 週次進捗バー（タイマー画面）
 ============================================================ */
 function updateTimerGoalBars() {
-  const goalMin  = getDailyGoal();
-  const studyMin = calcTodayStudyMin();
-  const pct      = Math.min(Math.round(studyMin / goalMin * 100), 100);
+  const goalMin = getDailyGoal();
+
+  /* calcTodayStudyMin() / calcWeeklyActual() はlocalStorage保存済みの値しか読まない。
+     タイマー稼働中の経過秒はまだ書き込まれていないため、ここで手動加算してリアルタイム表示にする。
+     休憩中（ポモドーロ）は学習時間にカウントしない。 */
+  const isCountingStudy = timerRunning && !(pomoMode !== 'free' && pomoPhase === 'break');
+  const liveElapsedSec  = isCountingStudy ? getElapsedSeconds() : 0;
+  const liveElapsedMin  = liveElapsedSec / 60;
+
+  /* ---- 今日の目標バー ---- */
+  const savedMin  = calcTodayStudyMin();          /* 保存済みの今日の分数 */
+  const totalMin  = savedMin + liveElapsedMin;    /* 現在進行中のセッションを加算 */
+  const dispMin   = Math.floor(totalMin);         /* 表示は秒単位でちらつかないよう切り捨て */
+  const pct       = Math.min(totalMin / goalMin * 100, 100);
+
   const dailyText = document.getElementById('timerDailyGoalText');
   const dailyBar  = document.getElementById('timerDailyGoalBar');
-  if (dailyText) dailyText.textContent = `${studyMin} / ${goalMin} 分`;
-  if (dailyBar)  dailyBar.style.width  = pct + '%';
+  if (dailyText) dailyText.textContent = `${dispMin} / ${goalMin} 分`;
+  if (dailyBar)  dailyBar.style.width  = pct.toFixed(1) + '%';
 
+  /* ---- 週次進捗バー ---- */
   const weeklyCard = document.getElementById('timerWeeklyGoalCard');
   if (!weeklyCard) return;
-  const task = currentTimerTaskId ? getTasks().find(t => t.id === currentTimerTaskId) : null;
-  const goal = task ? getWeeklyGoals().find(g => g.subject === task.subject) : null;
+  const goals = getWeeklyGoals();
+  if (!goals.length) { weeklyCard.style.display = 'none'; return; }
+
+  const currentTask = currentTimerTaskId ? getTasks().find(t => t.id === currentTimerTaskId) : null;
+  const goal = (currentTask ? goals.find(g => g.subject === currentTask.subject) : null)
+             || goals.find(g => !g.subject);
+
   if (goal) {
     weeklyCard.style.display = 'block';
-    const actual = calcWeeklyActual(goal.subject);
-    const wpct   = Math.min(Math.round(actual / goal.targetHours * 100), 100);
-    document.getElementById('timerWeeklyGoalSubjLabel').textContent = `週次進捗（${goal.subject}）`;
-    document.getElementById('timerWeeklyGoalText').textContent      = `${actual} / ${goal.targetHours} 時間`;
-    document.getElementById('timerWeeklyGoalBar').style.width       = wpct + '%';
+
+    /* calcWeeklyActual() も保存済みデータのみ参照するため、現在セッション分を加算する。
+       全体目標（subject=''）の場合は常に加算。教科別目標は教科が一致するときのみ加算。 */
+    const savedActualHours = calcWeeklyActual(goal.subject);
+    const liveExtraHours   = (!goal.subject || (currentTask && currentTask.subject === goal.subject))
+                             ? liveElapsedSec / 3600
+                             : 0;
+    const totalHours = Math.round((savedActualHours + liveExtraHours) * 10) / 10;
+    const wpct       = Math.min(totalHours / goal.targetHours * 100, 100);
+    const label      = goal.subject ? `週次進捗（${goal.subject}）` : '週次進捗（全体）';
+
+    document.getElementById('timerWeeklyGoalSubjLabel').textContent = label;
+    document.getElementById('timerWeeklyGoalText').textContent      = `${totalHours} / ${goal.targetHours} 時間`;
+    document.getElementById('timerWeeklyGoalBar').style.width       = wpct.toFixed(1) + '%';
   } else {
     weeklyCard.style.display = 'none';
   }
@@ -4388,33 +4439,38 @@ function updateTimerUI() {
   const elapsed = getElapsedSeconds();
   const mode    = pomoMode;
   const ring    = document.getElementById('timerRing');
+  const circ    = 2 * Math.PI * 97; /* 周長 ≈ 610 */
 
   const breakWrap = document.getElementById('btnBreakWrap');
   if (breakWrap) breakWrap.style.display = (mode !== 'free' && timerRunning) ? 'flex' : 'none';
 
+  /* ---- リング: モードによらず「今日の累計学習時間 ÷ 日次目標」で統一 ----
+     calcTodayStudyMin() は「完了済みセッションの分数」を返す（今走っているタイマーは未含）。
+     現在のセッションの経過秒を加算することで、リアルタイムに増えていく表示になる。
+     休憩中（pomoPhase==='break'）は加算しない（勉強時間にカウントしない）。 */
+  if (ring) {
+    const goalSec      = getDailyGoal() * 60;
+    const doneSec      = calcTodayStudyMin() * 60;
+    const activeSec    = (mode !== 'free' && pomoPhase === 'break') ? 0 : elapsed;
+    const totalSec     = doneSec + activeSec;
+    const ringPct      = goalSec > 0 ? Math.min(totalSec / goalSec, 1) : 0;
+    ring.style.strokeDashoffset = circ * (1 - ringPct);
+    if (mode !== 'free' && pomoPhase === 'break') ring.classList.add('break-mode');
+    else                                           ring.classList.remove('break-mode');
+  }
+
   if (mode === 'free') {
-    /* ---- フリーモード: カウントアップ ---- */
+    /* ---- フリーモード: 表示はカウントアップ ---- */
     const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
     const ss = String(elapsed % 60).padStart(2, '0');
     document.getElementById('timerDisplay').textContent = `${mm}:${ss}`;
     document.getElementById('timerElapsed').textContent = `経過 ${Math.round(elapsed / 60)} 分`;
 
-    /* リング進捗（フリーモードは予定時間に対して増える） */
-    const task  = currentTimerTaskId ? getTasks().find(t => t.id === currentTimerTaskId) : null;
-    const total = task ? task.plannedTime * 60 : 1800;
-    const pct   = Math.min(elapsed / total, 1);
-    const circ  = 2 * Math.PI * 97;
-    if (ring) {
-      ring.style.strokeDashoffset = circ * (1 - pct);
-      ring.classList.remove('break-mode');
-    }
-
-    /* ポモドーロ表示を隠す */
     document.getElementById('pomoPhaseLabel').textContent = '';
     document.getElementById('pomoDots').innerHTML = '';
 
   } else {
-    /* ---- ポモドーロ / 集中モード: カウントダウン ---- */
+    /* ---- ポモドーロ / 集中モード: 表示はフェーズのカウントダウン ---- */
     const cfg      = POMO_SETTINGS[mode];
     const phaseLen = pomoPhase === 'work' ? cfg.work : cfg.brk;
     const phaseElapsed = elapsed - _pomoPhaseStartSec;
@@ -4425,18 +4481,9 @@ function updateTimerUI() {
     document.getElementById('timerDisplay').textContent = `${mm}:${ss}`;
     document.getElementById('timerElapsed').textContent = `経過 ${Math.round(elapsed / 60)} 分`;
 
-    /* リング: 残り時間で減るアニメーション + 休憩時は色変更 */
-    const pct  = remaining / phaseLen;
-    const circ = 2 * Math.PI * 97;
-    if (ring) {
-      ring.style.strokeDashoffset = circ * (1 - pct);
-      if (pomoPhase === 'break') ring.classList.add('break-mode');
-      else                       ring.classList.remove('break-mode');
-    }
-
     /* フェーズラベル */
-    const phaseWorkMin = Math.floor(cfg.work / 60);
-    const phaseBrkMin  = Math.floor(cfg.brk  / 60);
+    const phaseWorkMin  = Math.floor(cfg.work / 60);
+    const phaseBrkMin   = Math.floor(cfg.brk  / 60);
     const phaseWorkDisp = String(phaseWorkMin).padStart(2, '0') + ':00';
     const phaseBrkDisp  = String(phaseBrkMin ).padStart(2, '0') + ':00';
     document.getElementById('pomoPhaseLabel').textContent =
@@ -4457,15 +4504,12 @@ function updateTimerUI() {
     if (timerRunning && remaining === 0) {
       playBeep();
       if (pomoPhase === 'work') {
-        /* 作業フェーズ完了 → セッションカウント増加、休憩フェーズへ */
         pomoSessionCount = (pomoSessionCount + 1) >= 4 ? 0 : (pomoSessionCount + 1);
         pomoPhase = 'break';
       } else {
-        /* 休憩フェーズ完了 → 作業フェーズへ */
         pomoPhase = 'work';
       }
       _pomoPhaseStartSec = elapsed;
-      /* 状態を保存 */
       const st = getTimerState();
       if (st) {
         st.pomoPhase         = pomoPhase;
@@ -5009,8 +5053,25 @@ function renderAnalysis() {
 /* Phase3-D: 週次目標達成率ゲージ（CSS conic-gradientのみで描画） */
 function renderWeeklyGoalGauge() {
   const goals = getWeeklyGoals();
-  const totalTarget = goals.reduce((s, g) => s + g.targetHours, 0);
-  const totalActual = goals.reduce((s, g) => s + calcWeeklyActual(g.subject), 0);
+  let totalTarget = 0;
+  let totalActual = 0;
+
+  if (goals.length === 0) {
+    /* 目標未設定 */
+  } else {
+    const hasAllGoal = goals.some(g => !g.subject);
+    if (hasAllGoal) {
+      /* 全体目標がある場合: 全体目標1本で集計（教科別目標との重複加算を防ぐ）*/
+      const allGoal = goals.find(g => !g.subject);
+      totalTarget = allGoal.targetHours;
+      totalActual = calcWeeklyActual(''); /* 全教科合計 */
+    } else {
+      /* 教科別目標のみの場合: 教科ごとに積み上げ */
+      totalTarget = goals.reduce((s, g) => s + g.targetHours, 0);
+      totalActual = goals.reduce((s, g) => s + calcWeeklyActual(g.subject), 0);
+    }
+  }
+
   const pct    = totalTarget > 0 ? Math.min(Math.round(totalActual / totalTarget * 100), 100) : 0;
   const streak = calcGoalStreakDays(7);
 
