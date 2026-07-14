@@ -56,7 +56,67 @@
   --prio-high: #E0594B;
   --prio-mid:  #EAA23C;
   --prio-low:  #3D7FA6;
+  --prio-low-bg:  #E6F1FB;  --prio-low-text:  #225573;
+  --prio-mid-bg:  #FAEEDA;  --prio-mid-text:  #854F0B;
+  --prio-high-bg: #FCEBEB;  --prio-high-text: #A3372D;
+
+  /* ヒーローカード専用背景（ライト/ダーク共通で白文字とのコントラストを保つ） */
+  --hero-bg: #1F4E54;
+
+  /* 8pxベースのスペーシングスケール（Linearのデザインシステムを参考） */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
 }
+
+/* ============================================================
+   ダークモード
+   参考: Linear / GitHub / Arc Browser。純黒ではなく僅かに青みのある
+   ダークグレーを基調とし、プライマリカラーはダーク背景でも視認できる
+   よう明るめに調整している。
+============================================================ */
+:root[data-theme="dark"] {
+  --bg:          #14181A;
+  --surface:     #1D2224;
+  --surface-2:   #242A2C;
+  --surface-3:   #303739;
+  --border:      #3A4143;
+  --text-1:      #EDEFEF;
+  --text-2:      #9BA4A7;
+  --text-3:      #676F72;
+
+  --primary:        #357076;
+  --primary-hover:  #428890;
+  --primary-light:  #1E3336;
+  --primary-soft:   #6FAFB4;
+
+  --accent-orange:       #E8965A;
+  --accent-orange-light: #3A2C1E;
+  --accent-gold:         #EDC069;
+
+  --shadow:    0 2px 10px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.3);
+  --shadow-md: 0 6px 22px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.35);
+
+  --prio-high: #E8776A;
+  --prio-mid:  #EDB35F;
+  --prio-low:  #5B9BC4;
+  --prio-low-bg:  #1C2E38;  --prio-low-text:  #7FB5D6;
+  --prio-mid-bg:  #332A18;  --prio-mid-text:  #EDB35F;
+  --prio-high-bg: #33201D;  --prio-high-text: #EC9186;
+}
+:root[data-theme="dark"] .cal-cell[data-level="1"] { background: #223638; }
+:root[data-theme="dark"] .cal-cell[data-level="1"] .cal-cell-num { color: var(--text-2); }
+:root[data-theme="dark"] .cal-cell[data-level="2"] { background: #2C5054; }
+:root[data-theme="dark"] .cal-cell[data-level="3"] { background: #366E73; }
+:root[data-theme="dark"] .badge-tile-icon { filter: grayscale(1) brightness(.6); }
+:root[data-theme="dark"] .badge-tile.unlocked .badge-tile-icon { filter: none; }
+:root[data-theme="dark"] .onboard-overlay,
+:root[data-theme="dark"] .modal-overlay,
+:root[data-theme="dark"] .cmdk-overlay { background: rgba(0,0,0,.6); }
 
 /* ============================================================
    リセット
@@ -138,6 +198,119 @@ input, textarea, select { font-family: inherit; }
 .sidebar-nav .nav-item:hover  { background: var(--surface-2); color: var(--text-1); }
 .sidebar-nav .nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 500; }
 
+/* コマンドパレット起動ボタン（サイドバー） */
+.sidebar-top-row {
+  display: flex;
+  gap: 6px;
+  margin: 12px 10px 0;
+}
+.cmdk-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  padding: 9px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-3);
+  font-size: .8rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s, border-color .15s;
+}
+.cmdk-trigger:hover { background: var(--surface); border-color: var(--text-3); }
+.cmdk-trigger-icon { font-size: .9rem; }
+.cmdk-trigger-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmdk-trigger-kbd {
+  font-size: .66rem;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--text-3);
+}
+.theme-toggle-btn {
+  flex-shrink: 0;
+  width: 34px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-2);
+  font-size: .92rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.theme-toggle-btn:hover { background: var(--surface); border-color: var(--text-3); }
+@media (max-width: 767px) {
+  .sidebar-top-row { display: none; }
+}
+
+/* ============================================================
+   コマンドパレット（⌘K）
+============================================================ */
+.cmdk-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,20,22,.45);
+  z-index: 500;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: min(14vh, 120px);
+}
+.cmdk-overlay.open { display: flex; }
+.cmdk-box {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 16px;
+  background: var(--surface);
+  border-radius: var(--r);
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+}
+.cmdk-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.cmdk-input-icon { color: var(--text-3); font-size: 1rem; }
+.cmdk-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font: inherit;
+  font-size: .95rem;
+  background: transparent;
+  color: var(--text-1);
+}
+.cmdk-input::placeholder { color: var(--text-3); }
+.cmdk-list { overflow-y: auto; padding: 8px; }
+.cmdk-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  color: var(--text-1);
+}
+.cmdk-item.active { background: var(--primary-light); }
+.cmdk-item-icon { width: 22px; text-align: center; font-size: .95rem; }
+.cmdk-item-label { flex: 1; font-size: .88rem; }
+.cmdk-item-group { font-size: .68rem; color: var(--text-3); }
+.cmdk-item.active .cmdk-item-group { color: var(--primary); }
+.cmdk-empty { padding: 30px 0; text-align: center; color: var(--text-3); font-size: .84rem; }
+
 .sidebar-bottom {
   padding: 16px;
   border-top: 1px solid var(--border);
@@ -158,7 +331,7 @@ input, textarea, select { font-family: inherit; }
 }
 
 /* ---- ページ共通 ---- */
-.page { display: none; padding: 28px 18px; }
+.page { display: none; padding: var(--space-5) var(--space-4); }
 .page.active { display: block; }
 
 /* ---- 下部ナビ (スマホ) ---- */
@@ -296,9 +469,9 @@ input, textarea, select { font-family: inherit; }
 .card {
   background: var(--surface);
   border-radius: var(--r);
-  padding: 22px 20px;
+  padding: var(--space-5) var(--space-4);
   box-shadow: var(--shadow);
-  margin-bottom: 14px;
+  margin-bottom: var(--space-4);
 }
 .card-title {
   font-size: .72rem;
@@ -308,6 +481,120 @@ input, textarea, select { font-family: inherit; }
   letter-spacing: .6px;
   margin-bottom: 14px;
 }
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.card-title-row .card-title { margin-bottom: 0; }
+.freeze-indicator {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--surface-2);
+  padding: 4px 10px;
+  border-radius: 100px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: default;
+}
+
+/* 実績バッジ */
+/* 実績バッジ */
+.records-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.record-tile { text-align: center; }
+.record-tile-num { font-size: 1.3rem; font-weight: 700; color: var(--text-1); }
+.record-tile-num span { font-size: .68rem; font-weight: 500; color: var(--text-3); margin-left: 2px; }
+.record-tile-label { font-size: .68rem; color: var(--text-3); margin-top: 2px; }
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+}
+.badge-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 14px 6px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  transition: transform .15s;
+}
+.badge-tile.unlocked { background: var(--primary-light); }
+.badge-tile.unlocked:hover { transform: translateY(-2px); }
+.badge-tile-icon { font-size: 1.7rem; filter: grayscale(1); opacity: .35; }
+.badge-tile.unlocked .badge-tile-icon { filter: none; opacity: 1; }
+.badge-tile-name { font-size: .68rem; font-weight: 600; color: var(--text-3); line-height: 1.3; }
+.badge-tile.unlocked .badge-tile-name { color: var(--primary); }
+
+/* 実績解除トースト */
+.badge-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--text-1);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: var(--r);
+  box-shadow: 0 8px 28px rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 400;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, transform .25s;
+}
+.badge-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.badge-toast-icon { font-size: 1.8rem; }
+.badge-toast-title { font-size: .66rem; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: .5px; }
+.badge-toast-name { font-size: .92rem; font-weight: 700; }
+
+/* Undo付きトースト */
+.undo-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text-1);
+  color: #fff;
+  padding: 11px 12px 11px 18px;
+  border-radius: var(--r);
+  box-shadow: 0 8px 28px rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 400;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  font-size: .84rem;
+}
+.undo-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.undo-toast-btn {
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  border: none;
+  padding: 7px 14px;
+  border-radius: var(--r-sm);
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.undo-toast-btn:hover { background: rgba(255,255,255,.25); }
 
 /* ボタン系 */
 .btn {
@@ -450,7 +737,7 @@ input, textarea, select { font-family: inherit; }
    ① ホーム画面
 ============================================================ */
 .home-hero {
-  background: var(--primary);
+  background: var(--hero-bg);
   border-radius: var(--r);
   padding: 26px 22px;
   margin-bottom: 14px;
@@ -479,6 +766,16 @@ input, textarea, select { font-family: inherit; }
   border-radius: 100px;
   font-size: .8rem;
   font-weight: 500;
+  color: rgba(255,255,255,.85);
+}
+/* ヒーロー内: 今日の状況に応じた一言コメント（PC限定・分析ページのautoCommentと同様の役割） */
+.home-hero-msg {
+  margin-top: 16px;
+  background: rgba(255,255,255,.1);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-size: .85rem;
+  line-height: 1.6;
   color: rgba(255,255,255,.85);
 }
 
@@ -707,9 +1004,47 @@ input, textarea, select { font-family: inherit; }
   transition: background .15s, color .15s, border-color .15s;
 }
 .priority-btn:hover { background: var(--surface-2); color: var(--text-1); }
-.priority-btn.sel-low  { background: #E6F1FB; border-color: var(--prio-low);  color: #225573; font-weight: 500; }
-.priority-btn.sel-mid  { background: #FAEEDA; border-color: var(--prio-mid);  color: #854F0B; font-weight: 500; }
-.priority-btn.sel-high { background: #FCEBEB; border-color: var(--prio-high); color: #A3372D; font-weight: 500; }
+.priority-btn.sel-low  { background: var(--prio-low-bg);  border-color: var(--prio-low);  color: var(--prio-low-text);  font-weight: 500; }
+.priority-btn.sel-mid  { background: var(--prio-mid-bg);  border-color: var(--prio-mid);  color: var(--prio-mid-text);  font-weight: 500; }
+.priority-btn.sel-high { background: var(--prio-high-bg); border-color: var(--prio-high); color: var(--prio-high-text); font-weight: 500; }
+
+/* 定期タスクの繰り返し設定 */
+.recur-btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 8px; }
+.recur-btn {
+  padding: 9px;
+  border-radius: var(--r-sm);
+  font-size: .82rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.recur-btn:hover { background: var(--surface-2); color: var(--text-1); }
+.recur-btn.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); font-weight: 500; }
+.recur-dow-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.recur-dow-btn {
+  padding: 8px 0;
+  border-radius: var(--r-sm);
+  font-size: .76rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+}
+.recur-dow-btn:hover { background: var(--surface-2); }
+.recur-dow-btn.sel { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
+
+/* 定期タスクの管理一覧 */
+.recurring-manage { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.recurring-manage-title { font-size: .72rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+.recurring-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; font-size: .82rem; }
+.recurring-item-icon { color: var(--primary); }
+.recurring-item-name { flex: 1; color: var(--text-1); }
+.recurring-item-freq { font-size: .72rem; color: var(--text-3); }
+.recurring-item-stop { border: none; background: var(--surface-2); color: var(--text-2); font-size: .72rem; padding: 5px 11px; border-radius: 100px; cursor: pointer; }
+.recurring-item-stop:hover { background: var(--surface-3); }
+.recur-badge { color: var(--primary); font-size: .78rem; margin-left: 4px; }
 
 /* ============================================================
    ③ タイマー画面
@@ -778,7 +1113,28 @@ input, textarea, select { font-family: inherit; }
   stroke: var(--primary);
   stroke-width: 8;
   stroke-linecap: round;
-  transition: stroke-dashoffset .5s ease;
+  transition: stroke-dashoffset .5s ease, stroke .3s ease;
+}
+/* 目標到達後（2周目以降）: 色を変えて「達成モード」であることを示す。
+   リング自体は0%からの周回を続けるため、達成後も勉強を続けるほど動き続ける。 */
+.timer-ring-fill.goal-achieved { stroke: var(--accent-gold); }
+.timer-ring-fill.ring-pulse { animation: timerRingPulse .9s ease; }
+@keyframes timerRingPulse {
+  0%   { stroke-width: 8;  filter: drop-shadow(0 0 0 transparent); }
+  35%  { stroke-width: 13; filter: drop-shadow(0 0 6px var(--accent-gold)); }
+  100% { stroke-width: 8;  filter: drop-shadow(0 0 0 transparent); }
+}
+.timer-lap-badge {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: var(--accent-orange-light);
+  color: var(--accent-orange);
+  font-size: .74rem;
+  font-weight: 700;
 }
 .timer-inner {
   position: absolute;
@@ -1058,10 +1414,30 @@ input, textarea, select { font-family: inherit; }
   margin-bottom: 14px;
   align-items: start;
 }
+/* グリッドアイテムはデフォルトでmin-width:autoのため、中の要素の最小コンテンツ幅に
+   応じてカード自体が広がってしまうことがある。min-width:0で明示的に縮小を許可する。 */
+.review-2col > .card,
+.charts-grid > .chart-card { min-width: 0; }
 @media (max-width: 900px) {
   .review-2col { grid-template-columns: 1fr; }
 }
 .review-period-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+.period-nav { display: flex; align-items: center; gap: 8px; height: 41px; }
+.period-nav-btn {
+  width: 30px; height: 30px; border-radius: var(--r-sm);
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text-2); font-size: .95rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.period-nav-btn:hover { background: var(--surface-2); }
+.period-nav-label { font-size: .84rem; font-weight: 600; color: var(--text-1); min-width: 88px; text-align: center; }
+.period-nav-today {
+  border: none; background: var(--primary-light); color: var(--primary);
+  font-size: .74rem; font-weight: 600; padding: 6px 12px; border-radius: 100px; cursor: pointer;
+  margin-left: 4px;
+}
+.period-nav-today:hover { opacity: .8; }
 
 /* インラインタスクレビュー行 */
 .review-row {
@@ -1134,7 +1510,7 @@ input, textarea, select { font-family: inherit; }
    ⑤ 分析画面
 ============================================================ */
 .today-summary {
-  background: var(--primary);
+  background: var(--hero-bg);
   border-radius: var(--r);
   padding: 24px 22px;
   color: #fff;
@@ -1171,6 +1547,18 @@ input, textarea, select { font-family: inherit; }
 .chart-title { font-size: .8rem; font-weight: 600; color: var(--text-2); margin-bottom: 16px; letter-spacing: .1px; }
 .chart-wrap  { position: relative; height: 190px; }
 .chart-wrap-sm { height: 140px; }
+
+/* 先週・先月との比較 */
+.compare-wrap { display: flex; flex-direction: column; gap: var(--space-4); height: 100%; justify-content: center; }
+.compare-row { display: flex; align-items: baseline; justify-content: space-between; }
+.compare-label { font-size: .78rem; color: var(--text-2); flex: 1; }
+.compare-value { font-size: 1.3rem; font-weight: 700; color: var(--text-1); }
+.compare-value span { font-size: .68rem; font-weight: 500; color: var(--text-3); margin-left: 2px; }
+.compare-delta { font-size: .74rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-left: 10px; white-space: nowrap; }
+.compare-delta.up   { background: var(--primary-light); color: var(--primary); }
+.compare-delta.down { background: var(--accent-orange-light); color: var(--accent-orange); }
+.compare-delta.flat { background: var(--surface-3); color: var(--text-3); }
+.compare-divider { border-top: 1px solid var(--border); }
 
 /* 教科別グラフのHTMLカスタム凡例（%表示付き） */
 .chart-legend-html { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
@@ -1314,6 +1702,10 @@ input, textarea, select { font-family: inherit; }
   #page-home .streak-pill {
     font-size: .68rem;
     padding: 3px 9px;
+  }
+  /* 一言コメントはPC限定。モバイルの1画面固定レイアウトでは非表示（スペース節約） */
+  #page-home .home-hero-msg {
+    display: none;
   }
 
   /* ---- ホーム: 統計カード（2列・コンパクト） ---- */
@@ -1468,27 +1860,7 @@ input, textarea, select { font-family: inherit; }
   }
 
   /* スケジュールのタスク一覧ラベル */
-  .schedule-list-wrap {
-    margin-top: 16px !important;
-  }
-
-  /* ---- スマホ固定「タスクを追加」ボタン ---- */
-  .sp-fixed-add {
-    position: fixed;
-    bottom: var(--nav-h);
-    left: 0; right: 0;
-    background: var(--bg);
-    border-top: 1px solid var(--border);
-    padding: 8px 14px;
-    z-index: 90;
-  }
-  .sp-fixed-add .btn {
-    padding: 13px 20px;
-    font-size: .9rem;
-    border-radius: 8px;
-  }
-  /* 元のページ内「タスクを追加」ボタンはスマホで隠す */
-  .sp-hide-on-mobile { display: none !important; }
+  /* ---- スマホ用 「タスクを追加」トグルの開閉アイコン等はJS側で処理 ---- */
 
 } /* end @media (max-width: 600px) */
 
@@ -1514,26 +1886,6 @@ input, textarea, select { font-family: inherit; }
 /* ============================================================
    Phase3-A: 予定作成ページ 2カラムレイアウト
 ============================================================ */
-.sched-grid-2col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-  align-items: start;
-}
-/* バグ修正: グリッドアイテムはデフォルトでmin-width:autoのため、
-   中の要素(7列の曜日アジェンダ等)が持つ最小コンテンツ幅に応じて
-   カード自体が広がってしまう。min-width:0で明示的に縮小を許可する。 */
-.sched-grid-2col > .card,
-.review-2col > .card,
-.charts-grid > .chart-card { min-width: 0; }
-@media (max-width: 900px) {
-  .sched-grid-2col { grid-template-columns: 1fr; }
-}
-@media (min-width: 768px) {
-  .sched-col { padding: 16px 18px; }
-}
-
 /* 週次目標カード */
 .weekly-goal-card {
   background: var(--surface-2);
@@ -1546,47 +1898,125 @@ input, textarea, select { font-family: inherit; }
 .weekly-goal-status { font-size: .72rem; font-weight: 500; color: var(--text-3); }
 .weekly-goal-frac { font-size: .72rem; color: var(--text-3); margin-top: 5px; text-align: right; }
 
-/* 今週のスケジュール: 曜日別アジェンダ */
-.agenda-grid {
+/* ============================================================
+   予定表: 統合スケジュールテーブル
+   （週次カレンダー・未完了タスクリスト・追加フォームを1つの表に統合）
+============================================================ */
+.sched-table-legend {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-  min-width: 0;
+  grid-template-columns: 22px 1fr 112px 118px 58px 56px 62px;
+  gap: 8px;
+  padding: 0 8px 6px;
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--text-3);
 }
-.agenda-col {
-  background: var(--surface-2);
+.sched-table { display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-1); }
+.sched-date-group { min-width: 0; }
+.sched-date-header {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  padding: 0 8px 7px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.sched-date-label { font-size: .84rem; font-weight: 700; color: var(--text-1); }
+.sched-date-header.is-today .sched-date-label { color: var(--primary); }
+.sched-date-header.is-overdue .sched-date-label { color: var(--prio-high); }
+.sched-date-badge {
+  font-size: .62rem; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+  background: var(--primary-light); color: var(--primary); margin-left: 8px; vertical-align: 2px;
+}
+.sched-date-header.is-overdue .sched-date-badge { background: #FBE4E1; color: var(--prio-high); }
+.sched-date-count { font-size: .72rem; color: var(--text-3); white-space: nowrap; }
+
+.sched-row {
+  display: grid;
+  grid-template-columns: 22px 1fr 112px 118px 58px 56px 62px;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
   border-radius: var(--r-xs);
-  padding: 6px 3px 7px;
-  min-height: 110px;
+  border-left: 3px solid transparent;
+  transition: background .15s;
+}
+.sched-row:hover { background: var(--surface-2); }
+.sched-row-flash { animation: schedRowFlash 1.6s ease; }
+@keyframes schedRowFlash {
+  0%, 100% { background: transparent; }
+  15%, 60% { background: var(--primary-light); }
+}
+.sched-row.prio-high { border-left-color: var(--prio-high); }
+.sched-row.prio-mid  { border-left-color: var(--prio-mid); }
+.sched-row.prio-low  { border-left-color: var(--prio-low); }
+.sched-row.is-done { opacity: .48; }
+.sched-row.is-done .sched-name-input { text-decoration: line-through; }
+.sched-row-meta { display: contents; }
+
+.sched-check { width: 17px; height: 17px; accent-color: var(--primary); cursor: pointer; }
+
+.sched-field {
+  border: 1px solid transparent;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  padding: 5px 7px;
+  border-radius: var(--r-xs);
+  width: 100%;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  cursor: pointer;
+  appearance: none; -webkit-appearance: none;
 }
-.agenda-col-today { background: var(--primary-light); }
-.agenda-col-head { text-align: center; }
-.agenda-dow { display: block; font-size: .64rem; color: var(--text-3); font-weight: 600; }
-.agenda-date { display: block; font-size: .78rem; font-weight: 700; color: var(--text-1); }
-.agenda-col-today .agenda-dow,
-.agenda-col-today .agenda-date { color: var(--primary); }
-.agenda-col-body { display: flex; flex-direction: column; gap: 3px; overflow-y: auto; max-height: 150px; }
-.agenda-chip {
-  display: flex; align-items: center; gap: 3px;
-  background: var(--surface); border-radius: 5px;
-  padding: 3px 4px; cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+.sched-field:hover { box-shadow: 0 0 0 1px var(--border) inset; }
+.sched-field:focus { background: var(--surface); box-shadow: 0 0 0 1px var(--primary-soft) inset; outline: none; cursor: text; }
+.sched-name-input { font-weight: 500; font-size: .87rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sched-name-input:focus { white-space: normal; }
+.sched-name-wrap { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.sched-name-wrap .sched-name-input { flex: 1; min-width: 0; }
+.sched-date-input { font-size: .74rem; color: var(--text-2); }
+.sched-subject-select { font-size: .78rem; cursor: pointer; }
+.sched-time-input { font-size: .82rem; text-align: right; cursor: text; }
+.sched-prio-select { font-size: .76rem; font-weight: 700; text-align: center; cursor: pointer; }
+.sched-prio-select.p-high { color: var(--prio-high); }
+.sched-prio-select.p-mid  { color: var(--prio-mid); }
+.sched-prio-select.p-low  { color: var(--prio-low); }
+
+.sched-actions { display: flex; gap: 2px; justify-content: flex-end; }
+.sched-action-btn {
+  width: 26px; height: 26px; border-radius: var(--r-xs); border: none;
+  background: transparent; color: var(--text-3); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: .78rem;
+  transition: background .15s, color .15s;
 }
-.agenda-chip .sf-icon { width: 1.05em; height: 1.05em; border-radius: 22%; flex-shrink: 0; }
-.agenda-chip-text { font-size: .6rem; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.agenda-chip-done { opacity: .45; }
-.agenda-chip-done .agenda-chip-text { text-decoration: line-through; }
-.agenda-empty { font-size: .62rem; color: var(--text-3); text-align: center; padding-top: 10px; }
+.sched-action-btn:hover { background: var(--surface-3); color: var(--text-1); }
+.sched-action-btn.del:hover { background: #fdf0ee; color: #c0392b; }
+
+.sched-empty { text-align: center; padding: 36px 0; color: var(--text-3); font-size: .84rem; }
+.sched-empty .empty-icon { font-size: 1.6rem; display: block; margin-bottom: 8px; }
+
 @media (max-width: 700px) {
-  /* スマホ幅では列の最小幅を縮小し、横スクロールに依存せず収まるようにする */
-  .agenda-grid { grid-template-columns: repeat(7, minmax(36px, 1fr)); gap: 3px; overflow-x: auto; padding-bottom: 4px; }
-  .agenda-col { padding: 5px 2px 6px; }
-  .agenda-chip-text { font-size: .55rem; }
+  .sched-table-legend { display: none; }
+  .sched-row {
+    grid-template-columns: 20px 1fr auto;
+    grid-template-areas:
+      "check name actions"
+      "meta  meta meta";
+    row-gap: 5px;
+    padding: 8px;
+  }
+  .sched-check      { grid-area: check; }
+  .sched-name-wrap { grid-area: name; }
+  .sched-name-input { white-space: normal; }
+  .sched-actions    { grid-area: actions; }
+  .sched-row-meta {
+    grid-area: meta; display: flex; flex-wrap: wrap; gap: 6px; padding-left: 28px;
+  }
+  .sched-row-meta .sched-field {
+    width: auto; flex: 0 0 auto; background: var(--surface-2); border-radius: 100px;
+    padding: 3px 9px; font-size: .68rem; text-align: left;
+  }
+  .sched-row-meta .sched-time-input { width: 44px; text-align: center; }
 }
+
 .tpl-section-header {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 8px;
@@ -1816,7 +2246,6 @@ input, textarea, select { font-family: inherit; }
 @media (min-width: 768px) {
   /* スマホ専用要素を PC では非表示 */
   .sp-topbar      { display: none; }
-  .sp-fixed-add   { display: none; }
   .sp-fixed-add-inline { display: none; }
   /* PC では sp-time-prio-row を縦並びレイアウトに */
   .sp-time-prio-row { display: block; }
@@ -1830,14 +2259,32 @@ input, textarea, select { font-family: inherit; }
     padding-bottom: 48px;
   }
   .page {
-    padding: 44px 48px;
+    padding: var(--space-6) var(--space-7);
     max-width: 1180px;
     margin: 0 auto;
   }
-  .stats-row { grid-template-columns: repeat(4, 1fr); }
   .subject-grid { grid-template-columns: repeat(6, 1fr); }
-  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .chart-card.chart-full { grid-column: 1 / -1; }
+  /* Bento Grid: 情報の重要度に応じてタイルサイズを変える（参考: Notion/Linear/Stripeの2026年デザイン潮流） */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      "daily daily subject subject"
+      "daily daily goal    goal"
+      "dow   dow   plan    focus"
+      "compare compare reasons reasons";
+    gap: 16px;
+    align-items: stretch;
+  }
+  .bento-daily   { grid-area: daily; }
+  .bento-subject { grid-area: subject; }
+  .bento-goal    { grid-area: goal; }
+  .bento-dow     { grid-area: dow; }
+  .bento-plan    { grid-area: plan; }
+  .bento-focus   { grid-area: focus; }
+  .bento-compare { grid-area: compare; }
+  .bento-reasons { grid-area: reasons; }
+  .bento-daily .chart-wrap-lg { height: 300px; }
   .toast { bottom: 32px; }
   .modal-overlay { align-items: center; }
   .modal-box { border-radius: var(--r); max-height: 80vh; overflow-y: auto; }
@@ -2250,6 +2697,40 @@ input, textarea, select { font-family: inherit; }
   .home-task-header { padding: 0 12px; flex-shrink: 0; }
 }
 
+/* ============================================================
+   PC: ホーム画面を2カラムのダッシュボードレイアウトに
+   （予定作成の2カラム／分析のchart-gridと視覚的な情報密度を揃える）
+============================================================ */
+@media (min-width: 768px) {
+  #page-home.active {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-areas:
+      "header  header"
+      "hero    stats"
+      "hero    week"
+      "start   link"
+      "taskhdr prog"
+      "tasks   prog"
+      "carry   prog";
+    gap: 20px 24px;
+    align-items: start;
+  }
+  #page-home > .page-header       { grid-area: header; margin-bottom: 0; }
+  #page-home > .home-hero         { grid-area: hero;    margin-bottom: 0; }
+  #page-home > .stats-row         { grid-area: stats;   margin-bottom: 0; }
+  #page-home > .mini-week-card    { grid-area: week;    margin-bottom: 0; }
+  #page-home > .home-analysis-link{ grid-area: link;    margin-bottom: 0; }
+  #page-home > .card              { grid-area: prog;    margin-bottom: 0; }
+  #page-home > .start-study-btn   { grid-area: start;   margin-bottom: 0; }
+  #page-home > .home-task-header  { grid-area: taskhdr; }
+  #page-home > #homeTaskList      { grid-area: tasks; }
+  #page-home > .home-carryover-wrap { grid-area: carry; margin-top: 0; }
+
+  /* タスクカードグリッド: 左カラム幅(約650px)に合わせて2列のまま、カードだけ少しゆったりと */
+  #page-home #homeTaskList .task-item { min-height: 104px; }
+}
+
 /* ---- ボタン全般のアクティブ状態改善 ---- */
 .btn:active         { transform: scale(0.97); }
 .timer-btn:active   { transform: scale(0.97); }
@@ -2364,6 +2845,17 @@ input, textarea, select { font-family: inherit; }
     </div>
     <div class="sidebar-divider"></div>
 
+    <div class="sidebar-top-row">
+      <button class="cmdk-trigger" onclick="openCommandPalette()" type="button">
+        <span class="cmdk-trigger-icon">⌕</span>
+        <span class="cmdk-trigger-label">検索・コマンド</span>
+        <span class="cmdk-trigger-kbd">⌘K</span>
+      </button>
+      <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" type="button" title="ダークモード切替">
+        <span id="themeToggleIcon">🌙</span>
+      </button>
+    </div>
+
     <nav class="sidebar-nav">
       <div class="nav-item active" data-page="home">
         <span class="nav-icon nav-ico"><svg><use href="#ico-nav-home"></use></svg></span>ホーム
@@ -2398,6 +2890,7 @@ input, textarea, select { font-family: inherit; }
     <div class="page active" id="page-home">
       <div class="page-header">
         <h1>今日の学習</h1>
+        <p class="subtitle">今日の進捗をひと目で確認しましょう</p>
       </div>
 
       <!-- スマホ専用: 固定タイトルバー -->
@@ -2426,6 +2919,9 @@ input, textarea, select { font-family: inherit; }
             <span class="daily-goal-input-label">分</span>
           </div>
         </div>
+
+        <!-- PC限定: 今日の状況に応じた一言コメント（分析ページのautoCommentと同様の役割） -->
+        <div class="home-hero-msg" id="homeHeroMsg">データが溜まると、今日のコメントが表示されます</div>
       </div>
 
       <div class="stats-row">
@@ -2502,58 +2998,50 @@ input, textarea, select { font-family: inherit; }
       <!-- スマホ専用: 固定タイトルバー -->
       <div class="sp-topbar">
         <span class="sp-topbar-title">予定作成</span>
-        <button class="btn btn-primary sp-fixed-add-inline" onclick="addTask()"
+        <button class="btn btn-primary sp-fixed-add-inline" onclick="openTaskAddForm()"
           style="padding:7px 16px; font-size:.8rem; border-radius:6px;">追加</button>
       </div>
 
-      <div class="sched-grid-2col">
-        <!-- 週次目標 -->
-        <div class="card sched-col">
-          <div class="card-title">週次目標</div>
-          <div id="weeklyGoalsList"></div>
-          <button class="tpl-form-toggle" id="weeklyGoalFormToggle" onclick="toggleWeeklyGoalForm()" style="margin-top:8px;">
-            ＋ 週次目標を追加
-            <span class="tgl-icon">▼</span>
-          </button>
-          <div class="tpl-form-body" id="weeklyGoalFormBody" style="display:none;">
-            <div class="form-group" style="margin-bottom:10px;">
-              <label class="form-label">教科</label>
-              <div class="subject-grid" id="weeklyGoalSubjectGrid" style="grid-template-columns:repeat(3,1fr); gap:5px;"></div>
-            </div>
-            <div class="form-group" style="margin-bottom:10px;">
-              <label class="form-label">週間目標時間</label>
-              <div class="time-selector" style="gap:8px;">
-                <button class="time-adj-btn" onclick="adjustWeeklyGoalHours(-1)" style="width:32px;height:32px;">−</button>
-                <div class="time-display-wrap">
-                  <div class="time-display" id="weeklyGoalHoursDisp" style="font-size:1.4rem;">5</div>
-                  <div class="time-unit">時間/週</div>
-                </div>
-                <button class="time-adj-btn" onclick="adjustWeeklyGoalHours(1)" style="width:32px;height:32px;">＋</button>
-              </div>
-            </div>
-            <button class="btn btn-primary btn-full" onclick="saveWeeklyGoalForm()" style="font-size:.84rem; padding:10px;">
-              週次目標を保存
-            </button>
+      <!-- 週次目標 -->
+      <div class="card">
+        <div class="card-title">週次目標</div>
+        <div id="weeklyGoalsList"></div>
+        <button class="tpl-form-toggle" id="weeklyGoalFormToggle" onclick="toggleWeeklyGoalForm()" style="margin-top:8px;">
+          ＋ 週次目標を追加
+          <span class="tgl-icon">▼</span>
+        </button>
+        <div class="tpl-form-body" id="weeklyGoalFormBody" style="display:none;">
+          <div class="form-group" style="margin-bottom:10px;">
+            <label class="form-label">教科</label>
+            <div class="subject-grid" id="weeklyGoalSubjectGrid" style="grid-template-columns:repeat(3,1fr); gap:5px;"></div>
           </div>
-        </div>
-
-        <!-- 今週のスケジュール -->
-        <div class="card sched-col">
-          <div class="card-title">今週のスケジュール</div>
-          <div id="weeklyAgendaWrap"></div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label class="form-label">週間目標時間</label>
+            <div class="time-selector" style="gap:8px;">
+              <button class="time-adj-btn" onclick="adjustWeeklyGoalHours(-1)" style="width:32px;height:32px;">−</button>
+              <div class="time-display-wrap">
+                <div class="time-display" id="weeklyGoalHoursDisp" style="font-size:1.4rem;">5</div>
+                <div class="time-unit">時間/週</div>
+              </div>
+              <button class="time-adj-btn" onclick="adjustWeeklyGoalHours(1)" style="width:32px;height:32px;">＋</button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="saveWeeklyGoalForm()" style="font-size:.84rem; padding:10px;">
+            週次目標を保存
+          </button>
         </div>
       </div>
 
-      <div class="sched-grid-2col">
-        <!-- 未完了のタスク -->
-        <div class="card sched-col">
-          <div class="card-title">未完了のタスク</div>
-          <div id="scheduleTaskList"></div>
-        </div>
+      <!-- 予定表: 統合スケジュールテーブル -->
+      <div class="card" id="taskAddFormAnchor">
+        <div class="card-title">予定表</div>
 
-        <!-- 新しいタスクを追加 -->
-        <div class="card sched-col" style="padding-bottom:14px;">
-          <div class="card-title">新しいタスクを追加</div>
+        <!-- 新しいタスクを追加（折りたたみ式） -->
+        <button class="tpl-form-toggle" id="taskAddFormToggle" onclick="toggleTaskAddForm()">
+          ＋ 新しいタスクを追加
+          <span class="tgl-icon">▼</span>
+        </button>
+        <div class="tpl-form-body" id="taskAddFormBody" style="display:none;">
           <div class="form-group">
             <label class="form-label">タスク名</label>
             <input type="text" class="form-input" id="taskContent" placeholder="例：英単語 Chapter 5">
@@ -2583,21 +3071,40 @@ input, textarea, select { font-family: inherit; }
               </div>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom:10px;">
             <label class="form-label">期限</label>
             <input type="date" class="form-input" id="taskDueDate">
           </div>
-          <button class="btn btn-primary btn-full sp-hide-on-mobile" onclick="addTask()" style="margin-top:4px;">
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label">繰り返し</label>
+            <div class="recur-btn-grid">
+              <button type="button" class="recur-btn active" data-recur="none"   onclick="selectRecurrence('none')">なし</button>
+              <button type="button" class="recur-btn"        data-recur="daily"  onclick="selectRecurrence('daily')">毎日</button>
+              <button type="button" class="recur-btn"        data-recur="weekly" onclick="selectRecurrence('weekly')">毎週</button>
+            </div>
+            <div class="recur-dow-grid" id="recurDowGrid" style="display:none;">
+              <button type="button" class="recur-dow-btn" data-dow="0" onclick="toggleRecurDow(0)">日</button>
+              <button type="button" class="recur-dow-btn" data-dow="1" onclick="toggleRecurDow(1)">月</button>
+              <button type="button" class="recur-dow-btn" data-dow="2" onclick="toggleRecurDow(2)">火</button>
+              <button type="button" class="recur-dow-btn" data-dow="3" onclick="toggleRecurDow(3)">水</button>
+              <button type="button" class="recur-dow-btn" data-dow="4" onclick="toggleRecurDow(4)">木</button>
+              <button type="button" class="recur-dow-btn" data-dow="5" onclick="toggleRecurDow(5)">金</button>
+              <button type="button" class="recur-dow-btn" data-dow="6" onclick="toggleRecurDow(6)">土</button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="addTask()">
             タスクを追加
           </button>
         </div>
-      </div>
 
-      <!-- スマホ用固定「タスクを追加」ボタン -->
-      <div class="sp-fixed-add">
-        <button class="btn btn-primary btn-full" onclick="addTask()">
-          タスクを追加
-        </button>
+        <!-- 定期タスクの管理 -->
+        <div id="recurringManageWrap"></div>
+
+        <!-- 表本体: 日付ごとにグループ化。各セルをクリックして直接編集できる -->
+        <div class="sched-table-legend">
+          <span></span><span>タスク名</span><span>期限</span><span>教科</span><span>時間</span><span>優先度</span><span></span>
+        </div>
+        <div id="scheduleTableWrap"></div>
       </div>
 
       <!-- テンプレートから追加 -->
@@ -2691,6 +3198,7 @@ input, textarea, select { font-family: inherit; }
             <div class="timer-state"  id="timerStateLabel">待機中</div>
           </div>
         </div>
+        <div class="timer-lap-badge" id="timerLapBadge"></div>
 
         <div class="timer-controls">
           <button class="timer-btn timer-btn-pause" id="btnPause" onclick="pauseTimer()" style="display:none;">一時停止</button>
@@ -2782,6 +3290,15 @@ input, textarea, select { font-family: inherit; }
               <option value="week">今週</option>
               <option value="month">今月</option>
             </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">&nbsp;</label>
+            <div class="period-nav">
+              <button class="period-nav-btn" onclick="reviewNav(-1)" title="前の期間へ">‹</button>
+              <span class="period-nav-label" id="reviewPeriodLabel">今日</span>
+              <button class="period-nav-btn" onclick="reviewNav(1)" title="次の期間へ">›</button>
+            </div>
+            <button class="period-nav-today" id="reviewTodayBtn" onclick="reviewNavToday()" style="display:none;">今日に戻る</button>
           </div>
           <div class="form-group" style="margin-bottom:0;">
             <label class="form-label">全体的な自己評価</label>
@@ -2907,23 +3424,23 @@ input, textarea, select { font-family: inherit; }
         </div>
       </div>
 
-      <!-- グラフ -->
+      <!-- グラフ（Bento Grid: 重要な指標ほど大きなタイルに） -->
       <div class="charts-grid">
-        <div class="chart-card chart-full">
+        <div class="chart-card chart-full bento-daily">
           <div class="chart-title">日別勉強時間</div>
           <div class="chart-range-tabs">
             <button class="range-tab active" data-range="7"  onclick="setDailyRange(7,  this)">7日</button>
             <button class="range-tab"        data-range="30" onclick="setDailyRange(30, this)">30日</button>
             <button class="range-tab"        data-range="0"  onclick="setDailyRange(0,  this)">全期間</button>
           </div>
-          <div class="chart-wrap"><canvas id="chartDaily"></canvas></div>
+          <div class="chart-wrap chart-wrap-lg"><canvas id="chartDaily"></canvas></div>
         </div>
-        <div class="chart-card">
+        <div class="chart-card bento-subject">
           <div class="chart-title">教科別割合（今日）</div>
           <div class="chart-wrap chart-wrap-sm"><canvas id="chartSubject"></canvas></div>
           <div class="chart-legend-html" id="chartSubjectLegend"></div>
         </div>
-        <div class="chart-card">
+        <div class="chart-card bento-goal">
           <div class="chart-title">目標達成率（週次）</div>
           <div class="weekly-gauge-wrap">
             <div class="weekly-gauge" id="weeklyGoalGauge" style="--gauge-pct:0;">
@@ -2932,18 +3449,38 @@ input, textarea, select { font-family: inherit; }
             <div class="weekly-gauge-frac" id="weeklyGoalGaugeFrac">直近7日 0/7日 達成</div>
           </div>
         </div>
-        <div class="chart-card">
+        <div class="chart-card bento-dow">
+          <div class="chart-title">曜日別の学習傾向（全期間平均）</div>
+          <div class="chart-wrap"><canvas id="chartDow"></canvas></div>
+        </div>
+        <div class="chart-card bento-plan">
           <div class="chart-title">予定 vs 実績（今日）</div>
           <div class="chart-wrap"><canvas id="chartPlanVsActual"></canvas></div>
         </div>
-        <div class="chart-card">
+        <div class="chart-card bento-focus">
           <div class="chart-title">集中度推移（直近7日）</div>
           <div class="chart-wrap"><canvas id="chartFocus"></canvas></div>
         </div>
-        <div class="chart-card">
+        <div class="chart-card bento-compare">
+          <div class="chart-title">先週・先月との比較</div>
+          <div class="compare-wrap" id="compareWrap"></div>
+        </div>
+        <div class="chart-card bento-reasons">
           <div class="chart-title">できなかった理由（累計）</div>
           <div class="chart-wrap"><canvas id="chartReasons"></canvas></div>
         </div>
+      </div>
+
+      <!-- ========== 実績バッジ ========== -->
+      <div class="card">
+        <div class="card-title-row">
+          <div class="card-title">実績</div>
+          <div class="freeze-indicator" id="freezeIndicator" title="ストリーク・フリーズ：学習できなかった日を1日分だけ自動で救済します">
+            🧊 <span id="freezeCount">0</span>
+          </div>
+        </div>
+        <div class="records-row" id="recordsRow"></div>
+        <div class="badges-grid" id="badgesGrid"></div>
       </div>
 
       <!-- ========== データ管理セクション ========== -->
@@ -3035,6 +3572,21 @@ input, textarea, select { font-family: inherit; }
 <!-- トースト -->
 <div class="toast" id="toast"></div>
 
+<!-- 実績解除トースト -->
+<div class="badge-toast" id="badgeToast">
+  <div class="badge-toast-icon" id="badgeToastIcon">🏆</div>
+  <div>
+    <div class="badge-toast-title">実績を解除しました</div>
+    <div class="badge-toast-name" id="badgeToastName"></div>
+  </div>
+</div>
+
+<!-- 元に戻す（Undo）トースト -->
+<div class="undo-toast" id="undoToast">
+  <span id="undoToastMsg"></span>
+  <button class="undo-toast-btn" id="undoToastBtn">元に戻す</button>
+</div>
+
 <!-- クイック追加モーダル -->
 <div class="quick-add-overlay" id="quickAddModal">
   <div class="quick-add-box">
@@ -3089,6 +3641,17 @@ input, textarea, select { font-family: inherit; }
       <button class="btn btn-secondary" style="flex:1;" onclick="closeDeleteModal()">キャンセル</button>
       <button class="btn btn-danger"    style="flex:1;" onclick="confirmDelete()">削除する</button>
     </div>
+  </div>
+</div>
+
+<!-- コマンドパレット（⌘K / Ctrl+K） -->
+<div class="cmdk-overlay" id="cmdkOverlay">
+  <div class="cmdk-box">
+    <div class="cmdk-input-wrap">
+      <span class="cmdk-input-icon">⌕</span>
+      <input type="text" class="cmdk-input" id="cmdkInput" placeholder="ページ移動・タスク追加・タスクや振り返りの検索..." autocomplete="off" spellcheck="false">
+    </div>
+    <div class="cmdk-list" id="cmdkList"></div>
   </div>
 </div>
 
@@ -3310,7 +3873,7 @@ function toggleNotifyMute() {
    アプリ状態
 ============================================================ */
 let currentPage        = 'home';
-const formState        = { subj: '', time: 30, prio: 'mid' };
+const formState        = { subj: '', time: 30, prio: 'mid', recur: 'none', recurDays: [] };
 let achieveVal         = '';
 let focusVal           = 0;
 let reviewTaskId       = null;
@@ -3414,6 +3977,10 @@ const LS_KEYS = {
   periodReflections: 'sf_period_reflections',
   focusSound:        'sf_focus_sound_enabled',
   notifyMuted:       'sf_notify_muted',
+  badges:            'sf_badges',
+  streakFreezes:     'sf_streak_freezes',
+  freezeMilestones:  'sf_freeze_milestones_granted',
+  recurringTasks:    'sf_recurring_tasks',
 };
 
 function load(key, def = []) {
@@ -3429,11 +3996,11 @@ function save(key, val) {
 }
 
 function getTasks()      { return load(LS_KEYS.tasks); }
-function saveTasks(v)    { save(LS_KEYS.tasks, v); }
+function saveTasks(v)    { save(LS_KEYS.tasks, v); checkBadges(); }
 function getReviews()    { return load(LS_KEYS.reviews); }
 function saveReviews(v)  { save(LS_KEYS.reviews, v); }
 function getSessions()   { return load(LS_KEYS.sessions); }
-function saveSessions(v) { save(LS_KEYS.sessions, v); }
+function saveSessions(v) { save(LS_KEYS.sessions, v); checkBadges(); }
 function getTemplates()    { return load(LS_KEYS.templates); }
 function saveTemplates(v)  { save(LS_KEYS.templates, v); }
 
@@ -3457,27 +4024,29 @@ function deleteWeeklyGoal(id) {
   saveWeeklyGoals(getWeeklyGoals().filter(g => g.id !== id));
   /* バグ修正: 削除後にUIを更新する（元の実装は保存のみで再描画がなかった） */
   renderWeeklyGoalsList();
-  renderWeeklyAgenda(); /* アジェンダ内の目標バッジも更新 */
 }
 
 /* ============================================================
    Phase3-B: 週ユーティリティ（月曜始まり）
 ============================================================ */
-/** 指定日(YYYY-MM-DD)が属する週の月曜日の日付文字列を返す */
+/** 指定日(YYYY-MM-DD)が属する週の月曜日の日付文字列を返す。
+ *  UTC基準の日付演算のみを使い、実行環境のローカルタイムゾーンに依存しない。 */
 function mondayOf(dateStr) {
-  const dt = new Date(dateStr + 'T00:00:00+09:00');
-  const dow = dt.getDay(); // 0=日 ... 6=土
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  const dow = dt.getUTCDay(); // 0=日 ... 6=土
   const diff = (dow === 0) ? -6 : (1 - dow);
-  dt.setDate(dt.getDate() + diff);
-  return dt.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+  dt.setUTCDate(dt.getUTCDate() + diff);
+  return dt.toISOString().slice(0, 10);
 }
 /** 月曜始まりの週7日分の日付配列（月→日）を返す */
 function weekDates(mondayStr) {
-  const dt = new Date(mondayStr + 'T00:00:00+09:00');
+  const [y, m, d] = mondayStr.split('-').map(Number);
+  const base = new Date(Date.UTC(y, m - 1, d));
   return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(dt);
-    d.setDate(d.getDate() + i);
-    return d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+    const dt = new Date(base);
+    dt.setUTCDate(dt.getUTCDate() + i);
+    return dt.toISOString().slice(0, 10);
   });
 }
 /** 今日が属する週の月曜日付 */
@@ -3555,13 +4124,20 @@ function today() {
 
 /**
  * YYYY-MM-DD 文字列を「2025年4月25日（金）」形式に変換。
- * +09:00 を付与して JST として解釈させる。
- * タイムゾーンなしの 'T00:00:00' はブラウザのローカル時刻に依存するため使用しない。
+ * 文字列を直接 年/月/日 に分解し、Date.UTCで曜日だけを求める。
+ * ブラウザのローカルタイムゾーンに一切依存しないため、
+ * 実行環境がJST以外でも日付がずれない。
  */
 function formatDate(d) {
-  const dt = new Date(d + 'T00:00:00+09:00');
-  const wd = ['日','月','火','水','木','金','土'][dt.getDay()];
-  return `${dt.getFullYear()}年${dt.getMonth()+1}月${dt.getDate()}日（${wd}）`;
+  const [y, m, day] = d.split('-').map(Number);
+  const wd = ['日','月','火','水','木','金','土'][new Date(Date.UTC(y, m - 1, day)).getUTCDay()];
+  return `${y}年${m}月${day}日（${wd}）`;
+}
+/** 予定表の見出し用: 年を省略した短い表記 */
+function formatDateMD(d) {
+  const [y, m, day] = d.split('-').map(Number);
+  const wd = ['日','月','火','水','木','金','土'][new Date(Date.UTC(y, m - 1, day)).getUTCDay()];
+  return `${m}月${day}日（${wd}）`;
 }
 
 /**
@@ -3649,6 +4225,10 @@ function renderHome() {
     document.getElementById('dailyGoalArea')?.appendChild(badge);
   }
 
+  /* PC限定: ヒーロー内の一言コメント */
+  const heroMsgEl = document.getElementById('homeHeroMsg');
+  if (heroMsgEl) heroMsgEl.textContent = homeHeroComment(studyMin, rate, streak, goalPct);
+
   /* ミニ週間チャート */
   renderMiniWeekChart();
 
@@ -3696,12 +4276,18 @@ function calcStreak() {
     ...getSessions().map(s => s.date),
   ]);
   let streak = 0;
+  let freezesLeft = getStreakFreezeCount();
   for (let i = 0; i < 365; i++) {
     const dt = new Date(Date.now() - i * 86400000)
                  .toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
     if (activeDays.has(dt)) {
       streak++;
     } else if (i > 0) {
+      /* ストリーク・フリーズ: 抜けた1日をフリーズで橋渡しし、連続記録を継続させる */
+      if (freezesLeft > 0) {
+        freezesLeft--;
+        continue;
+      }
       break;
     }
   }
@@ -3713,6 +4299,149 @@ function streakLabel(n) {
   if (n >= 30)   return `🔥 ${n}日連続 すごい！`;
   if (n >= 7)    return `🔥 ${n}日連続`;
   return `🔥 ${n}日連続`;
+}
+
+/* ============================================================
+   実績バッジ ＆ ストリーク・フリーズ
+   参考: Forest / Duolingo / Todoist Karma のゲーミフィケーション設計。
+   一度解除したバッジは、後で完了を取り消したりタスクを削除しても失われない。
+============================================================ */
+const BADGES = [
+  { id: 'first_session', name: '最初の一歩',     desc: '初めて学習を記録した',         icon: '🌱' },
+  { id: 'streak_3',      name: '3日坊主卒業',    desc: '3日連続で学習した',            icon: '🔥' },
+  { id: 'streak_7',      name: '1週間継続',      desc: '7日連続で学習した',            icon: '🔥' },
+  { id: 'streak_30',     name: 'ひと月継続',      desc: '30日連続で学習した',           icon: '🏆' },
+  { id: 'streak_100',    name: '継続の達人',      desc: '100日連続で学習した',          icon: '👑' },
+  { id: 'hours_10',      name: '10時間達成',      desc: '累計10時間学習した',           icon: '⏱️' },
+  { id: 'hours_50',      name: '50時間達成',      desc: '累計50時間学習した',           icon: '⏱️' },
+  { id: 'hours_100',     name: '100時間達成',     desc: '累計100時間学習した',          icon: '💎' },
+  { id: 'hours_300',     name: '300時間達成',     desc: '累計300時間学習した',          icon: '💎' },
+  { id: 'tasks_50',      name: 'タスク50件完了',  desc: '完了したタスクが50件になった', icon: '✅' },
+  { id: 'tasks_200',     name: 'タスク200件完了', desc: '完了したタスクが200件になった', icon: '✅' },
+];
+
+function getUnlockedBadges()   { return load(LS_KEYS.badges); }
+function saveUnlockedBadges(v) { save(LS_KEYS.badges, v); }
+function getStreakFreezeCount()   { return parseInt(localStorage.getItem(LS_KEYS.streakFreezes) || '0', 10); }
+function setStreakFreezeCount(n)  { localStorage.setItem(LS_KEYS.streakFreezes, String(Math.max(0, n))); }
+
+function checkBadges() {
+  const original = getUnlockedBadges();
+  const unlocked = new Set(original);
+
+  const sessions       = getSessions();
+  const tasks          = getTasks();
+  const totalHours     = sessions.reduce((sum, s) => sum + (s.seconds || 0), 0) / 3600;
+  const completedTasks = tasks.filter(t => t.completed).length;
+  const streak         = calcStreak();
+
+  if (sessions.length >= 1)  unlocked.add('first_session');
+  if (streak >= 3)            unlocked.add('streak_3');
+  if (streak >= 7)            unlocked.add('streak_7');
+  if (streak >= 30)           unlocked.add('streak_30');
+  if (streak >= 100)          unlocked.add('streak_100');
+  if (totalHours >= 10)       unlocked.add('hours_10');
+  if (totalHours >= 50)       unlocked.add('hours_50');
+  if (totalHours >= 100)      unlocked.add('hours_100');
+  if (totalHours >= 300)      unlocked.add('hours_300');
+  if (completedTasks >= 50)   unlocked.add('tasks_50');
+  if (completedTasks >= 200)  unlocked.add('tasks_200');
+
+  if (unlocked.size > original.length) {
+    const newlyUnlocked = BADGES.filter(b => unlocked.has(b.id) && !original.includes(b.id));
+    saveUnlockedBadges([...unlocked]);
+    newlyUnlocked.forEach(b => showBadgeToast(b));
+    if (typeof renderBadgesGrid === 'function') renderBadgesGrid();
+  }
+
+  /* 累計アクティブ日数が7の倍数に達するたびにフリーズを1個付与（最大3個までストック） */
+  const activeDayCount = new Set([
+    ...tasks.filter(t => t.completed).map(t => t.date),
+    ...sessions.map(s => s.date),
+  ]).size;
+  const milestonesReached = Math.floor(activeDayCount / 7);
+  const milestonesGranted = parseInt(localStorage.getItem(LS_KEYS.freezeMilestones) || '0', 10);
+  if (milestonesReached > milestonesGranted) {
+    setStreakFreezeCount(Math.min(3, getStreakFreezeCount() + (milestonesReached - milestonesGranted)));
+    localStorage.setItem(LS_KEYS.freezeMilestones, String(milestonesReached));
+  }
+}
+
+/** 歴代の自己ベスト（最長ストリーク・最長セッション・週間最高学習時間・累計）を算出する */
+function calcPersonalRecords() {
+  const tasks = getTasks();
+  const sessions = getSessions();
+  const activeDays = [...new Set([
+    ...tasks.filter(t => t.completed).map(t => t.date),
+    ...sessions.map(s => s.date),
+  ])].sort();
+
+  let longestStreak = activeDays.length > 0 ? 1 : 0;
+  let curRun = 1;
+  for (let i = 1; i < activeDays.length; i++) {
+    const prev = new Date(activeDays[i-1] + 'T00:00:00Z');
+    const cur  = new Date(activeDays[i]   + 'T00:00:00Z');
+    const diffDays = Math.round((cur - prev) / 86400000);
+    curRun = diffDays === 1 ? curRun + 1 : 1;
+    longestStreak = Math.max(longestStreak, curRun);
+  }
+
+  const longestSessionSec = sessions.reduce((max, s) => Math.max(max, s.seconds || 0), 0);
+
+  const weekTotals = {};
+  sessions.forEach(s => {
+    const wk = mondayOf(s.date);
+    weekTotals[wk] = (weekTotals[wk] || 0) + (s.seconds || 0);
+  });
+  const bestWeekSec = Object.values(weekTotals).reduce((a, b) => Math.max(a, b), 0);
+  const totalSec = sessions.reduce((a, s) => a + (s.seconds || 0), 0);
+
+  return {
+    longestStreak,
+    longestSessionMin: Math.round(longestSessionSec / 60),
+    bestWeekHours: bestWeekSec / 3600,
+    totalHours: totalSec / 3600,
+  };
+}
+
+function renderRecordsRow() {
+  const el = document.getElementById('recordsRow');
+  if (!el) return;
+  const r = calcPersonalRecords();
+  const tiles = [
+    { num: r.longestStreak,               unit: '日',   label: '最長ストリーク' },
+    { num: r.longestSessionMin,           unit: '分',   label: '最長セッション' },
+    { num: r.bestWeekHours.toFixed(1),    unit: '時間', label: '週間最高学習時間' },
+    { num: r.totalHours.toFixed(1),       unit: '時間', label: '総学習時間' },
+  ];
+  el.innerHTML = tiles.map(t => `
+    <div class="record-tile">
+      <div class="record-tile-num">${t.num}<span>${t.unit}</span></div>
+      <div class="record-tile-label">${t.label}</div>
+    </div>`).join('');
+}
+
+function showBadgeToast(badge) {
+  const el = document.getElementById('badgeToast');
+  if (!el) return;
+  document.getElementById('badgeToastIcon').textContent = badge.icon;
+  document.getElementById('badgeToastName').textContent = badge.name;
+  el.classList.add('show');
+  clearTimeout(showBadgeToast._t);
+  showBadgeToast._t = setTimeout(() => el.classList.remove('show'), 4200);
+}
+
+/* PC限定ヒーローの一言コメント（分析ページのautoCommentと同じ考え方で、その日の状況を短く言語化する） */
+function homeHeroComment(studyMin, rate, streak, goalPct) {
+  if (studyMin === 0) {
+    return streak > 0
+      ? `連続${streak}日達成中。今日もまず5分から始めましょう。`
+      : '今日はまだ学習を記録していません。最初の5分が一番大切です。';
+  }
+  if (goalPct >= 100) return `目標時間を達成しました！${studyMin}分の学習、お疲れ様でした。`;
+  if (rate === 100)   return '今日のタスクを全て達成しました。素晴らしいペースです。';
+  if (rate >= 70)     return `達成率${rate}%、良いペースです。この調子で続けましょう。`;
+  return `ここまで${studyMin}分学習しました。少しずつ積み上げていきましょう。`;
 }
 
 function taskItemHTML(t) {
@@ -3746,6 +4475,11 @@ function toggleDone(id) {
   task.completed = !task.completed;
   saveTasks(tasks);
 
+  const rerender = () => {
+    if (currentPage === 'home')     renderHome();
+    if (currentPage === 'schedule') renderScheduleTable();
+  };
+
   /* 完了時: アニメーションを付けてから再描画 */
   if (task.completed) {
     const wrapper = document.querySelector(`.swipe-wrapper[data-task-id="${id}"]`);
@@ -3753,12 +4487,13 @@ function toggleDone(id) {
       const item = wrapper.querySelector('.task-item');
       if (item) {
         item.classList.add('just-done');
-        item.addEventListener('animationend', () => renderHome(), { once: true });
+        item.addEventListener('animationend', rerender, { once: true });
       } else {
-        renderHome();
+        rerender();
       }
     } else {
-      renderHome();
+      /* 予定表（表形式の行）から呼ばれた場合はアニメーション対象のswipe-wrapperが無いため即時再描画 */
+      rerender();
     }
     /* 軽い完了音 */
     try {
@@ -3776,7 +4511,7 @@ function toggleDone(id) {
     } catch(e) {}
     showToast('✓ タスクを完了しました！');
   } else {
-    renderHome();
+    rerender();
     showToast('未完了に戻しました');
   }
 }
@@ -3792,7 +4527,8 @@ function carryOverTasks() {
   if (incomplete.length === 0) { showToast('繰り越すタスクがありません'); return; }
   const tmr = new Date(Date.now() + 86400000)
                 .toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
-  incomplete.forEach(t => tasks.push({ ...t, id: genId(), date: tmr, actualTime: 0, completed: false }));
+  /* 複製ではなく、既存タスクの期限そのものを翌日に更新する（バグ修正: 以前は複製していたため元のタスクが今日に残り続けていた） */
+  incomplete.forEach(t => { t.date = tmr; });
   saveTasks(tasks);
   showToast(`${incomplete.length}件を翌日に繰り越しました`);
 }
@@ -3834,6 +4570,7 @@ function renderSchedulePage() {
   renderTplList();
   renderTplSubjectGrid();
   updateTplPrioBtns();
+  renderRecurringManageList();
   document.getElementById('tplTimeDisp').textContent = tplState.time;
 
   document.getElementById('subjectGrid').innerHTML = getSubjects().map(s => `
@@ -3843,13 +4580,12 @@ function renderSchedulePage() {
     </button>`).join('');
   document.getElementById('plannedTimeDisp').textContent = formState.time;
   updatePriorityBtns();
-  renderScheduleList();
+  renderScheduleTable();
 
-  /* Phase3-A: 週次目標 / 今週のスケジュール */
+  /* Phase3-A: 週次目標 */
   const dueDateInput = document.getElementById('taskDueDate');
   if (dueDateInput && !dueDateInput.value) dueDateInput.value = today();
   renderWeeklyGoalsList();
-  renderWeeklyAgenda();
 }
 
 function selectSubject(name) { formState.subj = name; renderSchedulePage(); }
@@ -3864,38 +4600,255 @@ function updatePriorityBtns() {
   });
 }
 
+function selectRecurrence(freq) {
+  formState.recur = freq;
+  document.querySelectorAll('.recur-btn').forEach(b => b.classList.toggle('active', b.dataset.recur === freq));
+  document.getElementById('recurDowGrid').style.display = freq === 'weekly' ? 'grid' : 'none';
+}
+function toggleRecurDow(dow) {
+  const i = formState.recurDays.indexOf(dow);
+  if (i === -1) formState.recurDays.push(dow); else formState.recurDays.splice(i, 1);
+  document.querySelectorAll('.recur-dow-btn').forEach(b =>
+    b.classList.toggle('sel', formState.recurDays.includes(parseInt(b.dataset.dow, 10))));
+}
+function resetRecurrenceForm() {
+  formState.recur = 'none';
+  formState.recurDays = [];
+  document.querySelectorAll('.recur-btn').forEach(b => b.classList.toggle('active', b.dataset.recur === 'none'));
+  document.querySelectorAll('.recur-dow-btn').forEach(b => b.classList.remove('sel'));
+  const grid = document.getElementById('recurDowGrid');
+  if (grid) grid.style.display = 'none';
+}
+
+function getRecurringTasks()   { return load(LS_KEYS.recurringTasks); }
+function saveRecurringTasks(v) { save(LS_KEYS.recurringTasks, v); }
+
+/** 定期タスク定義から、今日を含む向こう30日分の未生成インスタンスを生成する */
+function syncRecurringTasks() {
+  const defs = getRecurringTasks().filter(d => d.active);
+  if (defs.length === 0) return;
+  const tasks = getTasks();
+  const existingKeys = new Set(tasks.filter(t => t.recurringId).map(t => t.recurringId + '|' + t.date));
+  let added = false;
+
+  defs.forEach(def => {
+    for (let i = 0; i < 30; i++) {
+      const d = new Date(Date.now() + i * 86400000);
+      const dateStr = d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+      const dow = new Date(dateStr + 'T00:00:00Z').getUTCDay();
+      const matches = def.freq === 'daily' || (def.freq === 'weekly' && def.daysOfWeek.includes(dow));
+      if (!matches) continue;
+      const key = def.id + '|' + dateStr;
+      if (existingKeys.has(key)) continue;
+      tasks.push({
+        id: genId(), date: dateStr, subject: def.subject, task: def.task,
+        plannedTime: def.plannedTime, actualTime: 0, focus: 0, completed: false,
+        achievement: '', failureReason: [], memo: '', priority: def.priority,
+        recurringId: def.id,
+      });
+      existingKeys.add(key);
+      added = true;
+    }
+  });
+  if (added) saveTasks(tasks);
+}
+
+function renderRecurringManageList() {
+  const wrap = document.getElementById('recurringManageWrap');
+  if (!wrap) return;
+  const defs = getRecurringTasks().filter(d => d.active);
+  if (defs.length === 0) { wrap.innerHTML = ''; return; }
+  const DOW = ['日','月','火','水','木','金','土'];
+  wrap.innerHTML = `
+    <div class="recurring-manage">
+      <div class="recurring-manage-title">定期タスク</div>
+      ${defs.map(d => `
+        <div class="recurring-item">
+          <span class="recurring-item-icon">🔁</span>
+          <span class="recurring-item-name">${escHtml(d.task)}</span>
+          <span class="recurring-item-freq">${d.freq === 'daily' ? '毎日' : '毎週 ' + d.daysOfWeek.slice().sort().map(x=>DOW[x]).join('')}</span>
+          <button class="recurring-item-stop" onclick="stopRecurringTask('${d.id}')">停止</button>
+        </div>`).join('')}
+    </div>`;
+}
+/** 定期タスクを停止する。すでに生成済みの未来分は残るため、不要な分は個別に削除できる */
+function stopRecurringTask(id) {
+  const defs = getRecurringTasks();
+  const def = defs.find(d => d.id === id);
+  if (def) def.active = false;
+  saveRecurringTasks(defs);
+  showToast('定期タスクを停止しました（生成済みの予定は残ります）');
+  renderRecurringManageList();
+}
+
 function addTask() {
   const content = document.getElementById('taskContent').value.trim();
   if (!formState.subj) { showToast('教科を選んでください'); return; }
   if (!content)        { showToast('内容を入力してください'); return; }
+  if (formState.recur === 'weekly' && formState.recurDays.length === 0) {
+    showToast('繰り返す曜日を選んでください'); return;
+  }
   const dueDateInput = document.getElementById('taskDueDate');
   const dueDate = (dueDateInput && dueDateInput.value) ? dueDateInput.value : today();
-  const tasks = getTasks();
-  tasks.push({
-    id: genId(), date: dueDate, subject: formState.subj, task: content,
-    plannedTime: formState.time, actualTime: 0, focus: 0, completed: false,
-    achievement: '', failureReason: [], memo: '', priority: formState.prio,
-  });
-  saveTasks(tasks);
+
+  if (formState.recur === 'none') {
+    const tasks = getTasks();
+    tasks.push({
+      id: genId(), date: dueDate, subject: formState.subj, task: content,
+      plannedTime: formState.time, actualTime: 0, focus: 0, completed: false,
+      achievement: '', failureReason: [], memo: '', priority: formState.prio,
+    });
+    saveTasks(tasks);
+    showToast('タスクを追加しました');
+  } else {
+    const def = {
+      id: genId(), task: content, subject: formState.subj,
+      plannedTime: formState.time, priority: formState.prio,
+      freq: formState.recur, daysOfWeek: formState.recur === 'weekly' ? [...formState.recurDays] : [],
+      active: true, createdAt: new Date().toISOString(),
+    };
+    const defs = getRecurringTasks();
+    defs.push(def);
+    saveRecurringTasks(defs);
+    syncRecurringTasks();
+    showToast('定期タスクを追加しました');
+  }
+
   document.getElementById('taskContent').value = '';
   formState.subj = '';
   formState.time = 30;
   formState.prio = 'mid';
+  resetRecurrenceForm();
   if (dueDateInput) dueDateInput.value = today();
-  showToast('タスクを追加しました');
   renderSchedulePage();
 }
 
-function renderScheduleList() {
-  const tasks = todayTasks();
-  const el = document.getElementById('scheduleTaskList');
-  el.innerHTML = tasks.length === 0
-    ? `<div class="empty-state"><div class="empty-icon">📋</div><p>タスクがありません</p></div>`
-    : tasks.map(t => taskItemHTML(t)).join('');
-  el.querySelectorAll('.swipe-wrapper').forEach(wrapper => {
-    addSwipeGesture(wrapper, wrapper.dataset.taskId);
-  });
+/* ============================================================
+   予定表: 統合スケジュールテーブル
+   日付ごとにグループ化して全期間のタスクを1つの表で表示し、
+   各セルをクリックしてその場で編集できるようにする。
+============================================================ */
+function toggleTaskAddForm(forceOpen) {
+  const body   = document.getElementById('taskAddFormBody');
+  const toggle = document.getElementById('taskAddFormToggle');
+  if (!body) return;
+  const willOpen = forceOpen === true ? true : body.style.display === 'none';
+  body.style.display = willOpen ? 'block' : 'none';
+  const icon = toggle.querySelector('.tgl-icon');
+  if (icon) icon.textContent = willOpen ? '▲' : '▼';
 }
+/* モバイル固定バーの「追加」ボタン用: フォームを開いてスクロールする */
+function openTaskAddForm() {
+  toggleTaskAddForm(true);
+  document.getElementById('taskAddFormAnchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => document.getElementById('taskContent')?.focus(), 300);
+}
+
+/** 予定表に表示する日付一覧を決定する。
+ *  今日／未完了タスクがある日（過去含む）／直近3日以内に完了した日、を対象とする。
+ *  これにより「今日以外に期限を設定したタスクが見えなくなる」問題を解消する。 */
+function scheduleTableDates(tasksByDate) {
+  const todayStr = today();
+  const todayMs  = Date.UTC(...todayStr.split('-').map((v,i)=>i===1?+v-1:+v));
+  return Object.keys(tasksByDate).filter(d => {
+    if (d === todayStr) return true;
+    if (tasksByDate[d].some(t => !t.completed)) return true;
+    const dMs = Date.UTC(...d.split('-').map((v,i)=>i===1?+v-1:+v));
+    const diffDays = Math.round((todayMs - dMs) / 86400000);
+    return diffDays >= 0 && diffDays <= 3;
+  }).sort();
+}
+
+function renderScheduleTable() {
+  const wrap = document.getElementById('scheduleTableWrap');
+  if (!wrap) return;
+  const all = getTasks();
+  const todayStr = today();
+
+  const byDate = {};
+  all.forEach(t => { (byDate[t.date] ||= []).push(t); });
+  const dates = scheduleTableDates(byDate);
+
+  if (dates.length === 0) {
+    wrap.innerHTML = `<div class="sched-empty"><span class="empty-icon">📋</span>予定はまだありません。上の「＋ 新しいタスクを追加」から登録しましょう。</div>`;
+    return;
+  }
+
+  wrap.innerHTML = dates.map(d => {
+    const tasks = byDate[d].slice().sort((a, b) => (a.completed === b.completed) ? 0 : (a.completed ? 1 : -1));
+    const isToday   = d === todayStr;
+    const isOverdue = !isToday && d < todayStr && tasks.some(t => !t.completed);
+    const doneCount = tasks.filter(t => t.completed).length;
+    return `
+      <div class="sched-date-group">
+        <div class="sched-date-header${isToday ? ' is-today' : ''}${isOverdue ? ' is-overdue' : ''}">
+          <span class="sched-date-label">${formatDateMD(d)}${isToday ? '<span class="sched-date-badge">今日</span>' : ''}${isOverdue ? '<span class="sched-date-badge">期限切れ</span>' : ''}</span>
+          <span class="sched-date-count">${doneCount} / ${tasks.length} 完了</span>
+        </div>
+        ${tasks.map(t => schedRowHTML(t)).join('')}
+      </div>`;
+  }).join('');
+}
+
+function schedRowHTML(t) {
+  const prio = t.priority || 'mid';
+  const subjOptions = getSubjects().map(s =>
+    `<option value="${escHtml(s.name)}" ${s.name === t.subject ? 'selected' : ''}>${s.emoji || '📝'} ${escHtml(s.name)}</option>`
+  ).join('');
+  return `
+    <div class="sched-row prio-${prio}${t.completed ? ' is-done' : ''}" data-task-id="${t.id}">
+      <input type="checkbox" class="sched-check" ${t.completed ? 'checked' : ''}
+        onchange="toggleDone('${t.id}')" title="完了にする">
+      <div class="sched-name-wrap">
+        ${t.recurringId ? '<span class="recur-badge" title="定期タスク">🔁</span>' : ''}
+        <input type="text" class="sched-field sched-name-input" data-field="task" value="${escHtml(t.task)}"
+          onblur="updateTaskField('${t.id}','task',this.value)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault(); this.blur();}">
+      </div>
+      <div class="sched-row-meta">
+        <input type="date" class="sched-field sched-date-input" value="${t.date}"
+          onchange="updateTaskField('${t.id}','date',this.value)" title="期限を変更">
+        <select class="sched-field sched-subject-select" onchange="updateTaskField('${t.id}','subject',this.value)">
+          ${subjOptions}
+        </select>
+        <input type="number" class="sched-field sched-time-input" value="${t.plannedTime}" min="5" max="600" step="5"
+          onchange="updateTaskField('${t.id}','plannedTime',this.value)" title="予定時間（分）">
+        <select class="sched-field sched-prio-select p-${prio}" onchange="updateTaskField('${t.id}','priority',this.value)">
+          <option value="low"  ${prio === 'low'  ? 'selected' : ''}>低</option>
+          <option value="mid"  ${prio === 'mid'  ? 'selected' : ''}>中</option>
+          <option value="high" ${prio === 'high' ? 'selected' : ''}>高</option>
+        </select>
+      </div>
+      <div class="sched-actions">
+        <button class="sched-action-btn" onclick="goTimer('${t.id}')" title="タイマーを開始">▶</button>
+        <button class="sched-action-btn del" onclick="openDeleteModal('${t.id}')" title="削除">🗑</button>
+      </div>
+    </div>`;
+}
+
+/** 予定表のセルを直接編集した内容を保存する（表からの直接編集の中核） */
+function updateTaskField(id, field, rawValue) {
+  const tasks = getTasks();
+  const task  = tasks.find(t => t.id === id);
+  if (!task) return;
+
+  if (field === 'task') {
+    const v = String(rawValue).trim();
+    if (!v) { renderScheduleTable(); return; }  // 空欄は無視して表示を戻す
+    task.task = v;
+  } else if (field === 'plannedTime') {
+    const v = Math.max(5, Math.min(600, parseInt(rawValue, 10) || 30));
+    task.plannedTime = v;
+  } else if (field === 'date') {
+    if (!rawValue) { renderScheduleTable(); return; }
+    task.date = rawValue;
+  } else {
+    task[field] = rawValue;
+  }
+  saveTasks(tasks);
+  renderScheduleTable();
+}
+
 
 /* ============================================================
    Phase3-A: 週次目標（常設ターゲット） UI
@@ -3996,41 +4949,6 @@ function saveWeeklyGoalForm() {
 }
 
 /* ============================================================
-   Phase3-A: 今週のスケジュール（曜日別アジェンダ・月曜始まり）
-============================================================ */
-function renderWeeklyAgenda() {
-  const wrap = document.getElementById('weeklyAgendaWrap');
-  if (!wrap) return;
-  const monday    = currentMonday();
-  const dates     = weekDates(monday);
-  const dowLabels = ['月','火','水','木','金','土','日'];
-  const tasks     = getTasks();
-  const todayStr  = today();
-
-  wrap.innerHTML = `<div class="agenda-grid">` + dates.map((d, i) => {
-    const dayTasks = tasks.filter(t => t.date === d);
-    const dt       = new Date(d + 'T00:00:00+09:00');
-    const isToday  = d === todayStr;
-    const body = dayTasks.length
-      ? dayTasks.map(t => {
-          const subj = subjectByName(t.subject);
-          return `<div class="agenda-chip${t.completed ? ' agenda-chip-done' : ''}"
-              onclick="showPage('schedule')" title="${escHtml(t.subject)}: ${escHtml(t.task)}">
-            ${subjectIconHTML(subj)}<span class="agenda-chip-text">${escHtml(t.task)}</span>
-          </div>`;
-        }).join('')
-      : `<div class="agenda-empty">—</div>`;
-    return `<div class="agenda-col${isToday ? ' agenda-col-today' : ''}">
-      <div class="agenda-col-head">
-        <span class="agenda-dow">${dowLabels[i]}</span>
-        <span class="agenda-date">${dt.getDate()}</span>
-      </div>
-      <div class="agenda-col-body">${body}</div>
-    </div>`;
-  }).join('') + `</div>`;
-}
-
-/* ============================================================
    ③ タイマー
 ============================================================ */
 function renderTimerPage() {
@@ -4055,8 +4973,14 @@ function renderTimerPage() {
     }
   }
 
-  const incompleteTasks = todayTasks().filter(t => !t.completed);
-  const allTasks        = todayTasks();
+  /* バグ修正: 以前は「今日」の日付のタスクしか選べなかったため、
+     期限を別日に設定したタスクはタイマーで開始・記録できなかった。
+     全タスクを対象にし、今日以外は日付ラベルを付けて区別する。 */
+  const todayStr        = today();
+  const sortedAll       = getTasks().slice().sort((a, b) => a.date.localeCompare(b.date));
+  const incompleteTasks = sortedAll.filter(t => !t.completed);
+  const allTasks        = sortedAll;
+  const labelFor = t => (t.date === todayStr ? '' : `[${formatDateMD(t.date)}] `) + `${t.subject} · ${t.task}`;
 
   /* タイマー用セレクト（先頭に「タスクなし」を用意） */
   const sel = document.getElementById('timerTaskSelect');
@@ -4064,7 +4988,7 @@ function renderTimerPage() {
   incompleteTasks.forEach(t => {
     const opt = document.createElement('option');
     opt.value = t.id;
-    opt.textContent = `${t.subject} · ${t.task}`;
+    opt.textContent = labelFor(t);
     if (t.id === currentTimerTaskId) opt.selected = true;
     sel.appendChild(opt);
   });
@@ -4075,7 +4999,7 @@ function renderTimerPage() {
   allTasks.forEach(t => {
     const opt = document.createElement('option');
     opt.value = t.id;
-    opt.textContent = `${t.subject} · ${t.task}`;
+    opt.textContent = labelFor(t);
     mSel.appendChild(opt);
   });
 
@@ -4111,6 +5035,15 @@ function renderTimerPage() {
     soundBtn.setAttribute('aria-pressed', String(_focusSoundActive));
   }
 
+  /* ページを表示し直した時点での周回数をベースラインとして記録する。
+     これをしないと、以前から目標を達成済みの日にタイマーページへ来ただけで
+     「達成しました」の演出が誤って出てしまう。 */
+  {
+    const goalSec   = getDailyGoal() * 60;
+    const doneSec   = calcTodayStudyMin() * 60;
+    const activeSec = (pomoMode !== 'free' && pomoPhase === 'break') ? 0 : getElapsedSeconds();
+    _lastKnownTimerLaps = timerRingProgress(doneSec + activeSec, goalSec).laps;
+  }
   updateTimerUI();
   updateTimerGoalBars();
   updateFabState();
@@ -4300,13 +5233,14 @@ function endTimer() {
   if (currentTimerTaskId) {
     /* ─── タスクあり: 従来通りセッション保存 → 振り返りへ ─── */
     const sessions = getSessions();
-    sessions.push({ date: today(), taskId: currentTimerTaskId, seconds: elapsed });
+    sessions.push({ date: today(), taskId: currentTimerTaskId, seconds: elapsed, hour: new Date().getHours() });
     saveSessions(sessions);
     /* タスクの実績時間を更新 */
     const tasks = getTasks();
     const task  = tasks.find(t => t.id === currentTimerTaskId);
     if (task) { task.actualTime = (task.actualTime || 0) + elapsed; saveTasks(tasks); }
     reviewTaskId = currentTimerTaskId;
+    reviewAnchorDate = today();
     showPage('review');
     showToast('お疲れ様！振り返りを記録しよう');
   } else {
@@ -4393,7 +5327,7 @@ function savePostTimerSession() {
 
   /* セッションをタスクIDで保存 */
   const sessions = getSessions();
-  sessions.push({ date: today(), taskId: newTask.id, seconds: elapsed });
+  sessions.push({ date: today(), taskId: newTask.id, seconds: elapsed, hour: new Date().getHours() });
   saveSessions(sessions);
 
   closePostTimerModal();
@@ -4401,6 +5335,7 @@ function savePostTimerSession() {
 
   /* 振り返り画面へ遷移して、作成したタスクを選択状態にする */
   reviewTaskId = newTask.id;
+  reviewAnchorDate = today();
   showPage('review');
 }
 
@@ -4413,7 +5348,7 @@ function skipPostTimerSession() {
   const elapsed = _postTimerElapsed || 0;
   const sessions = getSessions();
   /* freeStudy フラグを付けることで日別詳細パネルで「フリー学習」と表示 */
-  sessions.push({ date: today(), taskId: null, seconds: elapsed, freeStudy: true });
+  sessions.push({ date: today(), taskId: null, seconds: elapsed, freeStudy: true, hour: new Date().getHours() });
   saveSessions(sessions);
   closePostTimerModal();
   showToast(`${Math.round(elapsed / 60)}分の学習を記録しました`);
@@ -4435,6 +5370,18 @@ document.getElementById('postTimerModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closePostTimerModal();
 });
 
+/** 今日の合計学習時間が目標に対して何周目にいるか、および現在の周回内の進捗率(0〜1)を返す。
+ *  バグ修正: 従来は目標到達後 Math.min(...,1) でパーセントを固定していたため、
+ *  達成後にリングが二度と変化しなくなっていた。目標到達後は「周回」として扱い、
+ *  リングは毎回0%→100%を繰り返すことで、達成後もリアルタイムに動き続けるようにする。 */
+function timerRingProgress(totalSec, goalSec) {
+  if (goalSec <= 0) return { laps: 0, pct: 0 };
+  const laps = Math.floor(totalSec / goalSec);
+  const pct  = laps > 0 ? (totalSec % goalSec) / goalSec : totalSec / goalSec;
+  return { laps, pct };
+}
+let _lastKnownTimerLaps = 0;
+
 function updateTimerUI() {
   const elapsed = getElapsedSeconds();
   const mode    = pomoMode;
@@ -4453,10 +5400,27 @@ function updateTimerUI() {
     const doneSec      = calcTodayStudyMin() * 60;
     const activeSec    = (mode !== 'free' && pomoPhase === 'break') ? 0 : elapsed;
     const totalSec     = doneSec + activeSec;
-    const ringPct      = goalSec > 0 ? Math.min(totalSec / goalSec, 1) : 0;
-    ring.style.strokeDashoffset = circ * (1 - ringPct);
-    if (mode !== 'free' && pomoPhase === 'break') ring.classList.add('break-mode');
-    else                                           ring.classList.remove('break-mode');
+    const { laps, pct } = timerRingProgress(totalSec, goalSec);
+
+    ring.style.strokeDashoffset = circ * (1 - pct);
+
+    const isBreak = mode !== 'free' && pomoPhase === 'break';
+    ring.classList.toggle('break-mode', isBreak);
+    ring.classList.toggle('goal-achieved', !isBreak && laps > 0);
+
+    const lapBadge = document.getElementById('timerLapBadge');
+    if (lapBadge) {
+      lapBadge.style.display = laps > 0 ? 'inline-flex' : 'none';
+      if (laps > 0) lapBadge.textContent = laps === 1 ? '🎯 目標達成' : `🎯 目標達成 ×${laps}`;
+    }
+    /* 周回数がこのページ表示中に新たに増えた瞬間だけ、軽い演出とトーストで知らせる */
+    if (laps > _lastKnownTimerLaps) {
+      ring.classList.remove('ring-pulse');
+      void ring.offsetWidth; /* リフローを強制してアニメーションを再トリガー */
+      ring.classList.add('ring-pulse');
+      showToast(laps === 1 ? '🎯 今日の目標を達成しました！' : `🎯 目標を${laps}周達成しました！`);
+    }
+    _lastKnownTimerLaps = laps;
   }
 
   if (mode === 'free') {
@@ -4639,7 +5603,7 @@ function addFromTemplate(id) {
   });
   saveTasks(tasks);
   showToast(`「${tpl.task}」を今日のタスクに追加しました`);
-  renderScheduleList();
+  renderScheduleTable();
 }
 
 /** テンプレート → タスク追加してタイマーへ */
@@ -4684,7 +5648,7 @@ function saveManualRecord() {
   const seconds = min * 60;
   /* セッション記録 */
   const sessions = getSessions();
-  sessions.push({ date: today(), taskId, seconds });
+  sessions.push({ date: today(), taskId, seconds, hour: new Date().getHours() });
   saveSessions(sessions);
   /* タスクの実績更新 */
   const tasks = getTasks();
@@ -4707,6 +5671,7 @@ function saveManualRecord() {
    期間全体の自己評価・気分・自由記述だけを sf_period_reflections に保存する。
 ============================================================ */
 let reviewPeriodType    = 'day';   // 'day' | 'week' | 'month'
+let reviewAnchorDate    = today(); // 表示中の期間の基準日（過去の振り返りを閲覧するためのナビゲーション用）
 let reflectionRatingVal = 0;
 
 function renderReviewPage() {
@@ -4715,6 +5680,7 @@ function renderReviewPage() {
   loadReflectionForm();
   renderReviewTaskListInline();
   renderReviewFocusSummary();
+  renderReviewPeriodLabel();
 
   /* タイマー終了直後などにreviewTaskIdが指定されていれば、その行をハイライト */
   if (reviewTaskId) {
@@ -4728,8 +5694,45 @@ function renderReviewPage() {
   }
 }
 
+/** 表示中の期間ラベル（例: 7月5日(日) / 6/29週 / 2026年7月）と「今日に戻る」表示を更新する */
+function renderReviewPeriodLabel() {
+  const label = document.getElementById('reviewPeriodLabel');
+  const todayBtn = document.getElementById('reviewTodayBtn');
+  if (!label) return;
+  const key = periodKeyFor(reviewPeriodType, reviewAnchorDate);
+  if (reviewPeriodType === 'day') {
+    label.textContent = formatDateMD(key);
+  } else if (reviewPeriodType === 'week') {
+    const dates = weekDates(key);
+    label.textContent = `${formatDateMD(dates[0])}〜${formatDateMD(dates[6])}`;
+  } else {
+    const [y, m] = key.split('-');
+    label.textContent = `${y}年${parseInt(m,10)}月`;
+  }
+  const isCurrent = periodKeyFor(reviewPeriodType, today()) === key;
+  if (todayBtn) todayBtn.style.display = isCurrent ? 'none' : 'inline-block';
+}
+
+/** 前後の期間へ移動する（dir: -1=前へ, 1=次へ） */
+function reviewNav(dir) {
+  const d = new Date(reviewAnchorDate + 'T00:00:00Z');
+  if (reviewPeriodType === 'day') {
+    d.setUTCDate(d.getUTCDate() + dir);
+  } else if (reviewPeriodType === 'week') {
+    d.setUTCDate(d.getUTCDate() + dir * 7);
+  } else {
+    d.setUTCMonth(d.getUTCMonth() + dir);
+  }
+  reviewAnchorDate = d.toISOString().slice(0, 10);
+  renderReviewPage();
+}
+function reviewNavToday() {
+  reviewAnchorDate = today();
+  renderReviewPage();
+}
 function onReviewPeriodChange() {
   reviewPeriodType = document.getElementById('reviewPeriodSelect').value;
+  reviewAnchorDate = today();
   renderReviewPage();
 }
 
@@ -4804,7 +5807,7 @@ function reviewTaskRowHTML(t) {
 function renderReviewTaskListInline() {
   const wrap = document.getElementById('reviewTaskListInline');
   if (!wrap) return;
-  const tasks = tasksInPeriod(reviewPeriodType);
+  const tasks = tasksInPeriod(reviewPeriodType, periodKeyFor(reviewPeriodType, reviewAnchorDate));
   wrap.innerHTML = tasks.length === 0
     ? `<div class="empty-state" style="padding:18px 0;"><p>この期間のタスクがありません。</p></div>`
     : tasks.map(t => reviewTaskRowHTML(t)).join('');
@@ -4846,7 +5849,7 @@ function toggleTaskReasonInline(evt, taskId, reasonVal) {
 
 /** 集中度の平均（読み取り専用の集計表示）とミニグラフ */
 function renderReviewFocusSummary() {
-  const tasks  = tasksInPeriod(reviewPeriodType);
+  const tasks  = tasksInPeriod(reviewPeriodType, periodKeyFor(reviewPeriodType, reviewAnchorDate));
   const reviews = getReviews();
   const focusVals = tasks
     .map(t => { const r = reviews.find(x => x.taskId === t.id); return r ? r.focus : 0; })
@@ -4888,7 +5891,7 @@ function renderReviewFocusSparkline() {
 
 /** 期間振り返り（全体評価・気分・自由記述）のフォーム読込/保存 */
 function loadReflectionForm() {
-  const key = periodKeyFor(reviewPeriodType);
+  const key = periodKeyFor(reviewPeriodType, reviewAnchorDate);
   const r = findPeriodReflection(reviewPeriodType, key) || {};
   reflectionRatingVal = r.rating || 0;
   updateReflectionStars();
@@ -4901,14 +5904,14 @@ function loadReflectionForm() {
 function setReflectionRating(v) {
   reflectionRatingVal = v;
   updateReflectionStars();
-  upsertPeriodReflection(reviewPeriodType, periodKeyFor(reviewPeriodType), { rating: v });
+  upsertPeriodReflection(reviewPeriodType, periodKeyFor(reviewPeriodType, reviewAnchorDate), { rating: v });
 }
 function updateReflectionStars() {
   document.querySelectorAll('#reflectionStars .star-btn').forEach(s =>
     s.classList.toggle('lit', parseInt(s.dataset.v) <= reflectionRatingVal));
 }
 function setReflectionMood(mood) {
-  const key     = periodKeyFor(reviewPeriodType);
+  const key     = periodKeyFor(reviewPeriodType, reviewAnchorDate);
   const current = findPeriodReflection(reviewPeriodType, key);
   const newMood = (current && current.mood === mood) ? '' : mood; /* 再クリックで解除 */
   upsertPeriodReflection(reviewPeriodType, key, { mood: newMood });
@@ -4918,7 +5921,7 @@ function updateMoodButtons(mood) {
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.toggle('sel', b.dataset.mood === mood));
 }
 function saveReflectionField(field, value) {
-  upsertPeriodReflection(reviewPeriodType, periodKeyFor(reviewPeriodType), { [field]: value });
+  upsertPeriodReflection(reviewPeriodType, periodKeyFor(reviewPeriodType, reviewAnchorDate), { [field]: value });
 }
 
 /* ============================================================
@@ -5047,7 +6050,25 @@ function renderAnalysis() {
   renderChartPlanVsActual();
   renderChartFocus();
   renderChartReasons();
+  renderChartDow();
+  renderPeriodCompare();
+  renderRecordsRow();
+  renderBadgesGrid();
   renderSubjectCustomizer(); /* B-4 */
+}
+
+/** 実績バッジ一覧とストリーク・フリーズ数を描画する */
+function renderBadgesGrid() {
+  const grid = document.getElementById('badgesGrid');
+  if (!grid) return;
+  const unlocked = new Set(getUnlockedBadges());
+  grid.innerHTML = BADGES.map(b => `
+    <div class="badge-tile${unlocked.has(b.id) ? ' unlocked' : ''}" title="${escHtml(b.desc)}">
+      <div class="badge-tile-icon">${b.icon}</div>
+      <div class="badge-tile-name">${escHtml(b.name)}</div>
+    </div>`).join('');
+  const freezeEl = document.getElementById('freezeCount');
+  if (freezeEl) freezeEl.textContent = getStreakFreezeCount();
 }
 
 /* Phase3-D: 週次目標達成率ゲージ（CSS conic-gradientのみで描画） */
@@ -5121,7 +6142,11 @@ function renderSummary() {
 }
 
 /* グラフ共通 */
-const GRAY_PALETTE = ['#1F4E54','#E2873D','#4F8388','#EAB13B','#8E9196'];
+const GRAY_PALETTE      = ['#1F4E54','#E2873D','#4F8388','#EAB13B','#8E9196'];
+const GRAY_PALETTE_DARK = ['#4FA0A6','#E8965A','#6FAFB4','#EDC069','#9BA4A7'];
+function currentPalette() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? GRAY_PALETTE_DARK : GRAY_PALETTE;
+}
 function destroyChart(key) { if (charts[key]) { charts[key].destroy(); charts[key] = null; } }
 
 /* Phase3-D: 値ラベル描画（追加ライブラリ不使用・Chart.jsコアのインラインplugin機能のみで実装） */
@@ -5165,13 +6190,14 @@ const barValueLabelPlugin = {
   },
 };
 function baseOpts(extraScales = {}) {
+  const t = chartTheme();
   return {
     responsive: true,
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { grid: { display: false }, ticks: { color: '#aeaeb2', font: { size: 11 } }, ...extraScales.x },
-      y: { grid: { color: '#f0f0f2' }, ticks: { color: '#aeaeb2', font: { size: 11 } }, ...extraScales.y },
+      x: { grid: { display: false }, ticks: { color: t.tick, font: { size: 11 } }, ...extraScales.x },
+      y: { grid: { color: t.grid }, ticks: { color: t.tick, font: { size: 11 } }, ...extraScales.y },
     },
   };
 }
@@ -5220,14 +6246,14 @@ function renderChartDaily() {
     type: 'bar',
     data: { labels, datasets: [{
       data,
-      backgroundColor: data.map((_,i) => dates[i] === todayStr ? '#1F4E54' : '#e8e8ed'),
+      backgroundColor: data.map((_,i) => dates[i] === todayStr ? chartTheme().primary : chartTheme().muted),
       borderRadius: 4,
     }]},
     options: { ...baseOpts(), scales: {
-      x: { grid:{display:false}, ticks:{ color:'#aeaeb2', font:{size:10},
+      x: { grid:{display:false}, ticks:{ color: chartTheme().tick, font:{size:10},
            maxTicksLimit: dailyRange === 0 ? 12 : dailyRange } },
-      y: { beginAtZero:true, grid:{color:'#f0f0f2'}, ticks:{color:'#aeaeb2',font:{size:11}},
-           title:{display:true, text:'分', color:'#aeaeb2', font:{size:11}} },
+      y: { beginAtZero:true, grid:{color: chartTheme().grid}, ticks:{color: chartTheme().tick,font:{size:11}},
+           title:{display:true, text:'分', color: chartTheme().tick, font:{size:11}} },
     }},
   });
 }
@@ -5245,13 +6271,14 @@ function renderChartSubject() {
   });
   const labels = Object.keys(subjectSec);
   const data   = labels.map(k => Math.round(subjectSec[k]/60));
-  const colors = GRAY_PALETTE.slice(0, labels.length);
+  const colors = currentPalette().slice(0, labels.length);
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   charts.subject = new Chart(document.getElementById('chartSubject').getContext('2d'), {
     type: 'doughnut',
     data: { labels, datasets: [{
       data,
       backgroundColor: colors,
-      borderWidth: 3, borderColor: '#fff',
+      borderWidth: 3, borderColor: isDark ? '#1D2224' : '#fff',
     }]},
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -5286,16 +6313,16 @@ function renderChartPlanVsActual() {
   charts.planVsActual = new Chart(document.getElementById('chartPlanVsActual').getContext('2d'), {
     type: 'bar',
     data: { labels, datasets: [
-      { label:'予定', data:planned, backgroundColor:'#e8e8ed', borderRadius:5 },
-      { label:'実績', data:actual,  backgroundColor:'#1F4E54', borderRadius:5 },
+      { label:'予定', data:planned, backgroundColor: chartTheme().muted, borderRadius:5 },
+      { label:'実績', data:actual,  backgroundColor: chartTheme().primary, borderRadius:5 },
     ]},
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display:true, labels:{ color:'#6e6e73', font:{size:11}, boxWidth:12 } } },
+      plugins: { legend: { display:true, labels:{ color: chartTheme().legend, font:{size:11}, boxWidth:12 } } },
       scales: {
-        x: { grid:{display:false}, ticks:{color:'#aeaeb2',font:{size:11}} },
-        y: { beginAtZero:true, grid:{color:'#f0f0f2'}, ticks:{color:'#aeaeb2',font:{size:11}},
-             title:{display:true,text:'分',color:'#aeaeb2',font:{size:11}} },
+        x: { grid:{display:false}, ticks:{color: chartTheme().tick,font:{size:11}} },
+        y: { beginAtZero:true, grid:{color: chartTheme().grid}, ticks:{color: chartTheme().tick,font:{size:11}},
+             title:{display:true,text:'分',color: chartTheme().tick, font:{size:11}} },
       },
     },
   });
@@ -5314,14 +6341,14 @@ function renderChartFocus() {
   charts.focus = new Chart(document.getElementById('chartFocus').getContext('2d'), {
     type: 'line',
     data: { labels, datasets: [{
-      data, borderColor:'#1F4E54', backgroundColor:'rgba(31,78,84,.08)',
-      borderWidth:2, tension:0.35, pointBackgroundColor:'#1F4E54', pointRadius:4,
+      data, borderColor: chartTheme().primary, backgroundColor: document.documentElement.getAttribute('data-theme')==='dark' ? 'rgba(79,160,166,.15)' : 'rgba(31,78,84,.08)',
+      borderWidth:2, tension:0.35, pointBackgroundColor: chartTheme().primary, pointRadius:4,
       spanGaps:true, fill:true,
     }]},
     plugins: [lineValueLabelPlugin],
     options: { ...baseOpts(), scales: {
-      x: { grid:{display:false}, ticks:{color:'#aeaeb2',font:{size:11}} },
-      y: { min:0, max:5, ticks:{stepSize:1,color:'#aeaeb2',font:{size:11}}, grid:{color:'#f0f0f2'} },
+      x: { grid:{display:false}, ticks:{color: chartTheme().tick,font:{size:11}} },
+      y: { min:0, max:5, ticks:{stepSize:1,color: chartTheme().tick,font:{size:11}}, grid:{color: chartTheme().grid} },
     }},
   });
 }
@@ -5337,7 +6364,7 @@ function renderChartReasons() {
     data: {
       labels: sorted.map(e=>e[0]),
       datasets: [{ data:sorted.map(e=>e[1]),
-        backgroundColor: GRAY_PALETTE.slice(0, sorted.length), borderRadius:5 }],
+        backgroundColor: currentPalette().slice(0, sorted.length), borderRadius:5 }],
     },
     plugins: [barValueLabelPlugin],
     options: {
@@ -5345,11 +6372,91 @@ function renderChartReasons() {
       indexAxis: 'y',
       plugins: { legend:{display:false} },
       scales: {
-        x: { beginAtZero:true, ticks:{stepSize:1,color:'#aeaeb2',font:{size:11}}, grid:{color:'#f0f0f2'} },
-        y: { grid:{display:false}, ticks:{color:'#6e6e73',font:{size:11}} },
+        x: { beginAtZero:true, ticks:{stepSize:1,color: chartTheme().tick,font:{size:11}}, grid:{color: chartTheme().grid} },
+        y: { grid:{display:false}, ticks:{color: chartTheme().legend,font:{size:11}} },
       },
     },
   });
+}
+
+/* 6. 曜日別の学習傾向（全期間の平均） */
+function renderChartDow() {
+  destroyChart('dow');
+  const sessions = getSessions();
+  const sums   = [0,0,0,0,0,0,0]; // 日,月,火,水,木,金,土
+  const counts = [0,0,0,0,0,0,0];
+  sessions.forEach(s => {
+    const [y,m,d] = s.date.split('-').map(Number);
+    const dow = new Date(Date.UTC(y, m-1, d)).getUTCDay();
+    sums[dow]   += (s.seconds || 0) / 60;
+    counts[dow] += 1;
+  });
+  /* その曜日が実際に来た回数ではなく「セッションが記録された回数」で割ると
+     稼働日数が短い曜日の平均が過大に出るため、記録が1件でもある曜日のみ平均を出す */
+  const labels = ['日','月','火','水','木','金','土'];
+  const data   = sums.map((s,i) => counts[i] > 0 ? Math.round(s / counts[i]) : 0);
+  const todayDow = new Date().getDay();
+  charts.dow = new Chart(document.getElementById('chartDow').getContext('2d'), {
+    type: 'bar',
+    data: { labels, datasets: [{
+      data,
+      backgroundColor: data.map((_,i) => i === todayDow ? chartTheme().primary : chartTheme().muted),
+      borderRadius: 4,
+    }]},
+    options: { ...baseOpts(), plugins: { legend:{display:false} }, scales: {
+      x: { grid:{display:false}, ticks:{ color: chartTheme().tick, font:{size:11} } },
+      y: { beginAtZero:true, grid:{color: chartTheme().grid}, ticks:{color: chartTheme().tick,font:{size:11}},
+           title:{display:true, text:'平均分', color: chartTheme().tick, font:{size:11}} },
+    }},
+  });
+}
+
+/* 7. 先週・先月との比較 */
+function renderPeriodCompare() {
+  const el = document.getElementById('compareWrap');
+  if (!el) return;
+  const sessions = getSessions();
+  const minutesBetween = (startOffset, endOffsetExclusive) => {
+    /* startOffset/endOffsetExclusive: 今日を0とした日数オフセット（負の値=過去） */
+    let sum = 0;
+    for (let i = startOffset; i < endOffsetExclusive; i++) {
+      const d = new Date(Date.now() + i * 86400000).toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+      sum += sessions.filter(s => s.date === d).reduce((a,s) => a + (s.seconds||0), 0) / 60;
+    }
+    return Math.round(sum);
+  };
+  /* 今週=直近7日（今日含む） vs 先週=その前の7日 */
+  const thisWeek = minutesBetween(-6, 1);
+  const lastWeek = minutesBetween(-13, -6);
+  /* 今月=直近30日 vs 先月=その前の30日（月境界ではなく単純に30日間隔で比較） */
+  const thisMonth = minutesBetween(-29, 1);
+  const lastMonth = minutesBetween(-59, -29);
+
+  const deltaHTML = (cur, prev) => {
+    if (prev === 0) return cur > 0 ? `<span class="compare-delta up">新記録</span>` : `<span class="compare-delta flat">—</span>`;
+    const pct = Math.round((cur - prev) / prev * 100);
+    if (pct > 0)  return `<span class="compare-delta up">↑ ${pct}%</span>`;
+    if (pct < 0)  return `<span class="compare-delta down">↓ ${Math.abs(pct)}%</span>`;
+    return `<span class="compare-delta flat">±0%</span>`;
+  };
+  const fmtH = min => (min / 60).toFixed(1);
+
+  el.innerHTML = `
+    <div class="compare-row">
+      <div class="compare-label">今週（先週 ${fmtH(lastWeek)}時間）</div>
+      <div style="display:flex; align-items:baseline;">
+        <div class="compare-value">${fmtH(thisWeek)}<span>時間</span></div>
+        ${deltaHTML(thisWeek, lastWeek)}
+      </div>
+    </div>
+    <div class="compare-divider"></div>
+    <div class="compare-row">
+      <div class="compare-label">直近30日（前の30日 ${fmtH(lastMonth)}時間）</div>
+      <div style="display:flex; align-items:baseline;">
+        <div class="compare-value">${fmtH(thisMonth)}<span>時間</span></div>
+        ${deltaHTML(thisMonth, lastMonth)}
+      </div>
+    </div>`;
 }
 
 /* ============================================================
@@ -5734,11 +6841,25 @@ function closeDeleteModal() {
 }
 function confirmDelete() {
   if (!deleteTargetId) return;
-  saveTasks(getTasks().filter(t => t.id !== deleteTargetId));
+  const tasks = getTasks();
+  const removedTask = tasks.find(t => t.id === deleteTargetId);
+  saveTasks(tasks.filter(t => t.id !== deleteTargetId));
   closeDeleteModal();
-  showToast('タスクを削除しました');
   if (currentPage === 'home')     renderHome();
   if (currentPage === 'schedule') renderSchedulePage();
+
+  if (removedTask) {
+    showUndoToast('タスクを削除しました', () => {
+      const cur = getTasks();
+      cur.push(removedTask);
+      saveTasks(cur);
+      if (currentPage === 'home')     renderHome();
+      if (currentPage === 'schedule') renderSchedulePage();
+      showToast('元に戻しました');
+    });
+  } else {
+    showToast('タスクを削除しました');
+  }
 }
 document.getElementById('deleteModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeDeleteModal();
@@ -5754,6 +6875,24 @@ function showToast(msg) {
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+let undoToastTimer = null;
+function showUndoToast(msg, onUndo) {
+  const el  = document.getElementById('undoToast');
+  const btn = document.getElementById('undoToastBtn');
+  document.getElementById('undoToastMsg').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(undoToastTimer);
+  undoToastTimer = setTimeout(() => el.classList.remove('show'), 6000);
+  /* 直前のハンドラを確実に取り除いてから新しいハンドラを登録する */
+  const freshBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(freshBtn, btn);
+  freshBtn.addEventListener('click', () => {
+    clearTimeout(undoToastTimer);
+    el.classList.remove('show');
+    onUndo();
+  });
 }
 
 /* ============================================================
@@ -5860,10 +6999,208 @@ function applySpTimePrioLayout() {
 window.addEventListener('resize', applySpTimePrioLayout);
 
 /* ============================================================
+   ダークモード
+============================================================ */
+function getPreferredTheme() {
+  const saved = localStorage.getItem('sf_theme');
+  if (saved === 'dark' || saved === 'light') return saved;
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('sf_theme', theme);
+  const icon = document.getElementById('themeToggleIcon');
+  if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  /* Chart.jsは canvas 描画のため CSS変数の変更を自動追従しない。テーマ切替時に開いているチャートを再描画する */
+  if (currentPage === 'analysis' && typeof renderAnalysis === 'function') renderAnalysis();
+}
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  setTheme(cur === 'dark' ? 'light' : 'dark');
+}
+/** Chart.js に渡す、現在のテーマに応じた配色一式 */
+function chartTheme() {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {
+    tick:     dark ? '#7C8588' : '#aeaeb2',
+    grid:     dark ? '#2B3335' : '#f0f0f2',
+    legend:   dark ? '#9BA4A7' : '#6e6e73',
+    muted:    dark ? '#333C3F' : '#e8e8ed',
+    primary:  dark ? '#4FA0A6' : '#1F4E54',
+    onPrimary:'#fff',
+  };
+}
+
+setTheme(getPreferredTheme());
+
+/* ============================================================
+   コマンドパレット（⌘K / Ctrl+K）＋ グローバルキーボードショートカット
+   参考: Linear / Notion / Superhuman の "keyboard-first" 設計
+============================================================ */
+const COMMANDS = [
+  { id: 'nav-home',      label: 'ホームへ移動',                 icon: '🏠', group: 'ページ移動', run: () => showPage('home') },
+  { id: 'nav-schedule',  label: '予定作成へ移動',               icon: '🗓️', group: 'ページ移動', run: () => showPage('schedule') },
+  { id: 'nav-timer',     label: '勉強中（タイマー）へ移動',      icon: '⏱️', group: 'ページ移動', run: () => showPage('timer') },
+  { id: 'nav-review',    label: '振り返りへ移動',               icon: '✏️', group: 'ページ移動', run: () => showPage('review') },
+  { id: 'nav-analysis',  label: '分析へ移動',                   icon: '📈', group: 'ページ移動', run: () => showPage('analysis') },
+  { id: 'act-add-task',  label: '新しいタスクを追加',           icon: '＋', group: 'アクション', run: () => { showPage('schedule'); setTimeout(openTaskAddForm, 150); } },
+  { id: 'act-start',     label: '今すぐ勉強を始める',           icon: '▶', group: 'アクション', run: () => showPage('timer') },
+  { id: 'act-carryover', label: '未完了タスクを翌日へ繰り越す', icon: '↷', group: 'アクション', run: () => { showPage('home'); setTimeout(carryOverTasks, 150); } },
+  { id: 'act-export',    label: 'データをエクスポート',         icon: '⇩', group: 'データ',     run: () => exportData() },
+  { id: 'act-import',    label: 'データをインポート',           icon: '⇧', group: 'データ',     run: () => triggerImport() },
+  { id: 'act-theme',     label: 'ダークモード切替',             icon: '🌓', group: '表示',       run: () => toggleTheme() },
+];
+
+/** タスク名・振り返りメモを横断検索し、コマンドパレット用のアイテムに変換する */
+function buildSearchResults(query) {
+  const q = query.trim().toLowerCase();
+  if (q.length < 1) return [];
+  const results = [];
+
+  getTasks().forEach(t => {
+    if (t.task.toLowerCase().includes(q) || (t.subject || '').toLowerCase().includes(q)) {
+      results.push({
+        id: 'task-' + t.id,
+        label: t.task,
+        icon: '📋',
+        group: `タスク・${formatDateMD(t.date)}`,
+        run: () => {
+          showPage('schedule');
+          setTimeout(() => flashHighlightScheduleRow(t.id), 200);
+        },
+      });
+    }
+  });
+
+  const FIELD_LABELS = { memo: 'メモ', learned: '学んだこと', challenges: '課題と対策', nextGoal: '次の目標' };
+  getPeriodReflections().forEach(r => {
+    for (const field of ['memo', 'learned', 'challenges', 'nextGoal']) {
+      const text = r[field];
+      if (text && text.toLowerCase().includes(q)) {
+        const idx = text.toLowerCase().indexOf(q);
+        const snippet = (idx > 12 ? '…' : '') + text.slice(Math.max(0, idx - 12), idx + 28) + (idx + 28 < text.length ? '…' : '');
+        results.push({
+          id: 'reflection-' + r.id + '-' + field,
+          label: snippet,
+          icon: '✏️',
+          group: `振り返り・${FIELD_LABELS[field]}`,
+          run: () => {
+            reviewPeriodType = r.periodType;
+            reviewAnchorDate = r.periodType === 'week' ? r.periodKey
+                             : r.periodType === 'month' ? r.periodKey + '-01'
+                             : r.periodKey;
+            showPage('review');
+          },
+        });
+        break; /* 同じレコードから複数フィールドがヒットしても1件にまとめる */
+      }
+    }
+  });
+
+  return results.slice(0, 8);
+}
+/** 予定表で該当タスクの行を一時的にハイライトしてスクロールする */
+function flashHighlightScheduleRow(taskId) {
+  const row = document.querySelector(`.sched-row[data-task-id="${taskId}"]`);
+  if (!row) return;
+  row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  row.classList.add('sched-row-flash');
+  setTimeout(() => row.classList.remove('sched-row-flash'), 1600);
+}
+
+let cmdkFiltered = COMMANDS;
+let cmdkIndex    = 0;
+
+function openCommandPalette() {
+  const overlay = document.getElementById('cmdkOverlay');
+  const input   = document.getElementById('cmdkInput');
+  overlay.classList.add('open');
+  input.value = '';
+  cmdkFiltered = COMMANDS;
+  cmdkIndex = 0;
+  renderCmdkList();
+  setTimeout(() => input.focus(), 10);
+}
+function closeCommandPalette() {
+  document.getElementById('cmdkOverlay').classList.remove('open');
+}
+function renderCmdkList() {
+  const list = document.getElementById('cmdkList');
+  if (cmdkFiltered.length === 0) {
+    list.innerHTML = `<div class="cmdk-empty">一致するコマンドがありません</div>`;
+    return;
+  }
+  list.innerHTML = cmdkFiltered.map((c, i) => `
+    <div class="cmdk-item${i === cmdkIndex ? ' active' : ''}" onmousemove="if(cmdkIndex!==${i}){cmdkIndex=${i}; renderCmdkList();}" onclick="runCommandAt(${i})">
+      <span class="cmdk-item-icon">${c.icon}</span>
+      <span class="cmdk-item-label">${escHtml(c.label)}</span>
+      <span class="cmdk-item-group">${escHtml(c.group)}</span>
+    </div>`).join('');
+  const activeEl = list.querySelector('.cmdk-item.active');
+  if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+}
+function filterCommands(query) {
+  const q = query.trim().toLowerCase();
+  const matchedCommands = q === '' ? COMMANDS : COMMANDS.filter(c =>
+    c.label.toLowerCase().includes(q) || c.group.toLowerCase().includes(q));
+  const searchResults = buildSearchResults(query);
+  /* コマンドを優先して先に並べ、その下にタスク・振り返りの検索結果を続ける */
+  cmdkFiltered = [...matchedCommands, ...searchResults];
+  cmdkIndex = 0;
+  renderCmdkList();
+}
+function runCommandAt(i) {
+  const cmd = cmdkFiltered[i];
+  if (!cmd) return;
+  closeCommandPalette();
+  cmd.run();
+}
+
+document.getElementById('cmdkInput').addEventListener('input', e => filterCommands(e.target.value));
+document.getElementById('cmdkOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeCommandPalette();
+});
+document.getElementById('cmdkInput').addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); cmdkIndex = Math.min(cmdkIndex + 1, cmdkFiltered.length - 1); renderCmdkList(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); cmdkIndex = Math.max(cmdkIndex - 1, 0); renderCmdkList(); }
+  else if (e.key === 'Enter') { e.preventDefault(); runCommandAt(cmdkIndex); }
+  else if (e.key === 'Escape') { e.preventDefault(); closeCommandPalette(); }
+});
+
+document.addEventListener('keydown', e => {
+  const activeTag = (document.activeElement && document.activeElement.tagName) || '';
+  const isTyping  = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT'
+                     || document.activeElement?.isContentEditable;
+
+  /* ⌘K / Ctrl+K はどこからでもコマンドパレットを開閉する */
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    const overlay = document.getElementById('cmdkOverlay');
+    if (overlay.classList.contains('open')) closeCommandPalette(); else openCommandPalette();
+    return;
+  }
+
+  const cmdkOpen = document.getElementById('cmdkOverlay').classList.contains('open');
+  if (cmdkOpen) return; /* パレット内のキー操作は上のリスナーに任せる */
+
+  if (isTyping) return; /* 通常のテキスト入力中はショートカットを発火させない */
+
+  if (/^[1-5]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey) {
+    const pages = ['home', 'schedule', 'timer', 'review', 'analysis'];
+    showPage(pages[parseInt(e.key, 10) - 1]);
+  } else if (e.key.toLowerCase() === 'n' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+    e.preventDefault();
+    showPage('schedule');
+    setTimeout(openTaskAddForm, 150);
+  }
+});
+
+/* ============================================================
    初期化
 ============================================================ */
 applySpTimePrioLayout();
 updateFabState();
+syncRecurringTasks(); /* 定期タスクの未生成インスタンスを補充 */
 /* B-5: オンボーディング未完了なら先に表示、完了済みなら通常のホームへ */
 if (localStorage.getItem('sf_onboarded') === null) {
   /* まず home ページをアクティブにしておき（後続処理のため）、
